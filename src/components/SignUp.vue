@@ -33,11 +33,11 @@
       return {
         busy: false,
         newUser: {
-         firstname: '',
+          firstname: '',
           surname: '',
           email: '',
           password: '',
-           cellphone: '',
+          cellphone: '',
         }
       }
     },
@@ -49,15 +49,20 @@
       },
     methods: {
 
+       logout: function() {
+      firebase.auth().signOut().then(() => {
+        this.$router.replace('login')
+      })
+    },
+
       insert(){
-       
            myUsersRef.push(this.newUser);
             this.newUser.firstname = '',
             this.newUser.surname = '',
             this.newUser.surname = '',
             this.newUser.email = '',
             this.newUser.cellphone = '',
-       this.busy = false;
+            this.busy = false;
         alert("Succeessfully added")
   },
   remover(userUID){
@@ -95,7 +100,8 @@
     width: 21%;
     align-items: center;
    justify-content: center;
-   display: block;
+   display: flex;
+  
   
   }
 

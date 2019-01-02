@@ -26,37 +26,10 @@ export default {
   name: 'Navigation',
 data() {
     return {
-      links: [
-        {
-          id: 0,
-          text: 'About',
-          page:'/About'
-        },
-        {
-          id: 1,
-          text: 'Home',
-          page:'/Home'
-        },
-        {
-          id: 2,
-          text: 'Contact',
-          page:'/Contact'
-        },
-        {
-          id: 3,
-          text: 'Logout',
-          page:'/Login'
-        }
-      ]
+      
     }
   },
 methods: {
-
-  logout: function() {
-      firebase.auth().signOut().then(() => {
-        this.$router.replace('login')
-      })
-    },
 
       navigate (navPath) {
        //debugger;
