@@ -1,10 +1,12 @@
 import firebase from 'firebase';
 import Vue from 'vue';
 import Router from 'vue-router';
-import Home from './views/Home.vue';
-import Login from './views/Login.vue';
-import SignUp from './views/SignUp.vue';
-import About from './views/About.vue';
+import Home from './components/Home.vue';
+import Login from './components/Login.vue';
+import SignUp from './components/SignUp.vue';
+import About from './components/About.vue';
+import Event from './components/Event.vue';
+import Contact from './components/Contact.vue';
 import VueTelInput from 'vue-tel-input'
 import VueFire from 'vuefire'
 
@@ -21,11 +23,6 @@ const router = new Router({
     {
       path: '/',
       redirect: 'login',
-    },
-    {
-      path: '/about',
-      name: 'about',
-      component: About,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
     {
       path: '/login',
@@ -48,6 +45,31 @@ const router = new Router({
         requiresAuth: true,
       },
     },
+      {
+        path: '/about',
+        name: 'about',
+        component: About,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: '/contact',
+        name: 'contact',
+        component: Contact,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      ,
+      {
+        path: '/event',
+        name: 'event',
+        component: Event,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+        meta: {
+          requiresAuth: true,
+        },
+      },
   ],
 });
 

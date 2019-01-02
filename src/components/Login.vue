@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <cube-spin v-if="busy"></cube-spin>
     <h3>Sign In</h3>
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
@@ -10,26 +11,31 @@
 
 <script>
  import firebase from 'firebase';
+  import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
   export default {
     name: 'login',
     data() {
       return {
+         busy: false,
         email: '',
         password: ''
       }
     },
     methods: {
       login: function() {
-
+      this.busy = true;
         this.$router.replace('home');
         firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
           (user) => {
              alert('Successful login');
             this.$router.replace('home')
+            this.busy = false;
           },
           (err) => {
-            alert('Oops. ' + err.message)
+            alert('Oops. ' + err.message);
+            this.busy = false;
           }
+          
         );
       }
     }

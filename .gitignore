@@ -5,6 +5,7 @@ npm-debug.log
 yarn-error.log
 public*
 babel*
+config.js
 
 # Editor directories and files
 .idea

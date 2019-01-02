@@ -42,7 +42,6 @@
       }
     },
 
-
    firebase () {
         return {
           myusers: myUsersRef    

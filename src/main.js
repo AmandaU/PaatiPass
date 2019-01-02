@@ -1,4 +1,3 @@
-//import firebase from 'firebase';
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
@@ -16,8 +15,7 @@ const config = {
   messagingSenderId: '873814667748'
 };
 let app = ''
-// let firebaseapp =  firebase.initializeApp(config)
-// export const db = firebaseapp.database()
+
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
     /* eslint-disable no-new */
