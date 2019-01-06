@@ -1,14 +1,16 @@
 <template>
   <div class="home">
     <div class="eventblock">
-    <div v-for="event in events" :key="event.id">
+    <div v-for="event in events" :key="event['.key']">
   <div class="box">
               <p>
                 <strong>{{event.name}}</strong>
                 <br>
                  <small>{{event.address}}</small>
                 <br>
-                <small>{{event.price}}</small>
+                <router-link :to="{ name: 'Event', params: {id: event['.key'] , eventdata: event}}">
+                  <button id="myButton" class="foo bar">Buy</button>
+                  </router-link>
                
               </p>
             </div>
@@ -34,7 +36,6 @@ export default {
           id: '',
           name: '',
           address: '',
-          price: '',
         }
       }
     },
@@ -46,7 +47,8 @@ firebase () {
       },
 
   methods: {
-   
+    
+      
   }
 }
 </script>

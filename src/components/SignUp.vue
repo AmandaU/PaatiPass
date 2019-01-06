@@ -55,15 +55,15 @@
       })
     },
 
-      insert(){
-           myUsersRef.push(this.newUser);
-            this.newUser.firstname = '',
-            this.newUser.surname = '',
-            this.newUser.surname = '',
-            this.newUser.email = '',
-            this.newUser.cellphone = '',
-            this.busy = false;
-        alert("Succeessfully added")
+    insert(){
+          myUsersRef.push(this.newUser);
+          this.newUser.firstname = '',
+          this.newUser.surname = '',
+          this.newUser.surname = '',
+          this.newUser.email = '',
+          this.newUser.cellphone = '',
+          this.busy = false;
+      alert("Succeessfully added")
   },
   remover(userUID){
      this.$firebaseRefs.users.child(userUID).remove()

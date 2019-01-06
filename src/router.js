@@ -61,14 +61,14 @@ const router = new Router({
           requiresAuth: true,
         },
       },
-      ,
       {
-        path: '/event',
-        name: 'event',
+        path: '/event/:id',
+        name: 'Event',
         component: Event,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
         meta: {
           requiresAuth: true,
         },
+        props: true,
       },
   ],
 });
