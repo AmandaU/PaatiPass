@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <div class="eventblock">
+    <div class="centreblock">
     <div v-for="event in events" :key="event['.key']">
   <div class="box">
               <p>
@@ -53,27 +53,6 @@ firebase () {
 }
 </script>
 
-<style> 
-
- .eventblock {
-  
-    display: flex;           /* establish flex container */
-    flex-direction: column;  /* make main axis vertical */
-    justify-content: center; /* center items vertically, in this case */
-    align-items: center;     /* center items horizontally, in this case */
-    
-    margin: 0 auto;
-}
-
-.box {
-    background-color: rgb(232, 233, 233);
-   
-    border: 1px solid rgb(92, 91, 91);
-    height: auto;
-    margin: 5px;
-    text-align: center;     /* will center text in <p>, which is not a flex item */
-    width: 50vh;
-    padding: 10px;
-}
-
-</style>
+<style lang="scss" scoped>
+  @import "~@/styles/styles.scss";
+  </style>

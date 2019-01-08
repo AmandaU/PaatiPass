@@ -32,14 +32,15 @@ data() {
 methods: {
 
       navigate (navPath) {
-       //debugger;
+       debugger;
        if(navPath == "Logout")
        {
         logout();
        }
        else
        {
-        this.$router.push({path: navPath,})
+         let gotopath = '/' + navPath;
+        this.$router.push({path: gotopath,})
        }
     }
 }

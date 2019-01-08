@@ -2,26 +2,30 @@
   <div class="hello">
    <h1>{{ eventdata.name }}</h1>
    <h2>{{ eventdata.address }}</h2>
+   <cube-spin v-if="busy"></cube-spin>
+     <div class="centreblock">
     <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key']">
-      <div  class="box">
-             
-                <strong>{{pricebreak.name}}</strong>
+    
+          <div  class="box">
+              <strong>{{pricebreak.name}}</strong>
                 <strong> R {{pricebreak.price}}</strong>
                 <br>
-               
-               <select v-model="pricebreak.userreserved"
-                  @change="ticketsSelected( pricebreak)" >
-                  <option value="">Select number of tickets</option>
-                  <option v-for="ticket in ticketselection" v-bind:key="ticket.name" v-bind:value="ticket.name"  >
-                    {{ ticket.name }}
+                <small>{{ total(pricebreak) }}</small>
+              <div v-if="isTicketsAvailable(pricebreak)">
+               <select 
+                  @change="ticketsSelected($event,pricebreak)" >
+                  <option value="" disabled selected>Select number of tickets</option>
+                  <option v-for="ticket in numberOfTicketsAvailable(pricebreak)" v-bind:key="ticket" v-bind:value="ticket"  >
+                    {{ ticket}}
                   </option>
                </select>
                 <br>
-                
-                 <button @click="BuyTickets" >Buy</button>
+                  <button @click="BuyTickets(pricebreak)" >Buy</button>
+              </div>
            
             </div>
       </div>
+  </div>
   
    <!-- <button @click="fetchEvent" >Fetch</button> -->
     <!-- <p>
@@ -54,20 +58,23 @@
 </template>
 
 <script>
-import Vue from 'vue';
+  import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
+  import Vue from 'vue';
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
 
   let myUsersRef = db.ref('users')
   let myEventsRef = db.ref('events')
-  let myPriceBreaksRef = db.ref('pricebreaks')//.orderByChild("eventid").equalTo(eventdata.eventid)
-
+   
   let idparam = '';
   let title = '';
   let event = '';
 
 export default {
   name: 'Event',
+  components: {
+      CubeSpin
+    },
   props: {
        eventdata: {
         type: Object,
@@ -75,18 +82,27 @@ export default {
       }
   },
 
+  watch: {
+  pricebreaks: {
+    deep: true,
+    handler(newArray) {
+        console.log( 'Change detected...' );
+    } 
+  }
+},
+
   firebase () {
     let  eventidd = String(this.$props.eventdata.id) 
     return {
-    
+      tickets: db.ref('tickets'),
        events: myEventsRef,//myEventsRef, // loopable with v-for
        eventsObj: { // can use keys, but v-for doesn't loop
         source: myEventsRef,
         asObject: true
         },
-       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventidd),
+       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventidd) ,
        pricebreaksObj: { // can use keys, but v-for doesn't loop
-        source: myPriceBreaksRef,
+        source: db.ref('pricebreaks').orderByChild("eventid").equalTo(eventidd),
         asObject: true
         },
        }
@@ -94,29 +110,14 @@ export default {
 
   data : function ()  {
     return {
-      ticketselection: [
-        {name: '1'},
-        {name: '2'},
-        {name: '3'},
-        {name: '4'},
-         {name: '5'},
-          {name: '6'},
-           {name: '7'},
-            {name: '8'},
-             {name: '9'},
-              {name: '10'},
-      ],
-     numberOfTicketsSelected: '',
+      busy: false,
       events: [],
-     
       pricebreaks: [],
-      pricebreak: {},
-     
       ticket: {
         userid: '',
         eventid: '',
         pricebreakid: '',
-        tickets: ''
+        tickets: '0'
       },
       title : '',
       address: '',
@@ -127,27 +128,34 @@ export default {
 
   methods: 
 { 
-  ticketsSelected: function(pricebreak) {
-    var context = this;
-    Vue.nextTick(function () {
-      debugger;
-         context.ticket.tickets = pricebreak.userreserved;
-        context.ticket.userid = context.firebase.auth().currentUser.userid;
-        context.ticket.eventid = context.eventdata.id;
-        context.ticket.pricebreakid = pricebreak.id
-    })
- 
+  ticketsSelected: function(event, pricebreak) {
+       this.ticket.tickets = event.target.value;
+       this.ticket.pricebreakid = pricebreak.id;
     },
 
-    BuyTickets: function() {
+    BuyTickets: function(pricebreak) {
         
         this.busy = true;
-        this.$firebaseRefs.tickets.push({
-                      tickets: this.ticket.tickets,
-                      eventid: this.ticket.eventid,
-                      userid: this.ticket.userid,
-                      pricebreakid: this.ticket.pricebreakid
-        })
+        
+        var key = pricebreak['.key'];
+     
+       let totalreserved  = Number(pricebreak.reserved) + Number(this.ticket.tickets);
+       if(totalreserved > Number(pricebreak.number))
+       {
+         let n = (totalreserved - Number(pricebreak.number));
+          alert('There are only ' + String(n) + 'tickets left at this price');
+          return;
+       }
+
+        this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
+      //ToDo -- pay . If success , persist ticket, if not, fetch lates reserved amount and decrease
+
+        totalreserved  = String(Number(pricebreak.reserved) + Number(this.ticket.tickets));
+       let sold  = String(Number(pricebreak.sold) + Number(this.ticket.tickets));
+        this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+        this.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
+         this.$firebaseRefs.tickets.push(this.ticket)
+
         this.busy = false;
       },
 
@@ -167,12 +175,7 @@ export default {
     },
 
     addItem() {
-        // this.$firebaseRefs.events.push({
-        //     name: this.event.name,
-        //     address: this.event.address
-        // })
- debugger;
-        this.$firebaseRefs.pricebreaks.push({
+     this.$firebaseRefs.pricebreaks.push({
                       order: '0',
                       eventid: '1',
                       price: '100',
@@ -180,71 +183,61 @@ export default {
                       reserved: '0',
                       sold: '0'
         })
-
-        // this.event.name = '';
-        // this.event.address = '';
-        //this.$router.push('/index')
       },
 
-      getPriceBreak: function(eventid)
+  numberOfTicketsAvailable(pricebreak)
+  {
+    let ticketNumber = [];
+    let available = Number(pricebreak.number ) - Number(pricebreak.sold);
+    for (let i = 0; i < available; i++) { 
+      if(i == 11) break;
+        ticketNumber[i] = String(i);
+    }
+    return ticketNumber;
+  },
+          
+  total : function(pricebreak) {
+      if(this.isTicketsAvailable(pricebreak))
       {
-      debugger;
-      for (let i = 0; i < this.pricebreaks.length; i++)
+        if(this.ticket.pricebreakid == pricebreak.id)
+        {
+          if(this.ticket.tickets == 0) return  "";
+          let total = Number(this.ticket.tickets) * Number(pricebreak.price);
+          return 'You will purchase  ' +  this.ticket.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
+        }
+      }
+      else
       {
-       let priceb = this.pricebreaks[i];
-       if (priceb.eventid == eventid) {
-                this.pricebreak =  { 
-                      order: priceb.order,
-                      eventid: priceb.eventid,
-                      number: priceb.number,
-                      reserved: priceb.reserved,
-                      sold: priceb.sold
-                      };
-              }
-         }
-     }
+        return "SOLD OUT!";
+      }
+    },
+
+    isTicketsAvailable : function(pricebreak) {
+     if(Number(pricebreak.reserved) == 0 && Number(pricebreak.sold == 0))
+      {
+        return true;
+      }
+        return Number(pricebreak.sold) < Number(pricebreak.number);
+      }
    },
 
    computed: {
-      
-    total : function(e) {
-      if(tick.tickets == 0)
-      {
-        return '';
-      }
-      return 'You will purchase  '//{{ ticket.tickets }} at R{{pricebreak.price}} each. Total is R
-    }
+  
 },
 
 created() {
-//this.addItem();
-    
-  },
-
+   let user = firebase.auth().currentUser;
+    this.ticket = {
+        userid: user.uid,
+        eventid: this.eventdata.id,
+        pricebreakid: '',
+        tickets: 0
+      };
+    },
 };
-
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang="scss" scoped>
+  @import "~@/styles/styles.scss";
+ </style>
 
-.select {
-  display: grid;
-  width: 100px;
-}
-
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-</style>

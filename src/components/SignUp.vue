@@ -33,6 +33,7 @@
       return {
         busy: false,
         newUser: {
+          uid: '',
           firstname: '',
           surname: '',
           email: '',
@@ -55,13 +56,16 @@
       })
     },
 
-    insert(){
+    insert(uid){
+      debugger;
+      this.newUser.uid = uid;
           myUsersRef.push(this.newUser);
           this.newUser.firstname = '',
           this.newUser.surname = '',
           this.newUser.surname = '',
           this.newUser.email = '',
           this.newUser.cellphone = '',
+          this.newUser.uid = '',
           this.busy = false;
       alert("Succeessfully added")
   },
@@ -77,10 +81,13 @@
       signUp: function() {
         
         this.busy = true;
+       
         firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password).then(
           (user) => {
+            const currentUser = firebase.auth().currentUser;
               alert('Your account has been created')
-              this.insert();
+              debugger;
+              this.insert(currentUser.uid);
             this.$router.replace('login')
           },
           (err) => {
