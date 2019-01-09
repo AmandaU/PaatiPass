@@ -154,6 +154,7 @@ export default {
        let sold  = String(Number(pricebreak.sold) + Number(this.ticket.tickets));
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
         this.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
+        this.ticket.price = pricebreak.price;
          this.$firebaseRefs.tickets.push(this.ticket)
 
         this.busy = false;
@@ -189,7 +190,7 @@ export default {
   {
     let ticketNumber = [];
     let available = Number(pricebreak.number ) - Number(pricebreak.sold);
-    for (let i = 0; i < available; i++) { 
+    for (let i = 1; i < available; i++) { 
       if(i == 11) break;
         ticketNumber[i] = String(i);
     }
@@ -218,7 +219,8 @@ export default {
         return true;
       }
         return Number(pricebreak.sold) < Number(pricebreak.number);
-      }
+      },
+
    },
 
    computed: {
@@ -228,10 +230,14 @@ export default {
 created() {
    let user = firebase.auth().currentUser;
     this.ticket = {
+        email: user.email,
         userid: user.uid,
         eventid: this.eventdata.id,
+        eventname: this.eventdata.name,
         pricebreakid: '',
-        tickets: 0
+        tickets: 0,
+        total: '',
+        reference: 'JA' + Math.random().toString(36).substr(2, 9)
       };
     },
 };
