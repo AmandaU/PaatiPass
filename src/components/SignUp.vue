@@ -29,6 +29,12 @@
     components: {
       CubeSpin
     },
+     props: {
+       ticketdata: {
+        type: Object,
+        required: true // User can accept a userData object on params, or not. It's totally optional.
+      }
+  },
     data() {
       return {
         busy: false,
@@ -88,7 +94,8 @@
               alert('Your account has been created')
               debugger;
               this.insert(currentUser.uid);
-            this.$router.replace('login')
+              this.$router.replace({ name: 'login', params: {ticketdata: this.$props.ticketdata}});
+           
           },
           (err) => {
             alert('Oops. ' + err.message)

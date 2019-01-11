@@ -7,7 +7,7 @@
     <div class="hoveritem"  v-on:click="navigate('about')" >About</div>
     <div class="hoveritem"  v-on:click="navigate('home')" >Home</div>
     <div class="hoveritem"  v-on:click="navigate('contact')" >Contact</div>
-    <div class="hoveritem"  v-on:click="logout()" >Logout</div>
+    <div class="hoveritem"  v-on:click="navigate('logout')" >Logout</div>
     <!-- <router-link class="hoveritem" v-for="routes in links" 
              v-bind:key="routes.id" 
              v-on:click="navigate('${routes.page}')"
@@ -29,21 +29,29 @@ data() {
       
     }
   },
-methods: {
 
-      navigate (navPath) {
-       debugger;
-       if(navPath == "Logout")
+methods: {
+    navigate (navPath) {
+    
+      if(navPath == "logout")
        {
-        logout();
+        firebase.auth().signOut().then(function() { 
+        
+          console.log('Signed Out');
+          this.$router.replace({ name: 'Home'});
+           }, 
+           function(error) {
+              console.error('Sign Out Error', error); 
+              });
        }
        else
        {
          let gotopath = '/' + navPath;
-        this.$router.push({path: gotopath,})
+         this.$router.push({path: gotopath,})
        }
     }
-}
+},
+  
 }
 </script>
 

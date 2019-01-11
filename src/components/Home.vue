@@ -8,7 +8,7 @@
                 <br>
                  <small>{{event.address}}</small>
                 <br>
-                <router-link :to="{ name: 'Event', params: {id: event['.key'] , eventdata: event}}">
+                <router-link :to="{ name: 'Event', params: { eventdata: event}}">
                   <button id="myButton" class="foo bar">Buy</button>
                   </router-link>
                
@@ -47,9 +47,9 @@ firebase () {
       },
 
   methods: {
-    
       
-  }
+  },
+  
 }
 </script>
 

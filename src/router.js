@@ -7,6 +7,7 @@ import SignUp from './components/SignUp.vue';
 import About from './components/About.vue';
 import Event from './components/Event.vue';
 import Contact from './components/Contact.vue';
+import Checkout from './components/Checkout.vue';
 import VueTelInput from 'vue-tel-input'
 import VueFire from 'vuefire'
 
@@ -18,68 +19,78 @@ const router = new Router({
   routes: [
     {
       path: '*',
-      redirect: 'login',
+      redirect: 'home',
     },
     {
       path: '/',
-      redirect: 'login',
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login,
-    },
-    {
-      path: '/signup',
-      name: 'SignUp',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: SignUp,
+      redirect: 'home',
     },
     {
       path: '/home',
       name: 'Home',
       component: Home,
+      props: true,
+      // meta: {
+      //   requiresAuth: true,
+      // },
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login,
+      props: true,
+    },
+    {
+      path: '/signup',
+      name: 'SignUp',
+      component: SignUp,
+      props: true,
+    },
+    {
+      path: '/about',
+      name: 'about',
+      component: About,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      // meta: {
+      //   requiresAuth: true,
+      // },
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: Contact, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      // meta: {
+      //   requiresAuth: true,
+      // },
+    },
+    {
+    path: '/event',
+    name: 'Event',
+    component: Event, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+    // meta: {
+    //   requiresAuth: true,
+    // },
+    props: true,
+    }, 
+    {
+      path: '/checkout',
+      name: 'checkout',
+      component: Checkout,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       meta: {
         requiresAuth: true,
       },
-    },
-      {
-        path: '/about',
-        name: 'about',
-        component: About,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: '/contact',
-        name: 'contact',
-        component: Contact, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-      },
-      {
-        path: '/event/:id',
-        name: 'Event',
-        component: Event, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-        meta: {
-          requiresAuth: true,
-        },
-        props: true,
-      },
+      props: true,
+    },     
   ],
 });
 
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+
   if (requiresAuth && !currentUser)
     next('login');
-  else if (!requiresAuth && currentUser)
-    next('home');
+  // else if (!requiresAuth && currentUser)
+  //   next('home');
   else
     next();
 });

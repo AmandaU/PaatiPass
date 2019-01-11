@@ -71,7 +71,7 @@
   let event = '';
 
 export default {
-  name: 'Event',
+  name: 'event',
   components: {
       CubeSpin
     },
@@ -134,8 +134,8 @@ export default {
     },
 
     BuyTickets: function(pricebreak) {
-        
-        this.busy = true;
+
+       this.busy = true;
         
         var key = pricebreak['.key'];
      
@@ -148,6 +148,21 @@ export default {
        }
 
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
+
+         this.busy = false;
+debugger;
+        const currentUser = firebase.auth().currentUser;
+
+        if (!currentUser)
+        {
+          this.$router.replace({ name: 'Login', params: {ticketdata: this.ticket}});
+        }
+        else
+        {
+          this.$router.replace({ name: 'Checkout', params: {ticketdata: this.ticket}});
+        }
+        
+       
       //ToDo -- pay . If success , persist ticket, if not, fetch lates reserved amount and decrease
 
         totalreserved  = String(Number(pricebreak.reserved) + Number(this.ticket.tickets));
@@ -157,7 +172,7 @@ export default {
         this.ticket.price = pricebreak.price;
          this.$firebaseRefs.tickets.push(this.ticket)
 
-        this.busy = false;
+       
       },
 
    media800Enter(mediaQueryString) {

@@ -5,7 +5,7 @@
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
         <button @click="login">Connection</button>
-       <p>You don't have an account ? You can <router-link to="/signup">create one</router-link></p>
+       <p>You don't have an account ? You can <router-link to="{ name: 'Signup', params: { ticketdata: ticket}}">create one</router-link></p>
   </div>
 </template>
 
@@ -21,22 +21,31 @@
         password: ''
       }
     },
+     props: {
+       ticketdata: {
+        type: Object,
+        required: true // User can accept a userData object on params, or not. It's totally optional.
+      }
+  },
     methods: {
       login: function() {
+
       this.busy = true;
-        this.$router.replace('home');
-        firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
-          (user) => {
-             alert('Successful login');
-            this.$router.replace('home')
-            this.busy = false;
-          },
-          (err) => {
-            alert('Oops. ' + err.message);
-            this.busy = false;
-          }
-          
-        );
+      const ticket = this.$props.ticketdata;
+       
+      firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
+        (user) => {
+            alert('Successful login');
+        
+          this.$router.replace({ name: 'Checkout', params: {ticketdata: ticket}});
+          this.busy = false;
+        },
+        (err) => {
+          alert('Oops. ' + err.message);
+          this.busy = false;
+        }
+        
+      );
       }
     }
   }

@@ -18,9 +18,7 @@ let app = ''
 
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
-    /* eslint-disable no-new */
-
-  //  debugger;
+   
     app = new Vue({
       router,
       render: h => h(App),
