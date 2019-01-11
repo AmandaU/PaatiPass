@@ -4,10 +4,10 @@
   <nav> 
 
     <div class="menu">
-    <div class="hoveritem"  v-on:click="navigate('about')" >About</div>
-    <div class="hoveritem"  v-on:click="navigate('home')" >Home</div>
-    <div class="hoveritem"  v-on:click="navigate('contact')" >Contact</div>
-    <div class="hoveritem"  v-on:click="navigate('logout')" >Logout</div>
+    <div class="hoveritem"  v-on:click="navigate('About')" >About</div>
+    <div class="hoveritem"  v-on:click="navigate('Home')" >Home</div>
+    <div class="hoveritem"  v-on:click="navigate('Contact')" >Contact</div>
+    <div class="hoveritem"  v-on:click="navigate('Logout')" >Logout</div>
     <!-- <router-link class="hoveritem" v-for="routes in links" 
              v-bind:key="routes.id" 
              v-on:click="navigate('${routes.page}')"
@@ -33,7 +33,7 @@ data() {
 methods: {
     navigate (navPath) {
     
-      if(navPath == "logout")
+      if(navPath == "Logout")
        {
         firebase.auth().signOut().then(function() { 
         

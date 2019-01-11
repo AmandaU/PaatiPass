@@ -1,19 +1,31 @@
 <template>
-  <div class="checkout">
+  <div class="hello">
+     <cube-spin v-if="busy"></cube-spin>
+    <h1>Check out:</h1>
+   <h1>{{ ticketdata.eventname }}</h1>
+   <h1>R {{ ticketdata.total }}</h1>
+     <button @click="BuyTickets()" >Buy</button>
   </div>
 </template>
 
 <script>
-  //  import firebase from '../firebase-config';
-  //  import {  db } from '../firebase-config';
+ import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
+   import firebase from '../firebase-config';
+   import {  db } from '../firebase-config';
 
-  //  let myEventsRef = db.ref('events')
+  let myEventsRef = db.ref('events')
 
 export default {
   name: 'checkout',
-  
+  components: {
+      CubeSpin
+    },
    props: {
        ticketdata: {
+        type: Object,
+        required: true // User can accept a userData object on params, or not. It's totally optional.
+      },
+       pricebreakdata: {
         type: Object,
         required: true // User can accept a userData object on params, or not. It's totally optional.
       }
@@ -21,47 +33,42 @@ export default {
 
   data() {
       return {
-       
         busy: false,
-       
+            
       }
     },
 
-//  firebase () {
-//     let  pricebreakid = String(this.$props.ticketdata.pricebreakid) 
-//     return {
-//       tickets: db.ref('tickets'),
-//        events: myEventsRef,//myEventsRef, // loopable with v-for
-//        eventsObj: { // can use keys, but v-for doesn't loop
-//         source: myEventsRef,
-//         asObject: true
-//         },
-//        pricebreak:  db.ref('pricebreaks').orderByChild("id").equalTo(pricebreakid) ,
-//        pricebreaksObj: { // can use keys, but v-for doesn't loop
-//         source: db.ref('pricebreaks').orderByChild("eventid").equalTo(eventidd),
-//         asObject: true
-//         },
-//        }
-//       },
-  // methods: {
+ firebase () {
+       let  eventid = String(this.$props.ticketdata.eventid) 
+    return {
+      tickets: db.ref('tickets'),
+       events: myEventsRef,//myEventsRef, // loopable with v-for
+       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
+       }
+      },
+
+  methods: {
     
-  //     BuyTickets: function() {
+      BuyTickets() {
 
-  //      this.busy = true;
-        
-  //       var key = this.pricebreak['.key'];
+       this.busy = true;
+      debugger;
+ 
+        let pricebreak = this.$props.pricebreakdata;
+        let ticket = this.$props.ticketdata;
+        var key = pricebreak['.key'];
       
-  //     //ToDo -- pay . If success , persist ticket, if not, fetch lates reserved amount and decrease
+        let totalreserved  = String(Number(pricebreak.reserved) + Number(ticket.tickets));
+        let sold  = String(Number(pricebreak.sold) + Number(ticket.tickets));
+        this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+        this.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
+        ticket.price = pricebreak.price;
+        this.$firebaseRefs.tickets.push(ticket)
 
-  //       totalreserved  = String(Number(pricebreak.reserved) + Number(this.ticket.tickets));
-  //       let sold  = String(Number(pricebreak.sold) + Number(this.ticket.tickets));
-  //       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
-  //       this.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
-  //       this.ticket.price = pricebreak.price;
-  //       this.$firebaseRefs.tickets.push(this.ticket)
+        this.busy = false;
      
-  //     },
-  //}
+      },
+  }
 }
 </script>
 

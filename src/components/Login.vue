@@ -25,6 +25,10 @@
        ticketdata: {
         type: Object,
         required: true // User can accept a userData object on params, or not. It's totally optional.
+      },
+        pricebreakdata: {
+        type: Object,
+        required: true // User can accept a userData object on params, or not. It's totally optional.
       }
   },
     methods: {
@@ -32,12 +36,13 @@
 
       this.busy = true;
       const ticket = this.$props.ticketdata;
+      const pricebreak = this.$props.pricebreakdata;
        
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (user) => {
             alert('Successful login');
         
-          this.$router.replace({ name: 'Checkout', params: {ticketdata: ticket}});
+          this.$router.replace({ name: 'Checkout', params: {ticketdata: ticket, pricebreakdata: pricebreak}});
           this.busy = false;
         },
         (err) => {

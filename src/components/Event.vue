@@ -59,10 +59,10 @@
 
 <script>
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
-  import Vue from 'vue';
+  
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
-
+  
   let myUsersRef = db.ref('users')
   let myEventsRef = db.ref('events')
    
@@ -146,32 +146,23 @@ export default {
           alert('There are only ' + String(n) + 'tickets left at this price');
           return;
        }
-
+        this.ticket.total  = String(Number(this.ticket.tickets) * Number(pricebreak.price));
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
 
          this.busy = false;
-debugger;
+
         const currentUser = firebase.auth().currentUser;
 
         if (!currentUser)
         {
-          this.$router.replace({ name: 'Login', params: {ticketdata: this.ticket}});
+          this.$router.replace({ name: 'Login', params: {ticketdata: this.ticket, pricebreakdata: pricebreak}});
         }
         else
         {
-          this.$router.replace({ name: 'Checkout', params: {ticketdata: this.ticket}});
+          this.$router.replace({ name: 'Checkout', params: {ticketdata: this.ticket, pricebreakdata: pricebreak}});
         }
         
        
-      //ToDo -- pay . If success , persist ticket, if not, fetch lates reserved amount and decrease
-
-        totalreserved  = String(Number(pricebreak.reserved) + Number(this.ticket.tickets));
-       let sold  = String(Number(pricebreak.sold) + Number(this.ticket.tickets));
-        this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
-        this.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
-        this.ticket.price = pricebreak.price;
-         this.$firebaseRefs.tickets.push(this.ticket)
-
        
       },
 

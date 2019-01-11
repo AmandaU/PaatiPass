@@ -48,7 +48,7 @@ const router = new Router({
     },
     {
       path: '/about',
-      name: 'about',
+      name: 'About',
       component: About,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       // meta: {
       //   requiresAuth: true,
@@ -56,7 +56,7 @@ const router = new Router({
     },
     {
       path: '/contact',
-      name: 'contact',
+      name: 'Contact',
       component: Contact, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       // meta: {
       //   requiresAuth: true,
@@ -73,7 +73,7 @@ const router = new Router({
     }, 
     {
       path: '/checkout',
-      name: 'checkout',
+      name: 'Checkout',
       component: Checkout,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       meta: {
         requiresAuth: true,

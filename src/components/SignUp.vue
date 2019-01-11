@@ -33,6 +33,10 @@
        ticketdata: {
         type: Object,
         required: true // User can accept a userData object on params, or not. It's totally optional.
+      },
+       pricebreakdata: {
+        type: Object,
+        required: true // User can accept a userData object on params, or not. It's totally optional.
       }
   },
     data() {
@@ -94,7 +98,7 @@
               alert('Your account has been created')
               debugger;
               this.insert(currentUser.uid);
-              this.$router.replace({ name: 'login', params: {ticketdata: this.$props.ticketdata}});
+              this.$router.replace({ name: 'login', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
            
           },
           (err) => {
