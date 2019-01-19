@@ -36,8 +36,8 @@ methods: {
       if(navPath == "Logout")
        {
         firebase.auth().signOut().then(function() { 
-        
           console.log('Signed Out');
+           alert('You have successfully logged out');
           this.$router.replace({ name: 'Home'});
            }, 
            function(error) {

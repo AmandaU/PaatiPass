@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './components/Home.vue';
 import Login from './components/Login.vue';
-import SignUp from './components/SignUp.vue';
+import Signup from './components/Signup.vue';
 import About from './components/About.vue';
 import Event from './components/Event.vue';
 import Contact from './components/Contact.vue';
@@ -42,8 +42,8 @@ const router = new Router({
     },
     {
       path: '/signup',
-      name: 'SignUp',
-      component: SignUp,
+      name: 'Signup',
+      component: Signup,
       props: true,
     },
     {

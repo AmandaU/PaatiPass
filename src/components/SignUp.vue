@@ -11,8 +11,9 @@
                   :preferredCountries="['za']">
    </vue-tel-input><br>
     <button @click="signUp" >Sign Up</button>
-    <span>or go back to <router-link to="/login">login</router-link>.</span>
-  
+    <p>or go back to <span @click="goBackToLogin()" style="color:blue;cursor:pointer">login</span>
+         </p>
+    
   </div>
 </template>
 
@@ -25,7 +26,7 @@
    let myUsersRef = db.ref('users')
 
  export default {
-    name: 'signUp',
+    name: 'signup',
     components: {
       CubeSpin
     },
@@ -59,6 +60,11 @@
         }
       },
     methods: {
+      
+      goBackToLogin ()
+      {
+       this.$router.replace({ name: 'Login', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
+      },
 
        logout: function() {
       firebase.auth().signOut().then(() => {
@@ -98,7 +104,7 @@
               alert('Your account has been created')
               debugger;
               this.insert(currentUser.uid);
-              this.$router.replace({ name: 'login', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
+              this.$router.replace({ name: 'Checkout', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
            
           },
           (err) => {
@@ -120,7 +126,6 @@
    justify-content: center;
    display: flex;
   
-  
   }
 
   .signup {
@@ -137,9 +142,13 @@
     width: 10%;
     cursor: pointer;
   }
-  span {
-    display: block;
-    margin-top: 20px;
-    font-size: 11px;
-  }
+ 
+   p {
+     margin-top: 40px;
+     font-size: 13px;
+   }
+   p a {
+     text-decoration: underline;
+     cursor: pointer;
+   }
 </style>

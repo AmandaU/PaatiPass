@@ -92,7 +92,7 @@ export default {
 },
 
   firebase () {
-    let  eventidd = String(this.$props.eventdata.id) 
+    let  eventid = String(this.$props.eventdata.id) 
     return {
       tickets: db.ref('tickets'),
        events: myEventsRef,//myEventsRef, // loopable with v-for
@@ -100,9 +100,9 @@ export default {
         source: myEventsRef,
         asObject: true
         },
-       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventidd) ,
+       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
        pricebreaksObj: { // can use keys, but v-for doesn't loop
-        source: db.ref('pricebreaks').orderByChild("eventid").equalTo(eventidd),
+        source: db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid),
         asObject: true
         },
        }
@@ -143,7 +143,7 @@ export default {
        if(totalreserved > Number(pricebreak.number))
        {
          let n = (totalreserved - Number(pricebreak.number));
-          alert('There are only ' + String(n) + 'tickets left at this price');
+          alert('There are only ' + String(n) + ' tickets left at this price');
           return;
        }
         this.ticket.total  = String(Number(this.ticket.tickets) * Number(pricebreak.price));
@@ -173,13 +173,13 @@ export default {
       this.greaterThan800 = true
     },
 
-    updateItem() {
-      this.$firebaseRefs.events.child(this.$route.params.id).set(this.event);
-    },
+    // updateItem() {
+    //   this.$firebaseRefs.events.child(this.eventdata.id).set(this.event);
+    // },
 
-    deleteItem(key) {
-      this.$firebaseRefs.events.child(key).remove();
-    },
+    // deleteItem(key) {
+    //   this.$firebaseRefs.events.child(key).remove();
+    // },
 
     addItem() {
      this.$firebaseRefs.pricebreaks.push({
@@ -235,7 +235,7 @@ export default {
 
 created() {
    let user = firebase.auth().currentUser;
-    this.ticket = {
+      this.ticket = {
         email: user.email,
         userid: user.uid,
         eventid: this.eventdata.id,

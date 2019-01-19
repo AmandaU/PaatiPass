@@ -5,8 +5,10 @@
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
         <button @click="login">Connection</button>
-       <p>You don't have an account ? You can <router-link to="{ name: 'Signup', params: { ticketdata: ticket}}">create one</router-link></p>
-  </div>
+       <p>You don't have an account ? You can 
+          <span @click="goToSignup()" style="color:blue;cursor:pointer">create one</span>
+         </p>
+    </div>
 </template>
 
 <script>
@@ -31,7 +33,14 @@
         required: true // User can accept a userData object on params, or not. It's totally optional.
       }
   },
+  
     methods: {
+
+      goToSignup ()
+      {
+       this.$router.replace({ name: 'Signup', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
+      },
+
       login: function() {
 
       this.busy = true;
