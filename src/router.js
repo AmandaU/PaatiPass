@@ -8,6 +8,9 @@ import About from './components/About.vue';
 import Event from './components/Event.vue';
 import Contact from './components/Contact.vue';
 import Checkout from './components/Checkout.vue';
+import Success from './components/Success.vue';
+import Cancel from './components/Cancel.vue';
+import Notify from './components/Notify.vue';
 import VueTelInput from 'vue-tel-input'
 import VueFire from 'vuefire'
 
@@ -79,11 +82,42 @@ const router = new Router({
         requiresAuth: true,
       },
       props: true,
+    },  
+    {
+      path: '/success',
+      name: 'Success',
+      component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
     },     
+    {
+      path: '/Cancel',
+      name: 'Cancel',
+      component: Cancel,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+    },     
+    {
+      path: '/notify',
+      name: 'Notify',
+      component: Notify,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      meta: {
+        requiresAuth: true,
+      },
+      props: true,
+    },        
   ],
 });
 
 router.beforeEach((to, from, next) => {
+debugger;
+ var thing = window.location.hash;
+  if(thing != null)
+  {
+    var n = thing.indexOf("id=");
+    if(n > -1)
+    {
+      let myticketId = thing.substring(n, thing.length - n);
+      replace({ name: to.name, params: {ticketid: myticketId}});
+    }
+   
+  }
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 

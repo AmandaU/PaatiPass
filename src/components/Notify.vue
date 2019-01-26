@@ -1,6 +1,6 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="notify">
+    <h1>This is the notify page</h1>
      <div v-html="results"/>
   </div>
 </template>
@@ -14,7 +14,7 @@
   import axios from "axios";
 
 export default {
-  name: 'about',
+  name: 'notify',
 
   data() {
       return {

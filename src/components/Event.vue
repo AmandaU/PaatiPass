@@ -82,14 +82,14 @@ export default {
       }
   },
 
-  watch: {
-  pricebreaks: {
-    deep: true,
-    handler(newArray) {
-        console.log( 'Change detected...' );
-    } 
-  }
-},
+//   watch: {
+//   pricebreaks: {
+//     deep: true,
+//     handler(newArray) {
+//         console.log( 'Change detected...' );
+//     } 
+//   }
+// },
 
   firebase () {
     let  eventid = String(this.$props.eventdata.id) 
@@ -143,8 +143,14 @@ export default {
        if(totalreserved > Number(pricebreak.number))
        {
          let n = (totalreserved - Number(pricebreak.number));
-          alert('There are only ' + String(n) + ' tickets left at this price');
-          return;
+         if(n == 1)
+         {
+           alert('There is only 1 ticket left at this price');
+         }
+         else
+         {
+           alert('There are only ' + String(n) + ' tickets left at this price');
+         }
        }
         this.ticket.total  = String(Number(this.ticket.tickets) * Number(pricebreak.price));
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
@@ -161,8 +167,6 @@ export default {
         {
           this.$router.replace({ name: 'Checkout', params: {ticketdata: this.ticket, pricebreakdata: pricebreak}});
         }
-        
-       
        
       },
 
@@ -226,8 +230,7 @@ export default {
       }
         return Number(pricebreak.sold) < Number(pricebreak.number);
       },
-
-   },
+  },
 
    computed: {
   

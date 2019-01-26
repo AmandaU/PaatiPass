@@ -1,5 +1,8 @@
 <template>
   <div class="hello">
+    
+     <div>{{ip}}</div>
+     <div v-html="results"/>
     <div  v-for="user in users" :key="user['.key']">
       <p>{{setBuyer(user)}}</p>
     </div>
@@ -9,21 +12,27 @@
     <h2>R {{ ticketdata.total }}</h2>
     <!-- <creditcard  @eventname="updateparent"></creditcard> -->
      <button @click="BuyTickets()" >Buy</button>
+   
+    <br>
+   <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event+tickets&amp;amount=150.00&amp;return_url=http%3A%2F%2Fwww.jadeayla.com%2F%23%2FSuccess&amp;cancel_url=http%3A%2F%2Fwww.jadeayla.com%2F%23%2FCancel"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>-->
+      <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=150.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23Cancel"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>  -->
+      <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
+  
   </div>
 </template>
 
 <script>
 
-//Vue.prototype.$http = axios.
-  import Creditcard from './Creditcard'
+import Creditcard from './Creditcard'
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
   import axios from "axios";
   import md5 from "js-md5";
+    import qs from "qs";
 
   let myEventsRef = db.ref('events')
-   
+  
 
 export default {
   name: 'checkout',
@@ -44,31 +53,18 @@ export default {
 
   data() {
       return {
+        results: [],
         buyer: '',
-        merchantIDParam: 'merchant-id',
-        passphraseParam: 'passphrase',
         timeStampParam: 'timestamp',
         versionParam: 'version',
-        merchantID: '10011455',
-        merchantKey: 'ztdbyg14s7nyd',
+        merchantID: '10011455',//'12581557',
+        merchantKey: 'ztdbyg14s7nyd',//'49qsjtvgayqaw',//
         buyerEmail: 'sbtu01@payfast.co.za',
         buyerPassword: 'clientpass',
-        sandBoxUrl: 'https://sandbox.payfast.co.za/eng/process',
-        sandBoxAmount: '150',
-        timeStamp: '2018-04-01T12:00:01+02:00',
         busy: false,
         ip: "",
         response: ""
-        //  card: {
-        //   number: '',
-        //   owner: '',
-        //   expiration: {
-        //   month: '',
-        //   year: ''
-        //   },
-        //   cvc: ''
-        //  }
-            
+        
       }
     },
 
@@ -88,12 +84,12 @@ export default {
       },
 
        mounted() {
-
-            axios({ method: "GET", "url": "https://httpbin.org/ip" }).then(result => {
-                this.ip = result.data.origin;
-            }, error => {
-                console.error(error);
-            });
+        
+            // axios({ method: "GET", "url": "https://httpbin.org/ip" }).then(result => {
+            //     this.ip = result.data.origin;
+            // }, error => {
+            //     console.error(error);
+            // });
         },
 
   methods: {
@@ -102,29 +98,112 @@ export default {
     {
       this.buyer = buyer;
     },
- 
-    ProcessPayment: function()
-      {
-    debugger;
 
-       let ticket = this.$props.ticketdata;
-       let cell = this.buyer.cellphone.split(' ').join('');
-       let merchantData = 'merchant_id=' + this.merchantID + '&merchant_key=' + this.merchantKey + '&return_url=http://169.202.224.2:8080/Home';
-       let buyerData = '&name_first=' + this.buyer.firstname + '&name_last=' + this.buyer.surname + '&email_address=' + this.buyer.email + '&cell_number=' + cell;
-       let purchaseData = '&m_payment_id=' + ticket.reference + '&amount=' + ticket.total + '&item_name=' + ticket.eventname;
-       let constantData =  '&item_description=tickets' + '&email_confirmation=1&confirmation_address=admin@jadeayla.com&payment_method=cc,dc&subscription_type=2&signature=';
-       let data =  merchantData + buyerData + purchaseData + constantData;
-       let hashsignature = md5(data);
-       data = data + hashsignature;
-       debugger;
-       axios({ method: "POST", "url": "https://sandbox.payfast.co.za/eng/process", "data": data, "headers": { "content-type": "application/json" } }).then(result => {
-            this.response = result.data;
-                 return true;
-                }, error => {
-                    console.error(error);
-                  return false;
-                });
-      },
+    payfastPayment: function()
+    {
+      let url = "";
+      let ticket = this.$props.ticketdata;
+      ticket.price = pricebreak.price;
+      self.$firebaseRefs.tickets.push(ticket)
+      return url;
+    },
+ 
+    ProcessPayment()
+    {
+      debugger;
+      this.isProcessingPayment = true;
+      let pricebreak = this.$props.pricebreakdata;
+      let ticket = this.$props.ticketdata;
+      let key = pricebreak['.key'];
+      let sold  = String(Number(pricebreak.sold) + Number(ticket.tickets));
+
+      let returnUrl = encodeURIComponent("http://www.jadeayla.com"); 
+      let cancelUrl = encodeURIComponent("http://www.jadeayla.com"); 
+      let notifyUrl = encodeURIComponent("http://www.jadeayla.com"); 
+
+      // let returnUrl = encodeURIComponent("http://192.168.8.107:8080/#/Success"); 
+      // let cancelUrl = encodeURIComponent("http://192.168.8.107:8080/#/Cancel"); 
+      // let notifyUrl = encodeURIComponent("http://192.168.8.107:8080/#/Notify");
+     
+      let buyerEmail = "sbtu01@payfast.co.za";
+      let confirmationEmail = encodeURIComponent("admin@jadeayla.com");
+ 
+       let nospaces = this.buyer.cellphone.split(' ').join('');
+      let cell = '0' + nospaces.substring(3, nospaces - 3);
+
+      let merchantData = 'merchant_id=' + this.merchantID + '&merchant_key=' + this.merchantKey ;
+      let urls = '&return_url=' + returnUrl + '&cancel_url=' + cancelUrl + '&notify_url=' + notifyUrl;
+      let buyerData = '&name_first=' + this.buyer.firstname + '&name_last=' + this.buyer.surname + '&email_address=' + buyerEmail  
+      + '&cell_number=' + cell;
+      let purchaseData = '&m_payment_id=' + ticket.reference + '&amount=' + ticket.total + '&item_name=' + ticket.eventname;
+      let constantData =  '&item_description=tickets' //+ '&email_confirmation=1&confirmation_address=' + confirmationEmail;
+      let data =  merchantData  + urls + buyerData + purchaseData + constantData;
+      let hashsignature = md5(data);
+      data = data + '&signature=' + hashsignature;
+   
+      let self = this;
+      var params = {
+            merchant_id: this.merchantID,
+            merchant_key: this.merchantKey,
+             return_url: returnUrl,
+             cancel_url: cancelUrl,
+             notify_url: notifyUrl,
+            name_first: this.buyer.firstname,
+            name_last: this.buyer.surname,
+            email_address: buyerEmail,
+            cell_number: cell,
+            m_payment_id: ticket.reference,
+            amount: ticket.total,
+            item_name: ticket.eventname,
+            item_description: "tickets",
+            // email_confirmation: "1",
+            // confirmation_address: confirmationEmail,
+            signature: hashsignature
+       };
+
+     
+    let paramstring = qs.stringify(params);
+    hashsignature = md5(paramstring);
+    paramstring = paramstring + '&signature=' + hashsignature;
+           this.postData("https://cors-anywhere.herokuapp.com/https://sandbox.payfast.co.za/eng/process/", params)
+       .then(data => 
+        {
+          console.log(JSON.stringify(data));
+        self.results = data;
+        }) // JSON-string from `response.json()` call
+        .catch(error => console.error(error));
+     
+    //   axios.post("https://cors-anywhere.herokuapp.com/https://sandbox.payfast.co.za/eng/process/", params)
+    //  // axios.post("https://cors-anywhere.herokuapp.com/https://payfast.co.za/eng/process/", qsstring)
+    //   .then(result => {
+    //      self.results = result.data;
+    //       self.busy = false;
+    //     }, error => {
+    //       //self.$firebaseRefs.pricebreaks.child(key).child('reserved').set(pricebreak.reserved);
+    //       var st = error.status;
+    //     });
+    },
+
+       postData: function(url = '', data = {}) {
+  // Default options are marked with *
+    return fetch(url, {
+        method: "POST", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, cors, *same-origin
+        cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: "same-origin", // include, *same-origin, omit
+        headers: {
+            //"Content-Type": "application/json",
+             "Content-Type": "application/x-www-form-urlencoded",
+             "Content-Length": qs.stringify(data).length,
+              "x-requested-with": "origin"
+        },
+        redirect: "follow", // manual, *follow, error
+        referrer: "no-referrer", // no-referrer, *client
+        body: qs.stringify(data)
+    })
+    .then(function(response) {
+  return response.text();});
+},
 
     updateparent(variable) {
     
@@ -135,27 +214,17 @@ export default {
       BuyTickets() {
 
        this.busy = true;
-       debugger;
- 
+       
         let pricebreak = this.$props.pricebreakdata;
         let ticket = this.$props.ticketdata;
         var key = pricebreak['.key'];
       
         let totalreserved  = String(Number(pricebreak.reserved) + Number(ticket.tickets));
-        let sold  = String(Number(pricebreak.sold) + Number(ticket.tickets));
+       
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
 
-      if(this.ProcessPayment())
-      {
-        this.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
-        ticket.price = pricebreak.price;
-        this.$firebaseRefs.tickets.push(ticket)
-      }
-      else
-      {
-         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(pricebreak.reserved);
-      }
-         this.busy = false;
+      this.ProcessPayment();
+      
       },
 
   }
