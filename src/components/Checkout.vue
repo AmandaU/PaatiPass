@@ -2,7 +2,7 @@
   <div class="hello">
     
      <div>{{ip}}</div>
-     <div v-html="results"/>
+     <!-- <div v-html="results"/> -->
     <div  v-for="user in users" :key="user['.key']">
       <p>{{setBuyer(user)}}</p>
     </div>
@@ -11,25 +11,27 @@
     <h2>{{ ticketdata.eventname }}</h2>
     <h2>R {{ ticketdata.total }}</h2>
     <!-- <creditcard  @eventname="updateparent"></creditcard> -->
-     <button @click="BuyTickets()" >Buy</button>
-   
-    <br>
-   <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event+tickets&amp;amount=150.00&amp;return_url=http%3A%2F%2Fwww.jadeayla.com%2F%23%2FSuccess&amp;cancel_url=http%3A%2F%2Fwww.jadeayla.com%2F%23%2FCancel"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>-->
-      <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=150.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23Cancel"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>  -->
-      <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
-  
+     <!-- <button @click="BuyTickets()" >Buy</button> -->
+     <br>
+        <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
+      <!-- <a v-show="isready" href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
+ <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=12581557&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D12345%26pricebreakid%3D6789&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fticketid%3D12345%26pricebreakid%3D6789"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
+ 
+ 
+ <a v-show="isready" @click="saveTicket"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
+     
   </div>
 </template>
 
 <script>
 
-import Creditcard from './Creditcard'
+  import Creditcard from './Creditcard'
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
   import axios from "axios";
   import md5 from "js-md5";
-    import qs from "qs";
+  import qs from "qs";
 
   let myEventsRef = db.ref('events')
   
@@ -53,6 +55,7 @@ export default {
 
   data() {
       return {
+        isready: false,
         results: [],
         buyer: '',
         timeStampParam: 'timestamp',
@@ -92,22 +95,32 @@ export default {
             // });
         },
 
+        computed: {
+    // a computed getter
+    payFastUrl: function () {
+    
+      let key = this.$props.pricebreakdata['.key'];
+      var url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.$props.ticketdata.eventname + 
+      '&item_description=tickets&amount=' + this.$props.ticketdata.total + '.00' + 
+      '&return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.$props.ticketdata.reference + '%26pricebreakid%3D' + key;
+      '&return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.$props.ticketdata.reference + '%26pricebreakid%3D' + key;
+        console.log(url);
+      return url;
+    }
+  },
+
   methods: {
+
+    saveTicket: function() {
+       this.$firebaseRefs.tickets.push(this.$props.ticketdata);
+    },
 
     setBuyer (buyer)
     {
       this.buyer = buyer;
+      this.isready = true;
     },
 
-    payfastPayment: function()
-    {
-      let url = "";
-      let ticket = this.$props.ticketdata;
-      ticket.price = pricebreak.price;
-      self.$firebaseRefs.tickets.push(ticket)
-      return url;
-    },
- 
     ProcessPayment()
     {
       debugger;

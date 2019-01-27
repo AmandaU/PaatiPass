@@ -2,7 +2,7 @@
   <div class="cancel">
     <h1>Your payment was been successfully cancelled</h1>
     <div  v-for="ticket in tickets" :key="ticket['.key']">
-      <p>{{setBuyer(user)}}</p>
+      <p>{{setTicket(ticket)}}</p>
     </div>
   </div>
 </template>
@@ -24,9 +24,13 @@ export default {
     },
 
       props: {
-       ticketdata: {
-        
-        required: true // User can accept a userData object on params, or not. It's totally optional.
+       ticketid: {
+        type: String,
+        required: true
+      },
+      pricebreakid: {
+        type: String,
+        required: true
       }
   },
 
@@ -49,7 +53,10 @@ firebase () {
      UpdateData()
       {
          let key = ticket['.key'];
-       this.$firebaseRefs.users.child(key).remove()
+          let pricebreak =  db.ref('pricebreaks').orderByChild("eventid").equalTo(this.ticket.eventid) ;
+       this.$firebaseRefs.users.child(key).remove();
+       let reserved = pricebreak.reserved - this.ticket.tickets;
+       this.$firebaseRefs.pricebreaks.child(pricebreak['.key']).child('reserved').set(reserved);
       }
   },
   

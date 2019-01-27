@@ -33,9 +33,7 @@ const router = new Router({
       name: 'Home',
       component: Home,
       props: true,
-      // meta: {
-      //   requiresAuth: true,
-      // },
+      
     },
     {
       path: '/login',
@@ -87,37 +85,46 @@ const router = new Router({
       path: '/success',
       name: 'Success',
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      props: true,
+      props: (route) => ({
+        ticketid: route.query.ticketid,
+        pricebreakid: route.query.pricebreakid,
+          })
     },     
     {
       path: '/Cancel',
       name: 'Cancel',
       component: Cancel,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      props: true,
     },     
     {
       path: '/notify',
       name: 'Notify',
       component: Notify,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-      meta: {
-        requiresAuth: true,
-      },
       props: true,
     },        
   ],
 });
 
 router.beforeEach((to, from, next) => {
-debugger;
- var thing = window.location.hash;
-  if(thing != null)
-  {
-    var n = thing.indexOf("id=");
-    if(n > -1)
-    {
-      let myticketId = thing.substring(n, thing.length - n);
-      replace({ name: to.name, params: {ticketid: myticketId}});
-    }
+ 
+//  var thing = window.location.hash;
+//   if(thing != null)
+//   {
+//     var n = thing.indexOf("id=") ;
    
-  }
+//     if(n > -1)
+//     {
+//       debugger;
+//       next(to.fullPath);
+     
+//       // let myticketId = thing.substring(n + 3, thing.length );
+//       // var route = thing.substring(2,n-1);
+//       // this.$router.push({ name: route, params: {ticketid: myticketId}});
+
+//     }
+   
+//   }
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 

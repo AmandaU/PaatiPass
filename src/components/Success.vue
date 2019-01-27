@@ -1,68 +1,83 @@
 <template>
   <div class="success">
     <h1>Your payment was successful</h1>
+     <button v-show="isReady" @click="BuyTickets()" >Buy more tickets</button>
      <div  v-for="ticket in tickets" :key="ticket['.key']">
-      <p>{{setBuyer(user)}}</p>
-    </div>
+       <p>{{setTicket(ticket)}}</p>
+      </div>
+    
   </div>
 </template>
 
 <script>
-   import firebase from '../firebase-config';
-   import {  db } from '../firebase-config';
-
-   let myEventsRef = db.ref('events')
+  
+import {  db } from '../firebase-config';
 
 export default {
-  name: 'home',
+  name: 'success',
 
   data() {
       return {
         ticket: '',
-        tickets: [],
-        busy: false,
+         tickets: [],
+        pricebreak:'',
+        pricebreaks: [],
+        pricebreaksObj: {},
+        isReady: false,
        
       }
     },
-
-     props: {
-       ticketdata: {
-        
-        required: true // User can accept a userData object on params, or not. It's totally optional.
-      }
+ props: {
+      ticketid: {
+        type: String,
+        required: true
+      },
+      pricebreakid: {
+        type: String,
+        required: true
+      },
   },
 
 firebase () {
-
-   let  eventid = String(this.$props.ticketdata.eventid) ;
+ 
+   let  ticketid = String(this.$props.ticketid) ;
+   
         return {
            tickets: db.ref('tickets').orderByChild("reference").equalTo(ticketid).limitToFirst(1) ,
+            pricebreaks: db.ref('pricebreaks'),
+             pricebreaksObj: { // can use keys, but v-for doesn't loop
+            source: db.ref('pricebreaks'),
+            asObject: true
+            },
         }
       },
+  mounted() {
+ 
+},
 
-  methods: {
+ computed: {
+   
+  },
+
+methods: {
+
+    BuyTickets() {
+       this.$router.replace({ name: 'Home'});
+    },
 
     setTicket (ticket)
     {
+    debugger;
       this.ticket = ticket;
+      let pricebreak =  this.$firebaseRefs.pricebreaksObj[this.$props.pricebreakid];
+      let sold  = String(Number(pricebreak.sold) + Number(this.ticket.tickets));
 
-      UpdateData();
+      this.$firebaseRefs.pricebreaks.child(this.$props.pricebreakid).child('sold').set(sold);
+      this.isReady = true;
+     
     },
 
-     UpdateData()
-      {
-        
-        let pricebreak =  db.ref('pricebreaks').orderByChild("eventid").equalTo(this.ticket.eventid) ;
-        
-        let key = pricebreak['.key'];
-        let sold  = String(Number(pricebreak.sold) + Number(this.ticket.tickets));
-
-         self.$firebaseRefs.pricebreaks.child(key).child('sold').set(sold);
-          
-      }
-      
   },
-  
 }
 </script>
 

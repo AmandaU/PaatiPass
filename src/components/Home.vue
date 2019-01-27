@@ -31,6 +31,7 @@ export default {
   data() {
       return {
         events: [],
+       
         busy: false,
         event: {
           id: '',
