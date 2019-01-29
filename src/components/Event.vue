@@ -4,14 +4,17 @@
    <h2>{{ eventdata.address }}</h2>
    <cube-spin v-if="busy"></cube-spin>
      <div class="centreblock">
-    <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key']">
-    
+    <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+       
           <div  class="box">
               <strong>{{pricebreak.name}}</strong>
                 <strong> R {{pricebreak.price}}</strong>
+                
+                 <h1 v-show="!isTicketsAvailable(pricebreak)">SOLD OUT !!
+                   </h1>
+              <div v-show="isTicketsAvailable(pricebreak)" >
                 <br>
                 <small>{{ total(pricebreak) }}</small>
-              <div v-if="isTicketsAvailable(pricebreak)">
                <select 
                   @change="ticketsSelected($event,pricebreak)" >
                   <option value="" disabled selected>Select number of tickets</option>
@@ -22,8 +25,8 @@
                 <br>
                   <button @click="BuyTickets(pricebreak)" >Buy</button>
               </div>
-           
-            </div>
+          </div>
+        
       </div>
   </div>
   
@@ -54,15 +57,6 @@ export default {
         required: true // User can accept a userData object on params, or not. It's totally optional.
       }
   },
-
-//   watch: {
-//   pricebreaks: {
-//     deep: true,
-//     handler(newArray) {
-//         console.log( 'Change detected...' );
-//     } 
-//   }
-// },
 
   firebase () {
     let  eventid = String(this.$props.eventdata.id) 
@@ -107,9 +101,7 @@ export default {
     },
 
     BuyTickets: function(pricebreak) {
-
        this.busy = true;
-        
         var key = pricebreak['.key'];
      
        let totalreserved  = Number(pricebreak.reserved) + Number(this.ticket.tickets);
@@ -128,10 +120,8 @@ export default {
         this.ticket.total  = String(Number(this.ticket.tickets) * Number(pricebreak.price));
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
 
-         this.busy = false;
-
+        this.busy = false;
         const currentUser = firebase.auth().currentUser;
-
         if (!currentUser)
         {
           this.$router.replace({ name: 'Login', params: {ticketdata: this.ticket, pricebreakdata: pricebreak}});
@@ -149,14 +139,6 @@ export default {
     media800Leave(mediaQueryString) {
       this.greaterThan800 = true
     },
-
-    // updateItem() {
-    //   this.$firebaseRefs.events.child(this.eventdata.id).set(this.event);
-    // },
-
-    // deleteItem(key) {
-    //   this.$firebaseRefs.events.child(key).remove();
-    // },
 
     addItem() {
      this.$firebaseRefs.pricebreaks.push({
@@ -190,10 +172,7 @@ export default {
           return 'You will purchase  ' +  this.ticket.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
         }
       }
-      else
-      {
-        return "SOLD OUT!";
-      }
+      
     },
 
     isTicketsAvailable : function(pricebreak) {
@@ -203,6 +182,8 @@ export default {
       }
         return Number(pricebreak.sold) < Number(pricebreak.number);
       },
+
+    
   },
 
    computed: {

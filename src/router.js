@@ -86,6 +86,7 @@ const router = new Router({
       name: 'Success',
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
+      //test
       props: (route) => ({
         ticketid: route.query.ticketid,
         pricebreakid: route.query.pricebreakid,
@@ -107,24 +108,7 @@ const router = new Router({
 });
 
 router.beforeEach((to, from, next) => {
- 
-//  var thing = window.location.hash;
-//   if(thing != null)
-//   {
-//     var n = thing.indexOf("id=") ;
-   
-//     if(n > -1)
-//     {
-//       debugger;
-//       next(to.fullPath);
-     
-//       // let myticketId = thing.substring(n + 3, thing.length );
-//       // var route = thing.substring(2,n-1);
-//       // this.$router.push({ name: route, params: {ticketid: myticketId}});
 
-//     }
-   
-//   }
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
