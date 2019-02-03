@@ -1,9 +1,7 @@
 <template>
   <div class="cancel">
     <h1>Your payment has been successfully cancelled</h1>
-    <div  v-for="ticket in tickets" :key="ticket['.key']">
-      <p>{{setTicket(ticket)}}</p>
-    </div>
+    
   </div>
 </template>
 
@@ -14,11 +12,20 @@
 export default {
   name: 'cancel',
 
+   mounted() {
+    debugger;
+    if(localStorage.getItem(this.$props.ticketid))
+      {
+         this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
+       }
+   },
+
   data() {
       return {
         busy: false,
-        ticket: '',
-        tickets: ''
+        shoppingcart: '',
+        tickets: '',
+        pricebreak: ''
         
       }
     },
@@ -27,34 +34,30 @@ export default {
        ticketid: {
         type: String,
         required: true,
-      },
-      pricebreakid: {
-        type: String,
-        required: true,
       }
   },
 
 firebase() {
-    let  ticketid = String(this.$props.ticketdata) ;
+    
+    let pricebreakid = this.shoppingcart.pricebreakid;
         return {
-           tickets: db.ref('tickets').orderByChild("reference").equalTo(ticketid).limitToFirst(1) ,
-        }
+          pricebreaks: {
+            source: db.ref('pricebreaks'),//.orderByChild("id").equalTo(this.$props.pricebreakid).limitToFirst(1),
+            asObject: true,
+                readyCallback: () =>   
+                {
+                  this.pricebreak = this.pricebreaks[pricebreakid];
+                 UpdateData();
+                }
+              },
+         }
       },
 
   methods: {
-      setTicket (ticket)
-    {
-      this.ticket = ticket;
-      UpdateData();
-    },
-
      UpdateData()
       {
-         let key = ticket['.key'];
-          let pricebreak =  db.ref('pricebreaks').orderByChild("eventid").equalTo(this.ticket.eventid) ;
-       this.$firebaseRefs.users.child(key).remove();
-       let reserved = pricebreak.reserved - this.ticket.tickets;
-       this.$firebaseRefs.pricebreaks.child(pricebreak['.key']).child('reserved').set(reserved);
+        let reserved = Number(pricebreak.reserved - this.shoppingcart.tickets);
+        this.$firebaseRefs.pricebreaks.child(pricebreak['.key']).child('reserved').set(reserved);
       }
   }
   

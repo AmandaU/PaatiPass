@@ -1,29 +1,28 @@
 <template>
   <div class="home">
-    <div class="centreblock">
-    <div v-for="event in events" :key="event['.key']">
-  <div class="box">
-              <p>
-                <strong>{{event.name}}</strong>
-                <br>
-                 <small>{{event.address}}</small>
-                <br>
-                <router-link :to="{ name: 'Event', params: { eventdata: event}}">
-                  <button id="myButton" class="foo bar">Buy</button>
-                  </router-link>
-               
-              </p>
+     <cube-spin v-if="busy"></cube-spin>
+      <div class="centreblock">
+            <div  v-for="event in events" :key="event['.key']">
+                <div class="box">
+                    <strong>{{event.name}}</strong><br>
+                    <!-- <div v-html="eventVenue(event)"></div> -->
+                      <medium>The party is at {{event.venuename}}</medium><br>
+                      <small>from {{event.from}} to {{event.to}}</small><br>
+                      <small>{{event.venueaddress}}</small><br>
+                      <!-- <small>{{event.venuelatlong}}</small><br> -->
+                      <router-link :to="{ name: 'Event', params: { eventdata: event}}">
+                        <button id="myButton" class="foo bar">Buy</button>
+                      </router-link>
+                </div>
             </div>
-            </div>
-</div>
+      </div>
   </div>
 </template>
 
 <script>
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
-
-   let myEventsRef = db.ref('events')
+   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
 
 export default {
   name: 'home',
@@ -31,26 +30,40 @@ export default {
   data() {
       return {
         events: [],
-       
-        busy: false,
-        event: {
-          id: '',
-          name: '',
-          address: '',
-        }
+        venues: {},
+        busy: true,
       }
     },
 
 firebase () {
         return {
-          events: myEventsRef    
+          events: db.ref('events')  ,
         }
       },
 
-  methods: {
+  // created(){
       
-  },
-  
+  //         this.$bindAsObject(
+  //           "venues",
+  //           db.ref('venues'),
+  //           null,
+  //           () => {
+  //             // events Ready Callback
+  //                this.$bindAsArray(
+  //                 "events",
+  //                 db.ref('events'),
+  //                 null,
+  //                 () => {
+  //                   // venues Ready Callback
+  //                   // console.log(`all calls done`)
+  //                   this.busy = false;
+  //                 }
+  //               );
+
+  //             }
+  //         );
+  //  },
+
 }
 </script>
 

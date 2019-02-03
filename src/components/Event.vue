@@ -1,29 +1,28 @@
 <template>
   <div class="hello">
    <h1>{{ eventdata.name }}</h1>
-   <h2>{{ eventdata.address }}</h2>
+   <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
+   <h2>{{ eventdata.venuename }}</h2>
+   <small>{{ eventdata.venueaddress }}</small><br>
+    <small>{{eventdata.venuelatlong}}</small><br>
    <cube-spin v-if="busy"></cube-spin>
      <div class="centreblock">
     <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
-       
           <div  class="box">
-              <strong>{{pricebreak.name}}</strong>
+               <strong>{{pricebreak.name}}</strong>
                 <strong> R {{pricebreak.price}}</strong>
-                
-                 <h1 v-show="!isTicketsAvailable(pricebreak)">SOLD OUT !!
-                   </h1>
-              <div v-show="isTicketsAvailable(pricebreak)" >
-                <br>
-                <small>{{ total(pricebreak) }}</small>
-               <select 
-                  @change="ticketsSelected($event,pricebreak)" >
-                  <option value="" disabled selected>Select number of tickets</option>
-                  <option v-for="ticket in numberOfTicketsAvailable(pricebreak)" v-bind:key="ticket" v-bind:value="ticket"  >
-                    {{ ticket}}
-                  </option>
-               </select>
-                <br>
-                  <button @click="BuyTickets(pricebreak)" >Buy</button>
+                 <h1 v-show="!isTicketsAvailable(pricebreak)">SOLD OUT !! </h1>
+               <div v-show="isTicketsAvailable(pricebreak)" >
+                  <small>{{ total(pricebreak) }}</small>
+                  <select 
+                      @change="ticketsSelected($event,pricebreak)" >
+                      <option value="" disabled selected>Select number of tickets</option>
+                      <option v-for="ticket in numberOfTicketsAvailable(pricebreak)" v-bind:key="ticket" v-bind:value="ticket"  >
+                        {{ ticket}}
+                      </option>
+                  </select>
+                  <br>
+                    <button @click="BuyTickets(pricebreak)" >Buy</button>
               </div>
           </div>
         
@@ -41,6 +40,7 @@
   
   let myUsersRef = db.ref('users')
   let myEventsRef = db.ref('events')
+  let myPromotions = db.ref('promotions')
    
   let idparam = '';
   let title = '';
@@ -59,19 +59,14 @@ export default {
   },
 
   firebase () {
-    let  eventid = String(this.$props.eventdata.id) 
+   let  eventid = String(this.$props.eventdata.id) 
     return {
+      
+      promos: myPromotions,
       tickets: db.ref('tickets'),
-       events: myEventsRef,//myEventsRef, // loopable with v-for
-       eventsObj: { // can use keys, but v-for doesn't loop
-        source: myEventsRef,
-        asObject: true
-        },
-       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
-       pricebreaksObj: { // can use keys, but v-for doesn't loop
-        source: db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid),
-        asObject: true
-        },
+      events: myEventsRef,//myEventsRef, // loopable with v-for
+      pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
+      
        }
       },
 
@@ -80,12 +75,7 @@ export default {
       busy: false,
       events: [],
       pricebreaks: [],
-      ticket: {
-        userid: '',
-        eventid: '',
-        pricebreakid: '',
-        tickets: '0'
-      },
+      shoppingcart: {},
       title : '',
       address: '',
       price: '',
@@ -96,15 +86,15 @@ export default {
   methods: 
 { 
   ticketsSelected: function(event, pricebreak) {
-       this.ticket.tickets = event.target.value;
-       this.ticket.pricebreakid = pricebreak.id;
+       this.shoppingcart.tickets = Number(event.target.value);
+       this.shoppingcart.pricebreak = pricebreak;
     },
 
     BuyTickets: function(pricebreak) {
        this.busy = true;
         var key = pricebreak['.key'];
      
-       let totalreserved  = Number(pricebreak.reserved) + Number(this.ticket.tickets);
+       let totalreserved  = Number(pricebreak.reserved) + Number(this.shoppingcart.tickets);
        if(totalreserved > Number(pricebreak.number))
        {
          let n = (totalreserved - Number(pricebreak.number));
@@ -114,21 +104,25 @@ export default {
          }
          else
          {
-           alert('There are only ' + String(n) + ' tickets left at this price');
+           alert('There are ' + String(n) + ' tickets at this price, that are reserved. Please choose another price break or try again later');
+           return;
          }
        }
-        this.ticket.total  = String(Number(this.ticket.tickets) * Number(pricebreak.price));
+        this.shoppingcart.total  = String(Number(this.shoppingcart.tickets) * Number(pricebreak.price));
+        this.shoppingcart.pricebreakvalue = pricebreak.price;
+        this.shoppingcart.pricebreakkey = key;
+        this.shoppingcart.pricebreakreserved = pricebreak.reserved;
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
 
         this.busy = false;
         const currentUser = firebase.auth().currentUser;
         if (!currentUser)
         {
-          this.$router.replace({ name: 'Login', params: {ticketdata: this.ticket, pricebreakdata: pricebreak}});
-        }
+          this.$router.replace({ name: 'Login', params: {shoppingcart: this.shoppingcart}});
+        } 
         else
         {
-          this.$router.replace({ name: 'Checkout', params: {ticketdata: this.ticket, pricebreakdata: pricebreak}});
+          this.$router.replace({ name: 'Checkout', params: {shoppingcart: this.shoppingcart}});
         }
        
       },
@@ -141,13 +135,31 @@ export default {
     },
 
     addItem() {
-     this.$firebaseRefs.pricebreaks.push({
-                      order: '0',
-                      eventid: '1',
-                      price: '100',
-                      number: '120',
-                      reserved: '0',
-                      sold: '0'
+      // this.$firebaseRefs.pricebreaks.push({
+      //                 order: '0',
+      //                 eventid: '1',
+      //                 price: '100',
+      //                 number: '120',
+      //                 reserved: '0',
+      //                 sold: '0'
+      //   })
+   
+    // this.$firebaseRefs.promos.push({
+    //                   code: 'P12345',
+    //                   closed: false
+    //     })
+
+     this.$firebaseRefs.venues.push({
+                      name: "Nice wine farm",
+                      address: "6 Party Road, Winelands, Cape Town",
+                      lat: "33.234567",
+                      long: "34.99876"
+        });
+         this.$firebaseRefs.venues.push({
+                      name: "Hot Cape Town Club",
+                      address: "2 Long ST, Cape Town",
+                      lat: "33.234567",
+                      long: "34.99876"
         })
       },
 
@@ -165,14 +177,13 @@ export default {
   total : function(pricebreak) {
       if(this.isTicketsAvailable(pricebreak))
       {
-        if(this.ticket.pricebreakid == pricebreak.id)
+        if(this.shoppingcart.pricebreak && this.shoppingcart.pricebreak.id == pricebreak.id)
         {
-          if(this.ticket.tickets == 0) return  "";
-          let total = Number(this.ticket.tickets) * Number(pricebreak.price);
-          return 'You will purchase  ' +  this.ticket.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
+          if(this.shoppingcart.tickets == 0) return  "";
+          let total = Number(this.shoppingcart.tickets) * Number(pricebreak.price);
+          return 'You will purchase  ' +  this.shoppingcart.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
         }
       }
-      
     },
 
     isTicketsAvailable : function(pricebreak) {
@@ -182,8 +193,6 @@ export default {
       }
         return Number(pricebreak.sold) < Number(pricebreak.number);
       },
-
-    
   },
 
    computed: {
@@ -192,15 +201,23 @@ export default {
 
 created() {
    let user = firebase.auth().currentUser;
-      this.ticket = {
-        email: user.email,
+      this.shoppingcart = {
+        email: "",
+        name: "",
         userid: user.uid,
         eventid: this.eventdata.id,
         eventname: this.eventdata.name,
-        pricebreakid: '',
         tickets: 0,
         total: '',
-        reference: 'JA' + Math.random().toString(36).substr(2, 9)
+        reference: 'JA' + Math.random().toString(36).substr(2, 9),
+        promocode: "",
+        promotionvalue: '',
+        number: "0",
+        pricebreak: {},
+        venuename: this.eventdata.venuename,
+        venueaddress: this.eventdata.venueaddress,
+        venuelatlong: this.eventdata.venuelatlong
+      
       };
     },
 };

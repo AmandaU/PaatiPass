@@ -24,11 +24,7 @@
       }
     },
      props: {
-       ticketdata: {
-        type: Object,
-        required: true // User can accept a userData object on params, or not. It's totally optional.
-      },
-        pricebreakdata: {
+       shoppingcart: {
         type: Object,
         required: true // User can accept a userData object on params, or not. It's totally optional.
       }
@@ -38,20 +34,19 @@
 
       goToSignup ()
       {
-       this.$router.replace({ name: 'Signup', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
+       this.$router.replace({ name: 'Signup', params: {shoppingcart: this.$props.shoppingcart}});
       },
 
       login: function() {
 
       this.busy = true;
-      const ticket = this.$props.ticketdata;
-      const pricebreak = this.$props.pricebreakdata;
+      const cart = this.$props.shoppingcart;
        
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (user) => {
             alert('Successful login');
         
-          this.$router.replace({ name: 'Checkout', params: {ticketdata: ticket, pricebreakdata: pricebreak}});
+          this.$router.replace({ name: 'Checkout', params: {shoppingcart: cart}});
           this.busy = false;
         },
         (err) => {

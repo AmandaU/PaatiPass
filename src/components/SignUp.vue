@@ -31,11 +31,7 @@
       CubeSpin
     },
      props: {
-       ticketdata: {
-        type: Object,
-        required: true // User can accept a userData object on params, or not. It's totally optional.
-      },
-       pricebreakdata: {
+       shoppingcart: {
         type: Object,
         required: true // User can accept a userData object on params, or not. It's totally optional.
       }
@@ -63,7 +59,7 @@
       
       goBackToLogin ()
       {
-       this.$router.replace({ name: 'Login', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
+       this.$router.replace({ name: 'Login', params: {shoppingcart: this.$props.shoppingcart}});
       },
 
        logout: function() {
@@ -77,7 +73,6 @@
       this.newUser.uid = uid;
           myUsersRef.push(this.newUser);
           this.newUser.firstname = '',
-          this.newUser.surname = '',
           this.newUser.surname = '',
           this.newUser.email = '',
           this.newUser.cellphone = '',
@@ -117,38 +112,6 @@
   };
 </script>
 
- <style scoped>
-
- .tel {
-    margin:0 auto;
-    width: 21%;
-    align-items: center;
-   justify-content: center;
-   display: flex;
-  
-  }
-
-  .signup {
-    margin-top: 40px;
-  }
-  input {
-    margin: 10px 0;
-    width: 20%;
-    padding: 7px; 
-    
-  }
-  button {
-    margin-top: 10px;
-    width: 10%;
-    cursor: pointer;
-  }
- 
-   p {
-     margin-top: 40px;
-     font-size: 13px;
-   }
-   p a {
-     text-decoration: underline;
-     cursor: pointer;
-   }
-</style>
+ <style lang="scss" scoped>
+  @import "~@/styles/styles.scss";
+  </style>

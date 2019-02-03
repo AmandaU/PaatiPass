@@ -13,10 +13,13 @@ import Cancel from './components/Cancel.vue';
 import Notify from './components/Notify.vue';
 import VueTelInput from 'vue-tel-input'
 import VueFire from 'vuefire'
+import LoadScript from 'vue-plugin-load-script';
 
 Vue.use(VueFire)
 
 Vue.use(VueTelInput)
+
+Vue.use(LoadScript);
 
 const router = new Router({
   routes: [
@@ -87,10 +90,9 @@ const router = new Router({
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
       //test
-      props: (route) => ({
-        ticketid: route.query.ticketid,
-        pricebreakid: route.query.pricebreakid,
-          })
+      // props: (route) => ({
+      //   ticketid: route.query.ticketid,
+      //     })
     },     
     {
       path: '/Cancel',
