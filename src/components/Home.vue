@@ -6,7 +6,7 @@
                 <div class="box">
                     <strong>{{event.name}}</strong><br>
                     <!-- <div v-html="eventVenue(event)"></div> -->
-                      <medium>The party is at {{event.venuename}}</medium><br>
+                      <small>The party is at {{event.venuename}}</small><br>
                       <small>from {{event.from}} to {{event.to}}</small><br>
                       <small>{{event.venueaddress}}</small><br>
                       <!-- <small>{{event.venuelatlong}}</small><br> -->

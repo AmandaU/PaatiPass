@@ -144,7 +144,7 @@ watch: {
      
          let key = this.shoppingcart.pricebreak['.key'];
         const url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.shoppingcart.eventname 
-        + '&item_description=tickets&amount=' + this.shoppingcart.total + '.00' 
+        + '&item_description=tickets&amount=' + this.purchasevalue + '.00' 
         + '&return_url=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference + '%26pricebreakid%3D' + key
         + '&cancel_url=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference + '%26pricebreakid%3D' + key;
         //console.log(url);
@@ -153,7 +153,7 @@ watch: {
   },
 
   created() {
-    this.shoppingcart.total = this.$props.shoppingcart.total;
+    this.shoppingcart = this.$props.shoppingcart;
     this.purchasevalue = this.shoppingcart.total;  
   },
 
@@ -161,6 +161,7 @@ watch: {
 
     saveTicket() {
      debugger;
+     this.shoppingcart.total = this.purchasevalue;
       let key = this.shoppingcart.pricebreak['.key'];
       let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.tickets);
       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);

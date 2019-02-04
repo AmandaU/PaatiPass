@@ -210,6 +210,8 @@ created() {
         tickets: 0,
         total: '',
         reference: 'JA' + Math.random().toString(36).substr(2, 9),
+        from: this.eventdata.from,
+        to: this.eventdata.to,
         promocode: "",
         promotionvalue: '',
         number: "0",
