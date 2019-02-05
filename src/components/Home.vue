@@ -22,7 +22,7 @@
 <script>
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
-   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
+  // import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
 
 export default {
   name: 'home',

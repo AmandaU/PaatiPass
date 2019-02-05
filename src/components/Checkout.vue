@@ -1,9 +1,6 @@
 <template>
   <div class="hello">
-    
      <div>{{ip}}</div>
-     <div  v-for="promotion in promotions" :key="promotion['.key'] ">
-     </div>
     <cube-spin v-if="busy"></cube-spin>
     <h1>Check out:</h1>
     <h2>{{ shoppingcart.eventname }}</h2>
@@ -93,7 +90,7 @@ export default {
    let self = this;
   this.$loadScript("https://code.zapper.com/zapper.js")
     .then(() => {
-       zapper("#Zapper", 1, 1, self.$props.shoppingcart.total,self.$props.shoppingcart.reference, function (paymentResult) {
+       zapper("#Zapper", 1, 1, self.purchasevalue,self.$props.shoppingcart.reference, function (paymentResult) {
           debugger;
     // Do something with the payment result.
         });
@@ -121,8 +118,8 @@ watch: {
             {
               this.promocode = p.code;
               this.shoppingcart.promocode = p.code;
-              this.purchasevalue =  String(this.$props.shoppingcart.total - p.value);
               this.shoppingcart.promotionvalue = p.value;
+              this.purchasevalue =  String(this.total - p.value);
               this.haspromo = true;
             }
           }
@@ -132,13 +129,17 @@ watch: {
             this.haspromo = false;
             this.shoppingcart.promocode = "";
             this.shoppingcart.promotionvalue = '';
-            this.purchasevalue = String(this.$props.shoppingcart.total);
+            this.purchasevalue = String(this.total);
           }
       },
    },
 
   computed: {
 
+    total: function()
+    {
+        return this.shoppingcart.tickets * Number(this.shoppingcart.pricebreak.price);
+    },
     // a computed getter
     payFastUrl: function () {
      
@@ -154,14 +155,23 @@ watch: {
 
   created() {
     this.shoppingcart = this.$props.shoppingcart;
-    this.purchasevalue = this.shoppingcart.total;  
+    this.purchasevalue = this.total;  
+
+     this.$bindAsArray(
+                  "promotions",
+                  db.ref('promotions').orderByChild("eventid").equalTo(this.shoppingcart.eventid),
+                  null,
+                  () => {
+                  
+                  }
+                );
   },
 
   methods: {
 
     saveTicket() {
      debugger;
-     this.shoppingcart.total = this.purchasevalue;
+     
       let key = this.shoppingcart.pricebreak['.key'];
       let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.tickets);
       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);

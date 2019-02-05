@@ -112,10 +112,9 @@ methods: {
                   db.ref('promotions').orderByChild("code").equalTo(promocode).limitToFirst(1) ,
                   null,
                   () => {
-                    debugger;
                     let promo = this.promotion[0];
                     promo.redeemed += 1;
-                     this.$firebaseRefs.promotionsRef.child(promo['.key']).child('redeemed').set(promo.redeemed);
+                    this.$firebaseRefs.promotionsRef.child(promo['.key']).child('redeemed').set(promo.redeemed);
                   }
                 );
     },
@@ -159,7 +158,7 @@ methods: {
          let pricebreak = this.pricebreaks[key];
           const sold = Number(pricebreak.sold) + Number(this.shoppingcart.tickets);
           this.$firebaseRefs.pricebreaksRef.child(key).child('sold').set(sold);
-  
+         
             for(let i = 0; i < this.shoppingcart.tickets ; i++)
             {
               if(i == 0 && this.shoppingcart.promocode)
@@ -167,6 +166,7 @@ methods: {
                 this.processPromoCode(this.shoppingcart.promocode);
               }
               let ref = this.shoppingcart.eventname.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
+              var haspromo = i == 0 && this.shoppingcart.promocode;
               let ticket = {
                   
                   email:  this.user.email,
@@ -177,10 +177,10 @@ methods: {
                   from: this.shoppingcart.from,
                   to: this.shoppingcart.to,
                   pricebreakvalue: this.shoppingcart.pricebreakvalue,
-                  total: this.shoppingcart.pricebreakvalue - i > 0? 0: this.shoppingcart.promotionvalue,
+                  price: this.shoppingcart.pricebreakvalue,
                   reference: ref,
-                  promocode: this.shoppingcart.promocode,
-                  promotionvalue: '',
+                  promocode: haspromo? this.shoppingcart.promocode : "",
+                  promotionvalue: haspromo? this.shoppingcart.promotionvalue :0,
                   venuename: this.shoppingcart.venuename,
                   venueaddress: this.shoppingcart.venueaddress,
                   venuelatlong: this.shoppingcart.venuelatlong
