@@ -31,8 +31,7 @@ firebase () {
       },
 
 mounted() {
- debugger;
-
+ 
   this.$nextTick(() => {
       this.getParameterByName();
       //window.location.href = '/';

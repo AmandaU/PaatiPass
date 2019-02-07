@@ -69,7 +69,7 @@
     },
 
     insert(uid){
-      debugger;
+     
       this.newUser.uid = uid;
           myUsersRef.push(this.newUser);
           this.newUser.firstname = '',
@@ -92,14 +92,14 @@
       signUp: function() {
         
         this.busy = true;
-       
+        let self = this;
+      
         firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password).then(
           (user) => {
-            const currentUser = firebase.auth().currentUser;
               alert('Your account has been created')
-              debugger;
-              this.insert(currentUser.uid);
-              this.$router.replace({ name: 'Checkout', params: {ticketdata: this.$props.ticketdata, pricebreakdata: this.$props.pricebreakdata}});
+              
+              self.$props.shoppingcart.userid = user.uid;
+              self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
            
           },
           (err) => {
@@ -114,4 +114,4 @@
 
  <style lang="scss" scoped>
   @import "~@/styles/styles.scss";
-  </style>
+</style>

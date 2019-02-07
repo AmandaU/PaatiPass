@@ -38,7 +38,6 @@
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
   
-  let myUsersRef = db.ref('users')
   let myEventsRef = db.ref('events')
   let myPromotions = db.ref('promotions')
    
@@ -54,7 +53,7 @@ export default {
   props: {
        eventdata: {
         type: Object,
-        required: true // User can accept a userData object on params, or not. It's totally optional.
+        required: true 
       }
   },
 
@@ -116,6 +115,7 @@ export default {
 
         this.busy = false;
         const currentUser = firebase.auth().currentUser;
+        
         if (!currentUser)
         {
           this.$router.replace({ name: 'Login', params: {shoppingcart: this.shoppingcart}});
@@ -200,11 +200,16 @@ export default {
 },
 
 created() {
-   let user = firebase.auth().currentUser;
+  
+      let userid =  "";
+      if(firebase.auth().currentUser)
+      {
+        userid = firebase.auth().currentUser.uid;
+      }
       this.shoppingcart = {
         email: "",
         name: "",
-        userid: user.uid,
+        userid: userid,
         eventid: this.eventdata.id,
         eventname: this.eventdata.name,
         tickets: 0,
@@ -213,12 +218,15 @@ created() {
         to: this.eventdata.to,
         promocode: "",
         promotionvalue: 0,
+        totalPaid: 0,
         number: "0",
         pricebreak: {},
         venuename: this.eventdata.venuename,
         venueaddress: this.eventdata.venueaddress,
-        venuelatlong: this.eventdata.venuelatlong
-      
+        venuelatlong: this.eventdata.venuelatlong,
+        zapperPaymentMethod: false,
+        zapperPaymentId: 0,
+        zapperReference: ""
       };
     },
 };

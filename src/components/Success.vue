@@ -24,10 +24,14 @@
 </template>
 
 <script>
+import config from './config';
 import firebase from '../firebase-config';
 import {  db } from '../firebase-config';
 import QrcodeVue from 'qrcode.vue';
 import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
+import axios from "axios";
+import { sha256, sha224 } from 'js-sha256';
+config.zapperConfig
 
 export default {
   name: 'success',
@@ -38,6 +42,7 @@ export default {
 
   data() {
       return {
+       
         guests: [],
         users: [],
         user: {},
@@ -95,7 +100,14 @@ firebase() {
                   () => {
                     // venues Ready Callback
                     // console.log(`all calls done`)
+                    if(this.shoppingcart.zapperPaymentMethod)
+                    {
+                      this.getZapperPaymentDetails();
+                    }
+                    else
+                    {
                      this.setTicket();
+                    }
                   }
                 );
               }
@@ -152,9 +164,55 @@ methods: {
          this.$router.replace({ name: 'Home'});
     },
 
+    getZapperPaymentDetails()
+    {
+      const signature = this.createSecuritySignature(config.zapperConfig.posToken, config.zapperConfig.poskey);
+      const url = 'https://zapapi.zapzap.mobi/ecommerce/api/v2/merchants/' + config.zapperConfig.merchantId 
+      + '/sites/'+ config.zapperConfig.siteId  + '/payments/' + this.shoppingcart.zapperPaymentId;
+        axios.get(
+          url,
+          {headers: {
+           // "status": 'HTTP/1.0 200 OK',
+            "siteid": "1",
+            "poskey": this.poskey,
+            "posid": this.posToken,
+            "postype": "Paati Passports",
+            "posversion": "1.0",
+            "signature": signature
+            }
+          }
+          )
+          .then((response) => {
+              if(response.ReceiptStatus == 2)
+              {
+                this.shoppingcart.zapperReference = response.ZapperId;
+                this.shoppingcart.totalPaid = response.PaidAmount;
+                this.setTicket();
+              }
+            },
+            (error) => {
+              
+            }
+          );
+    },
+
+    createSecuritySignature: function (posToken,posKey)
+    {
+      debugger;
+      var plainValue =  posToken.concat("&").concat(posKey).toUpperCase();
+
+      var hash =  sha256(plainValue);
+      // var enc = Encoding.ASCII;
+      // var buffer = enc.GetBytes(plainValue);
+      // var crypto = new SHA256CryptoServiceProvider();
+      // var hash = BitConverter.ToString(crypto.ComputeHash(buffer));
+      hash = hash.Replace("-", "");
+      return hash;
+    },
+
     setTicket ()
     {
-        let key = this.shoppingcart.pricebreak['.key'];
+         let key = this.shoppingcart.pricebreak['.key'];
          let pricebreak = this.pricebreaks[key];
           const sold = Number(pricebreak.sold) + Number(this.shoppingcart.tickets);
           this.$firebaseRefs.pricebreaksRef.child(key).child('sold').set(sold);

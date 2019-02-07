@@ -29,58 +29,36 @@
         required: true // User can accept a userData object on params, or not. It's totally optional.
       }
   },
-  
+
     methods: {
 
       goToSignup ()
       {
        this.$router.replace({ name: 'Signup', params: {shoppingcart: this.$props.shoppingcart}});
       },
-
-      login: function() {
-
+    
+    login: function() {
       this.busy = true;
-      const cart = this.$props.shoppingcart;
-       
+       let self = this;
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (user) => {
-            alert('Successful login');
-        
-          this.$router.replace({ name: 'Checkout', params: {shoppingcart: cart}});
-          this.busy = false;
+           alert('Successful login');
+          
+          self.$props.shoppingcart.userid = user.user.uid;
+          self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
+          self.busy = false;
+           
         },
         (err) => {
           alert('Oops. ' + err.message);
-          this.busy = false;
+          self.busy = false;
         }
-        
       );
       }
     }
   }
 </script>
 
-<style scoped> 
-
-   .login {
-    margin-top: 40px;
-   }
-  input {
-     margin: 10px 0;
-     width: 20%;
-     padding: 15px;
-   }
-   button {
-     margin-top: 20px;
-     width: 10%;
-     cursor: pointer;
-   }
-   p {
-     margin-top: 40px;
-     font-size: 13px;
-   }
-   p a {
-     text-decoration: underline;
-     cursor: pointer;
-   }
- </style>
+<style lang="scss" scoped>
+  @import "~@/styles/styles.scss";
+</style>

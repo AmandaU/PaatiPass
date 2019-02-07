@@ -1,6 +1,6 @@
 <template>
   <div class="cancel">
-    <h1>Your payment has been successfully cancelled</h1>
+    <h1>Your payment was not successful and has been cancelled</h1>
     
   </div>
 </template>
@@ -13,7 +13,7 @@ export default {
   name: 'cancel',
 
    mounted() {
-    debugger;
+
     if(localStorage.getItem(this.$props.ticketid))
       {
          this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
