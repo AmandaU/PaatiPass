@@ -22,7 +22,7 @@
                       </option>
                   </select>
                   <br>
-                    <button @click="BuyTickets(pricebreak)" >Buy</button>
+                    <button v-show="shoppingcart.tickets > 0" @click="BuyTickets(pricebreak)" >Buy</button>
               </div>
           </div>
         

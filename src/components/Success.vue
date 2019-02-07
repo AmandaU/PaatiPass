@@ -24,14 +24,13 @@
 </template>
 
 <script>
-import config from './config';
+import {zapperConfig} from '../config';
 import firebase from '../firebase-config';
 import {  db } from '../firebase-config';
 import QrcodeVue from 'qrcode.vue';
 import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
 import axios from "axios";
 import { sha256, sha224 } from 'js-sha256';
-config.zapperConfig
 
 export default {
   name: 'success',
@@ -166,8 +165,8 @@ methods: {
 
     getZapperPaymentDetails()
     {
-      const signature = this.createSecuritySignature(config.zapperConfig.posToken, config.zapperConfig.poskey);
-      const url = 'https://zapapi.zapzap.mobi/ecommerce/api/v2/merchants/' + config.zapperConfig.merchantId 
+      const signature = this.createSecuritySignature(zapperConfig.posToken, zapperConfig.poskey);
+      const url = 'https://zapapi.zapzap.mobi/ecommerce/api/v2/merchants/' + zapperConfig.merchantId 
       + '/sites/'+ config.zapperConfig.siteId  + '/payments/' + this.shoppingcart.zapperPaymentId;
         axios.get(
           url,

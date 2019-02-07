@@ -1,14 +1,14 @@
 <template>
   <div class="hello">
     <media :query="{maxWidth: 800}" @media-enter="media800Enter" @media-leave="media800Leave"> </Media> 
-     <div>{{ip}}</div>
+    
     <cube-spin v-if="!isready"></cube-spin>
     <h1>Check out:</h1>
     <h2>{{ shoppingcart.eventname }}</h2>
     <h2>R {{ purchasevalue }}</h2>
     <h1 v-show="!haspromo">If you have a promo code, please enter it here:</h1>
-     <h1 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h1><br>
-     <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
+    <h1 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h1><br>
+    <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
     <input  type="text" v-model="promocode" placeholder="Promo code"><br>
     <!-- <creditcard  @eventname="updateparent"></creditcard> -->
      <button v-show="isready" @click="saveTicketLocal()" >Buy</button><br>
@@ -17,9 +17,9 @@
       <!-- <a v-show="isready" href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
       <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=12581557&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D12345%26pricebreakid%3D6789&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fticketid%3D12345%26pricebreakid%3D6789"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
  
-    <a v-show="isready" @click="saveTicket(false, shoppingcart)"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
+    <a v-show="isready" @click="saveTicket(false)"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
       <br>
-    <a v-show="showZapperAppIcon" @click="saveTicket(true, shoppingcart)"  v-bind:href="zapperUrl"><img src="https://www.payfast.co.za/images/buttons/light-large-paynow.png" width="174" height="59" alt="Pay" title="Zapper" /></a>
+    <a v-show="showZapperAppIcon" @click="saveTicket(true)"  v-bind:href="zapperUrl"><img src="https://www.payfast.co.za/images/buttons/light-large-paynow.png" width="174" height="59" alt="Pay" title="Zapper" /></a>
    
    <br>
     <div id="Zapper" v-show="showZapperQRCode"></div>
@@ -29,11 +29,10 @@
 
 <script>
 
- //import Creditcard from './Creditcard'
   import Media from 'vue-media'
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
   import firebase from '../firebase-config';
-  import config from './config';
+  import {zapperConfig} from '../config';
   import {  db } from '../firebase-config';
   import axios from "axios";
   import md5 from "js-md5";
@@ -55,6 +54,8 @@ export default {
 
   data() {
       return {
+        merchantId: zapperConfig.merchantId,
+        siteId: zapperConfig.siteId,
         invalidpromo: false,
         ticket: {},
         promotions: [],
@@ -90,22 +91,21 @@ export default {
  mounted() {
      window.addEventListener('resize', this.handleWindowResize);
     let self = this;
-    
+
       this.$loadScript("https://code.zapper.com/zapper.js")
       .then(() => {
-        zapper("#Zapper", config.zapperConfig.merchantId, config.zapperConfig.siteId, self.purchasevalue,self.$props.shoppingcart.reference, function (paymentResult) {
+        zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
            self.shoppingcart.paymentMethod = isZapper? 1: 0;
           if(payment.status == 1)
           {
             self.shoppingcart.zapperPaymentId = paymentResult.payment.paymentId;
-            self.saveTicket(true,self.shoppingcart);
+            self.saveTicket(true,self);
           }
           else
           {
-
-            this.shoppingcart.zapperPaymentId = paymentResult.paymentId;
-            localStorage.setItem(this.shoppingcart.reference, JSON.stringify(this.shoppingcart));
-            this.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
+            self.shoppingcart.zapperPaymentId = paymentResult.paymentId;
+            localStorage.setItem(this.shoppingcart.reference, JSON.stringify(self.shoppingcart));
+            tselfhis.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
           }
           });
       })
@@ -206,7 +206,7 @@ watch: {
      
          let key = this.shoppingcart.pricebreak['.key'];
        
-        const qrcode = 'http://2.zap.pe?t=6&i=' + config.zapperConfig.merchantId + ':' + config.zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
+        const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
         '|10,60|1:10[38|Paati+Passports,39|ZAR';
         const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
         '&appName=Paati+Passports' +
@@ -248,19 +248,25 @@ watch: {
         this.containerWidth = event.currentTarget.innerWidth/3; 
     },
    
-    saveTicket(isZapper, shoppingcart) {
-      shoppingcart.zapperPaymentMethod = isZapper;
-      let key = shoppingcart.pricebreak['.key'];
-      let totalreserved  = Number(shoppingcart.pricebreak.reserved) + Number(shoppingcart.tickets);
-      this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
-      //this.$firebaseRefs.promotions.child(this.promocode['.key']).child('isUsed').set(true);
-      localStorage.setItem(shoppingcart.reference, JSON.stringify(shoppingcart));
-      //test
-      //this.$router.replace({ name: 'Success', params: {ticketid: String(this.$props.shoppingcart.reference)}});
+    saveTicket(isZapper, instance) {
+      if(!instance)
+      {
+         instance = this;
+      }
+      instance.shoppingcart.zapperPaymentMethod = isZapper;
+      let key = instance.shoppingcart.pricebreak['.key'];
+      let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.tickets);
+      instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+      localStorage.setItem(instance.shoppingcart.reference, JSON.stringify(instance.shoppingcart));
+      
     },
 
-    saveTicketLocal() {
-     
+    saveTicketLocal(instance) {
+      debugger;
+     if(!instance)
+      {
+         instance = this;
+      }
       let key = this.shoppingcart.pricebreak['.key'];
       let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.tickets);
       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
