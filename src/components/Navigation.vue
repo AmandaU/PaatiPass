@@ -59,7 +59,7 @@ methods: {
 
  .menu {
     position: relative;
-    height:100px;
+    height:30px;
     width:120px;
     text-align: right;
     top: 0px;
@@ -68,7 +68,8 @@ methods: {
    font-size: 20px;
    display: flex;
    float: left;
-   padding-top: 15px;
+   padding-top: 5px;
+   padding-left: 10px;
    flex-direction:row; 
 
 }

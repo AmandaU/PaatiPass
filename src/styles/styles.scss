@@ -9,24 +9,13 @@ $theme-font:  verdana, sans-serif;
 }
 
   #app {
-    margin:0;     /* This is used to reset any browser-default margins */
-    height:100vh; /* This is needed to overcome a Chrome bug. */
-    width:100vw; 
-    font-family: 'Bariol', 'BariolBold';//,'Helvetica Neue', Arial, sans-serif;
-    color: rgb(76, 74, 80);
-    background-color:rgb(255, 255, 255);
-    -webkit-font-smoothing: antialiased;
-    max-width: 100%;
-    max-height: 100%;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    overflow: auto;
-    -webkit-scrollbar { 
-    display: none; 
-  }
+
+  font-family: 'Bariol', 'BariolBold';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+
   
   h1, h2 {
     font-weight: 600;
@@ -93,9 +82,8 @@ button {
        -webkit-column-count:1;
        column-count: 1;
     }
-
     .box {
-      width: 90vh;
+      width: 80vh;
     }
 }
 
@@ -103,34 +91,6 @@ button {
   box-sizing: border-box;
 }
 
-.hoverLayer{
-  position: absolute;
-  text-align:center;
-   top:0;
-  left:0;
-  bottom:0;
-  right:0;
-  overflow: hidden;
-  background: rgba(0, 0, 0, 0.6);
-	color:rgba(243, 241, 241, 0.6);
-  padding: 15px;
-  -moz-transition: all 0.4s ease-in-out 0s;
-	-webkit-transition: all 0.4s ease-in-out 0s;
-	-ms-transition: all 0.4s ease-in-out 0s;
-  transition: all 0.4s ease-in-out 0s;
-  opacity:0;
-
-}
-
-.hoverLayer:hover  { opacity: 1; }
-
-.centerInHover {
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
-  -ms-transform: translateY(-50%);
-  color:rgb(179, 176, 176);
-}
 
 .centreblock {
   
@@ -142,14 +102,32 @@ button {
   margin: 0 auto;
 }
 
-.box {
-  background-color: rgb(249, 250, 250);
- 
-  border: 1px solid rgb(92, 91, 91);
+.imagebox {
+  background-color: rgb(252, 252, 252);
+  border: 1px solid rgb(230, 228, 228);
+  height: auto;
+  width: 60vh;
+  margin: 20px;
+ }
+
+ .box {
+  background-color: rgb(252, 252, 252);
+  border: 1px solid rgb(192, 191, 191);
+  width: 50vh;
   height: auto;
   margin: 5px;
   text-align: center;     /* will center text in <p>, which is not a flex item */
-  width: 50vh;
+  
+  padding: 10px;
+  
+}
+
+.infobox {
+  background-color: rgb(252, 252, 252);
+  height: auto;
+  margin: 5px;
+  text-align: center;     /* will center text in <p>, which is not a flex item */
+  //width: 100%;
   padding: 10px;
 }
 
@@ -157,5 +135,36 @@ button {
   display: grid;
   width: 100px;
 }
+#nav {
+  padding: 5px;
+}
 
-  }
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
+}
+
+.wrapper {
+    width: 100vw;
+    // overflow-x: auto;
+    // overflow-y: hidden;
+    background-color: #ccc;
+  
+}
+.navigation{
+  width: 100%;
+  height:auto;
+  float: left;
+  background-color: rgb(243, 242, 242);
+}
+
+.image{
+  max-width:100%;
+  max-height:30%;
+  overflow-y: hidden;
+}
+}

@@ -1,39 +1,43 @@
 <template>
   <div id="app">
-    <Navigation></Navigation>
-    <img alt="Vue logo" src="./assets/logo.png">
+   <div height="20vh" >
+     <div class="wrapper">
+       <img alt="Vue logo" :src="imageurl" class="image">
+        <Navigation class="navigation"></Navigation>
+    
+      </div>
+   </div>
+   
     <router-view/>
   </div>
 </template>
 
 <script>
 import Navigation from './components/Navigation'
+import { EventBus } from './eventbus.js';
+
 export default {
   name: 'app',
   components: {
     'Navigation': Navigation
-  }
+  },
+
+  data: function () {
+  return {
+    
+       imageurl: require('./assets/logo.png') ,
+   }
+  },
+
+  mounted() {
+  EventBus.$on('eventimageurl', imageurl => {
+   
+          this.imageurl = imageurl;
+  })
+},
 }
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+<style lang="scss" scoped>
+  @import "~@/styles/styles.scss";
+  </style>

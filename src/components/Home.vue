@@ -3,7 +3,9 @@
      <cube-spin v-if="busy"></cube-spin>
       <div class="centreblock">
             <div  v-for="event in events" :key="event['.key']">
-                <div class="box">
+                <div class="imagebox">
+                  <img v-bind:src="event.imageurl"  width="100%"  padding="-10px"  alt=""  /><br>
+                   <div class="infobox">
                     <strong>{{event.name}}</strong><br>
                     <!-- <div v-html="eventVenue(event)"></div> -->
                       <small>The party is at {{event.venuename}}</small><br>
@@ -13,6 +15,7 @@
                       <router-link :to="{ name: 'Event', params: { eventdata: event}}">
                         <button id="myButton" class="foo bar">Buy</button>
                       </router-link>
+                      </div>
                 </div>
             </div>
       </div>
@@ -22,6 +25,7 @@
 <script>
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
+   import { EventBus } from '../eventbus.js';
   // import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
 
 export default {
@@ -41,6 +45,10 @@ firebase () {
         }
       },
 
+created() {
+ 
+ EventBus.$emit('eventimageurl', './assets/logo.png');
+}
   // created(){
       
   //         this.$bindAsObject(

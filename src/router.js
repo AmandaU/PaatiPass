@@ -90,9 +90,9 @@ const router = new Router({
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
       //test
-      // props: (route) => ({
-      //   ticketid: route.query.ticketid,
-      //     })
+      props: (route) => ({
+        ticketid: route.query.ticketid,
+          })
     },     
     {
       path: '/Cancel',

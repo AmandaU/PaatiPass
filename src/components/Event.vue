@@ -13,7 +13,7 @@
                 <strong> R {{pricebreak.price}}</strong>
                  <h1 v-show="!isTicketsAvailable(pricebreak)">SOLD OUT !! </h1>
                <div v-show="isTicketsAvailable(pricebreak)" >
-                  <small>{{ total(pricebreak) }}</small>
+                  <small>{{ total(pricebreak) }}</small><br>
                   <select 
                       @change="ticketsSelected($event,pricebreak)" >
                       <option value="" disabled selected>Select number of tickets</option>
@@ -37,24 +37,24 @@
   
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
+  import {zapperConfig} from '../config';
+  import { EventBus } from '../eventbus.js';
   
   let myEventsRef = db.ref('events')
   let myPromotions = db.ref('promotions')
-   
-  let idparam = '';
-  let title = '';
-  let event = '';
-
+ 
 export default {
   name: 'event',
   components: {
       CubeSpin
     },
   props: {
-       eventdata: {
+      shared: "",
+      eventdata: {
         type: Object,
         required: true 
-      }
+      },
+      
   },
 
   firebase () {
@@ -195,12 +195,9 @@ export default {
       },
   },
 
-   computed: {
-  
-},
-
 created() {
-  
+ 
+ EventBus.$emit('eventimageurl', this.eventdata.imageurl);
       let userid =  "";
       if(firebase.auth().currentUser)
       {
