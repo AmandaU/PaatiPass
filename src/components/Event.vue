@@ -1,10 +1,10 @@
 <template>
-  <div class="hello">
+  <div class="hello"><br><br>
    <h1>{{ eventdata.name }}</h1>
    <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
    <h2>{{ eventdata.venuename }}</h2>
    <small>{{ eventdata.venueaddress }}</small><br>
-    <small>{{eventdata.venuelatlong}}</small><br>
+  <small>{{eventdata.venuelatlong}}</small><br>
    <cube-spin v-if="busy"></cube-spin>
      <div class="centreblock">
     <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
@@ -34,7 +34,6 @@
 
 <script>
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
-  
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
   import {zapperConfig} from '../config';
@@ -54,20 +53,19 @@ export default {
         type: Object,
         required: true 
       },
-      
   },
 
   firebase () {
-   let  eventid = String(this.$props.eventdata.id) 
+    let  eventid = String(this.$props.eventdata.id) 
     return {
       
       promos: myPromotions,
       tickets: db.ref('tickets'),
-      events: myEventsRef,//myEventsRef, // loopable with v-for
+      events: myEventsRef,
       pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
       
-       }
-      },
+      }
+    },
 
   data : function ()  {
     return {
@@ -83,13 +81,13 @@ export default {
   },
 
   methods: 
-{ 
+  { 
   ticketsSelected: function(event, pricebreak) {
        this.shoppingcart.tickets = Number(event.target.value);
        this.shoppingcart.pricebreak = pricebreak;
     },
 
-    BuyTickets: function(pricebreak) {
+  BuyTickets: function(pricebreak) {
        this.busy = true;
         var key = pricebreak['.key'];
      
@@ -127,14 +125,15 @@ export default {
        
       },
 
-   media800Enter(mediaQueryString) {
-      this.greaterThan800 = false
-    },
-    media800Leave(mediaQueryString) {
-      this.greaterThan800 = true
-    },
+  media800Enter(mediaQueryString) {
+    this.greaterThan800 = false
+  },
+  
+  media800Leave(mediaQueryString) {
+    this.greaterThan800 = true
+  },
 
-    addItem() {
+  addItem() {
       // this.$firebaseRefs.pricebreaks.push({
       //                 order: '0',
       //                 eventid: '1',

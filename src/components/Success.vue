@@ -1,5 +1,6 @@
 <template>
   <div class="success">
+    <br>
     <h1>Your payment was successful</h1>
       <cube-spin v-if="isReady"></cube-spin>
       <div width="75%">
@@ -8,16 +9,16 @@
         <p>{{message3}}</p>
       </div>
     <br>
-      <div v-show="isReady" class="centreblock">
+      <div v-show="isReady " class="centreblock">
        <div  v-for="guest in guests" :key="guest.reference">
         <div  class="box">
           <h3>Ticket reference number: {{guest.reference}}</h3>
-            <input  width="80%" type="text" v-model="guest.name" placeholder="Name"><br>
-            <input width="80%" type="email" v-model="guest.email"  placeholder="Email"><br>
+            <input  width="80%" type="text" v-model="guest.name" placeholder="Name" v-show="guests.length > 1"><br>
+            <input width="80%" type="email" v-model="guest.email"  placeholder="Email" v-show="guests.length > 1"><br>
             <qrcode-vue  :value="guest.reference"></qrcode-vue>'
         </div>
       </div>
-        <button v-show="isReady" @click="sendGuestTickets()" >Email your guest tickets</button>
+        <button v-show="isReady && guests.length > 1" @click="sendGuestTickets()" >Email your guest tickets</button>
    </div>
     
    </div>
@@ -264,7 +265,7 @@ methods: {
         }
         else
         {
-          this.message3 = 'You will receive an email , with a QR code that needs to be presented at the door of the venue';
+          this.message3 = 'You will receive an email with this QR code that needs to be presented at the door of the venue';
         }
         this.isReady = true;
        

@@ -118,7 +118,7 @@ export default {
 },
 watch: {
     promocode: function (val) {
-   
+   debugger;
       var foundpromo = false;
       if(val == "")
       {

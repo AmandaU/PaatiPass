@@ -47,7 +47,7 @@ firebase () {
 
 created() {
  
- EventBus.$emit('eventimageurl', './assets/logo.png');
+ EventBus.$emit('eventimageurl', '');
 }
   // created(){
       

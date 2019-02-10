@@ -1,14 +1,24 @@
 <template>
   <div id="app">
-   <div height="20vh" >
-     <div class="wrapper">
-       <img alt="Vue logo" :src="imageurl" class="image">
-        <Navigation class="navigation"></Navigation>
-    
-      </div>
-   </div>
+   <div class="fullpage" >
+     <div class="banner">
+       <div class="row">
+          <div class="column left" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }">
+            <!-- <img alt="Vue logo" :src="imageurl" class="image"> -->
+          </div>
+          <div class="column middle" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }">
+            <!-- <img alt="Vue logo" :src="imageurl" class="image"> -->
+          </div>
+          <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }">
+            <!-- <img alt="Vue logo" :src="imageurl" class="image"> -->
+          </div> 
+       </div>
+     </div>
    
-    <router-view/>
+     <Navigation ></Navigation>
+      
+     <router-view/>
+    </div>
   </div>
 </template>
 
@@ -30,9 +40,16 @@ export default {
   },
 
   mounted() {
-  EventBus.$on('eventimageurl', imageurl => {
-   
-          this.imageurl = imageurl;
+   EventBus.$on('eventimageurl', imageurl => {
+  
+   if(imageurl == '')
+   {
+         this.imageurl = require('./assets/logo.png'); 
+   }
+   else
+   {
+     this.imageurl = imageurl;
+   }
   })
 },
 }
