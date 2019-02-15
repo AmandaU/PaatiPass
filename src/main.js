@@ -7,7 +7,7 @@ import firebase from './firebase-config';
 Vue.config.productionTip = false;
 
 let app = ''
-
+window.EventBus = new Vue()
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
    

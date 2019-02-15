@@ -1,17 +1,13 @@
 <template>
-  <div class="about">
+  <div class="generalcontent" >
     <h1>This is an about page</h1>
-     <div v-html="results"/>
+    
   </div>
 </template>
 
 <script>
-  //  import firebase from '../firebase-config';
-  //  import {  db } from '../firebase-config';
-
-  //  let myEventsRef = db.ref('events')
-
   import axios from "axios";
+  import { EventBus } from '../eventbus.js';
 
 export default {
   name: 'about',
@@ -29,6 +25,11 @@ firebase () {
           //events: myEventsRef    
         }
       },
+
+created() {
+  EventBus.$emit('eventimageurl', '');
+ },
+
 
 // mounted() {
 //  debugger;
@@ -57,21 +58,11 @@ firebase () {
 
 // },
 
-  methods: {
-
-   getParameterByName() {
-     var thing = window.location.hash;
-  // let match = RegExp('[#&]' + name + '=([^&]*)').exec(window.location.hash);
-  // return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
-}
-
-      
-  },
-  
 }
 </script>
 
 <style lang="scss" scoped>
   @import "~@/styles/styles.scss";
+ 
   </style>
 

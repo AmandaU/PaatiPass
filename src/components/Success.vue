@@ -190,22 +190,15 @@ methods: {
                 this.setTicket();
               }
             },
-            (error) => {
-              
-            }
+            (error) => { }
           );
     },
 
     createSecuritySignature: function (posToken,posKey)
     {
-      debugger;
       var plainValue =  posToken.concat("&").concat(posKey).toUpperCase();
 
       var hash =  sha256(plainValue);
-      // var enc = Encoding.ASCII;
-      // var buffer = enc.GetBytes(plainValue);
-      // var crypto = new SHA256CryptoServiceProvider();
-      // var hash = BitConverter.ToString(crypto.ComputeHash(buffer));
       hash = hash.Replace("-", "");
       return hash;
     },

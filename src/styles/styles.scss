@@ -9,12 +9,37 @@ $theme-font:  verdana, sans-serif;
 }
 
   #app {
-  font-family: 'Bariol', 'BariolBold';
+  
+  //
+  margin:0;     /* This is used to reset any browser-default margins */
+  height:100vh; /* This is needed to overcome a Chrome bug. */
+  width:100vw; 
+  font-family: 'Bariol', 'BariolBold';//,'Helvetica Neue', Arial, sans-serif;
+  color: rgb(76, 74, 80);
+  background-color:rgb(255, 255, 255);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-   text-align: center;
-  // color: #2c3e50;
-  // align-content: center;
+  max-width: 100%;
+  max-height: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+  -webkit-scrollbar { 
+  display: none; 
+}
+
+.generalcontent {
+  position: relative;
+  width: 100%;
+  min-height: 70vh;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  
+}
  
   h1, h2 {
     font-weight: 600;
@@ -56,6 +81,7 @@ button {
   margin-top: 10px;
   width: 10%;
   cursor: pointer;
+  height:30px;
 }
 
  p {
@@ -68,48 +94,43 @@ button {
    cursor: pointer;
  }
 
-@media all and (max-width: 800px) {
-  .cols{
-    -moz-column-count:2;
-    -webkit-column-count:2;
-    column-count: 2;
-    }
-}
-
-@media all and (max-width: 600px) {
-  .cols{
-      -moz-column-count:1;
-       -webkit-column-count:1;
-       column-count: 1;
-    }
-    .box {
-      width: 80vh;
-    }
-}
-
 * {
   box-sizing: border-box;
 }
 
 .fullpage {
-  height:auto;
   width:100vw;
+  display: flex;
+  flex-direction:column; /* column | row  */
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   overflow-x: hidden;
   overflow-y: hidden;
+
+  min-height: 92vh;
+  min-height: -webkit-calc(100vh - 60px);
+  min-height: -moz-calc(100vh - 60px);
+  min-height: calc(100vh- 60px);
 }
 
+.container {
+  height:100%;
+  width:100%;
+  float:right;
+  overflow-y: auto;
+ }
+
 .banner {
-  background-color: rgb(233, 236, 233);
+  background-color: rgb(248, 252, 248);
   height:20vh;
   width:100vw;
   text-align: right;
-  padding-top: 0px;
-  padding-right: 0px;
+  // padding-top: 0px;
+  // padding-right: 0px;
   position: relative;
+  
 }
 
 .row{
@@ -118,67 +139,85 @@ button {
 }
 
 .column {
- float:left;
+  position:relative;
+  float:left;
   justify-content: center;
   align-items: center;
   text-align: center;
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   height: 100%;
   width: 100%;
+
+    img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: cover;
+    }
 }
 
-.left, .right {
+.right {
+  z-index:3;
   width: 25%;
-  color:rgba(243, 241, 241, 0.6);
-   -moz-transition: all 0.4s ease-in-out 0s;
-	-webkit-transition: all 0.4s ease-in-out 0s;
-	-ms-transition: all 0.4s ease-in-out 0s;
-  transition: all 0.4s ease-in-out 0s;
-  opacity:50;
+  -webkit-filter:blur(6px);
+  filter:blur(6px);
+  
 }
+
+.left{
+    z-index:2;
+    width: 25%;
+    -webkit-filter:blur(6px);
+    filter:blur(6px);
+   }
 
 .middle {
+  z-index:1;
   width: 50%;
+  transform: scale(1.1,0.98); 
 }
 
 .centreblock {
-  //background-color: rgb(106, 42, 167);
+  background-color: rgb(255, 255, 255);
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-   margin: 0, auto;
+  margin: 0, auto;
+  
 }
 
 .imagebox {
-  background-color: rgb(208, 228, 26);
-  border: 1px solid rgb(230, 228, 228);
+  //background-color: rgb(248, 248, 246);
+  //border: 1px solid rgb(230, 228, 228);
   height: auto;
-  width: 50vw;
+  width: 40vw;
   margin: 20px;
+  bottom: 0;
+
+  img {
+    width: 100%;
+    bottom: 0;
+  }
  }
 
- .box {
+ .infobox {
   background-color: rgb(252, 252, 252);
-  border: 1px solid rgb(192, 191, 191);
+  height: auto;
+  margin: 0px;
+  text-align: center;     /* will center text in <p>, which is not a flex item */
+  padding: 10px;  
+}
+
+ .box {
+  background-color: rgba(252, 252, 252, 0.966);
+  border: 1px solid rgb(226, 225, 225);
   width: 50vh;
   height: auto;
   margin: 5px;
   text-align: center;     /* will center text in <p>, which is not a flex item */
-  
-  padding: 10px;
-  
-}
-
-.infobox {
-  background-color: rgb(252, 252, 252);
-  height: auto;
-  margin: 5px;
-  text-align: center;     /* will center text in <p>, which is not a flex item */
-  //width: 100%;
   padding: 10px;
 }
 
@@ -186,22 +225,74 @@ button {
   display: grid;
   width: 100px;
 }
-#nav {
-  padding: 5px;
-}
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
+// #nav {
+//   padding: 5px;
+// }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
+// #nav a {
+//   font-weight: bold;
+//   color: #2c3e50;
+// }
+
+// #nav a.router-link-exact-active {
+//   color: #42b983;
+// }
 
 .image{
   min-width: 100%;
     height: auto;
     overflow-y: hidden;
 }
+
+@media all and (max-width: 800px) {
+
+  .middle {
+    width: 60%;
+  }
+
+  .left, .right {
+    width: 20%;
+  }
+    
+  .box {
+      width: 50vh;
+    }
+  
+    input {
+      width: 50%;
+      margin: 20px;
+    }
+
+    .imagebox {
+      width: 50vw;
+      margin: 20px;
+     }
+
+}
+
+@media all and (max-width: 600px) {
+
+  .middle {
+    width: 100%;
+  }
+
+  .left, .right {
+    width: 0%;
+  }
+  
+  .box {
+      width: 70vh;
+    }
+
+  input {
+      width: 70%;
+    }
+
+  .imagebox {
+    width: 70vw;
+    margin: 2px;
+    }
+}
+
 }

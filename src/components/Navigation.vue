@@ -1,12 +1,16 @@
 <template>
 <div> 
   
-  <nav> 
+  <nav class="nav" > 
+    <div class="home hoveritem"  @click="navigate('Home')">
+       <img src="../assets/home.png"  alt=""  /><br>
+    </div>
     <div class="menu">
-      <div class="hoveritem"  v-on:click="navigate('About')" >About</div>
-      <div class="hoveritem"  v-on:click="navigate('Home')" >Home</div>
-      <div class="hoveritem"  v-on:click="navigate('Contact')" >Contact</div>
-      <div class="hoveritem"  v-on:click="navigate('Logout')" >Logout</div>
+     <!-- <div class="hoveritem"  v-on:click="navigate('About')" >About</div> -->
+      <div class="hoveritem"  v-on:click="navigate('Login')" >Login</div>
+      <div class="hoveritem"  v-on:click="navigate('Register')" >Register</div>
+      <!-- <div class="hoveritem"  v-on:click="navigate('Contact')" >Contact</div> -->
+      <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
     <!-- <router-link class="hoveritem" v-for="routes in links" 
              v-bind:key="routes.id" 
              v-on:click="navigate('${routes.page}')"
@@ -26,6 +30,14 @@ export default {
 data() {
     return {
       
+    }
+  },
+
+  computed:{
+  
+    isLoggedin : function()
+    {
+      return (firebase.auth().currentUser);
     }
   },
 
@@ -56,19 +68,41 @@ methods: {
 
 <style> 
 
+.nav{
+   background-color:white;
+   position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    z-index: 10;
+  height:8vh;
+}
+
+.home {
+  position: relative;
+  text-align: left;
+  left:60;
+  display: flex;
+  float: left;
+  padding-left: 30px;
+  justify-content:center;
+  align-content:center;
+ 
+}
+
  .menu {
   position: relative;
   height:30px;
   width:120px;
   text-align: right;
   bottom: 0px;
-  left:60;
+  right:60;
   font-weight: 200;
-  font-size: 25px;
+  font-size: 20px;
   display: flex;
-  float: left;
+  float: right;
   padding-bottom: 5px;
-  padding-left: 10px;
+  padding-right: 40px;
   flex-direction:row; 
 }
   .spacing { 
@@ -79,14 +113,12 @@ methods: {
    
     background-color:transparent;
     color: rgb(65, 63, 63);
-     position:relative;
+    position:relative;
     text-align: right;
     justify-content:center;
     align-content:center;
     padding: 5px;
-   bottom:0;
-    /* font-weight: 100;
-    font-size: 20px; */
+    bottom:0;
   }
 
   .hoveritem:hover {

@@ -1,10 +1,10 @@
 <template>
-  <div class="home">
+  <div class="container">
      <cube-spin v-if="busy"></cube-spin>
       <div class="centreblock">
             <div  v-for="event in events" :key="event['.key']">
                 <div class="imagebox">
-                  <img v-bind:src="event.imageurl"  width="100%"  padding="-10px"  alt=""  /><br>
+                  <img v-bind:src="event.imageurl"  alt=""  /><br>
                    <div class="infobox">
                     <strong>{{event.name}}</strong><br>
                     <!-- <div v-html="eventVenue(event)"></div> -->
@@ -33,22 +33,37 @@ export default {
 
   data() {
       return {
-        events: [],
-        venues: {},
-        busy: true,
+         busy: true,
+        position: 'absolute'
       }
     },
 
 firebase () {
         return {
-          events: db.ref('events')  ,
+        events: db.ref('events') 
+        // events: {
+        // source: db.ref('events') ,
+        // // asObject: true,
+        //   readyCallback: () =>   
+        //   {
+        //     debugger;
+        //     this.position = this.events.length > 1? 'relative': 'absolute'
+        //     EventBus.$emit('footerpositionchange', position);
+        //     this.busy = false;
+        // },
+        // }
         }
       },
 
 created() {
+  EventBus.$emit('eventimageurl', '');
+  
+},
  
- EventBus.$emit('eventimageurl', '');
-}
+ mounted(){
+ 
+ EventBus.$emit('footerpositionchange', this.position);
+ }
   // created(){
       
   //         this.$bindAsObject(

@@ -1,46 +1,44 @@
 <template>
   <div id="app">
-   <div class="fullpage" >
-     <div class="banner">
-       <div class="row">
-          <div class="column left" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }">
-            <!-- <img alt="Vue logo" :src="imageurl" class="image"> -->
-          </div>
-          <div class="column middle" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }">
-            <!-- <img alt="Vue logo" :src="imageurl" class="image"> -->
-          </div>
-          <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }">
-            <!-- <img alt="Vue logo" :src="imageurl" class="image"> -->
-          </div> 
-       </div>
-     </div>
-   
-     <Navigation ></Navigation>
-      
-     <router-view/>
+    <Navigation ></Navigation>
+    <div class="fullpage" >
+        <div class="banner">
+            <div class="row">
+              <div class="column left" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
+              <div class="column middle" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
+              <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div> 
+            </div>
+        </div>
+     
+        <router-view />
+        <BottomNav></BottomNav>
     </div>
+     
   </div>
 </template>
 
 <script>
+import BottomNav from './components/BottomNav'
 import Navigation from './components/Navigation'
 import { EventBus } from './eventbus.js';
 
 export default {
   name: 'app',
   components: {
-    'Navigation': Navigation
+    'Navigation': Navigation,
+    'BottomNav': BottomNav
   },
 
   data: function () {
   return {
-    
+    imageCount: 3,
        imageurl: require('./assets/logo.png') ,
    }
   },
 
   mounted() {
-   EventBus.$on('eventimageurl', imageurl => {
+
+    EventBus.$on('eventimageurl', imageurl => {
   
    if(imageurl == '')
    {
@@ -52,6 +50,12 @@ export default {
    }
   })
 },
+
+beforeDestroy: function() {
+    // Clean up
+    bus.$off('eventimageurl', '');
+    
+  },
 }
 </script>
 

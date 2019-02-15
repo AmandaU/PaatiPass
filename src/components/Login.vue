@@ -31,11 +31,11 @@
       }
   },
 
-created() {
- 
- EventBus.$emit('eventimageurl', '');
-},
-    methods: {
+ created() {
+   EventBus.$emit('eventimageurl', '');
+    },
+
+ methods: {
 
       goToSignup ()
       {

@@ -6,8 +6,8 @@
     <h1>Check out:</h1>
     <h2>{{ shoppingcart.eventname }}</h2>
     <h2>R {{ purchasevalue }}</h2>
-    <h1 v-show="!haspromo">If you have a promo code, please enter it here:</h1>
-    <h1 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h1><br>
+    <h3 v-show="!haspromo">If you have a promo code, please enter it here:</h3>
+    <h1 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h1>
     <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
     <input  type="text" v-model="promocode" placeholder="Promo code"><br>
     <!-- <creditcard  @eventname="updateparent"></creditcard> -->
@@ -89,6 +89,7 @@ export default {
      },
 
  mounted() {
+  
      window.addEventListener('resize', this.handleWindowResize);
     let self = this;
 
@@ -118,7 +119,7 @@ export default {
 },
 watch: {
     promocode: function (val) {
-   debugger;
+  
       var foundpromo = false;
       if(val == "")
       {

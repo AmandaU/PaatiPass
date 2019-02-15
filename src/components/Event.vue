@@ -1,5 +1,5 @@
 <template>
-  <div class="hello"><br><br>
+  <div class="generalcontent"><br><br>
    <h1>{{ eventdata.name }}</h1>
    <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
    <h2>{{ eventdata.venuename }}</h2>
@@ -225,6 +225,7 @@ created() {
         zapperReference: ""
       };
     },
+ 
 };
 </script>
 

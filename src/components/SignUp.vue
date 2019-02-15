@@ -57,9 +57,8 @@
         }
       },
 
-    created() {
- 
-      EventBus.$emit('eventimageurl', '');
+created() {
+     EventBus.$emit('eventimageurl', 'absolute');
     },
 
     methods: {
@@ -87,34 +86,34 @@
           this.busy = false;
       alert("Succeessfully added")
   },
-  remover(userUID){
+
+  remove(userUID){
      this.$firebaseRefs.users.child(userUID).remove()
   },
 
-      onInput({ number, isValid, country }) {
-      this.cellphone = number;
-       console.log(number, isValid, country);
-     },
+  onInput({ number, isValid, country }) {
+    this.cellphone = number;
+    console.log(number, isValid, country);
+  },
 
-      signUp: function() {
+  signUp: function() {
+    this.busy = true;
+    let self = this;
+  
+    firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password).then(
+      (user) => {
+          alert('Your account has been created')
+          
+          self.$props.shoppingcart.userid = user.uid;
+          self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
         
-        this.busy = true;
-        let self = this;
-      
-        firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password).then(
-          (user) => {
-              alert('Your account has been created')
-              
-              self.$props.shoppingcart.userid = user.uid;
-              self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
-           
-          },
-          (err) => {
-            alert('Oops. ' + err.message)
-            this.busy = false;
-          }
-        );
+      },
+      (err) => {
+        alert('Oops. ' + err.message)
+        this.busy = false;
       }
+    );
+  }
     }
   };
 </script>
