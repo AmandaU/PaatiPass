@@ -2,11 +2,11 @@
 <div> 
     <div class="footer" ref="footer" v-bind:style="{ position: footerposition }">
    
-        <div class=" menuitem "  @click="navigate('About')">
-            <img src="../assets/home.png"  alt=""  /><br>
+        <div class=" menuitem "  @click="navigate('About')">About
+            <!-- <img src="../assets/home.png"  alt="About"  /><br> -->
         </div>
-        <div class="menuitem "  @click="navigate('Contact')">
-            <img src="../assets/home.png"  alt=""  /><br>
+        <div class="menuitem "  @click="navigate('Contact')">Contact
+            <!-- <img src="../assets/home.png"  alt="Contact"  /><br> -->
         </div>
   
     </div>
@@ -14,8 +14,6 @@
 </template>
 
 <script>
-
-import { EventBus } from '../eventbus.js';
 
 export default {
   name: 'BottomNav',
@@ -25,9 +23,13 @@ data() {
        }
   },
 
-//  created() {
-//   EventBus.$on('footerpositionchange', (position)=> this.getFooterPosition(position));
-//  },
+ mounted() {
+     let self = this;
+  this.$eventHub.$on('footerpositionchange', (position)=> {
+    debugger;
+      self.footerposition = position;
+  });
+ },
 
 methods: {
 
@@ -86,16 +88,16 @@ methods: {
    bottom:0;
    width:100%;
    height:10vh;   /* Height of the footer */
-   background:#6cf;
+    background-color:white;
 }
 
 .menuitem{
-   
+   text-align: center;
     justify-content:center;
     align-content:center;
    display: block;
-    margin: 0 auto;
-margin-top: 10px;
+   margin: 0% auto;
+   margin-top: 20px;
 }
   
   .menuitem:hover {

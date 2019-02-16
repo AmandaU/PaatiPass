@@ -3,30 +3,35 @@
      <cube-spin v-if="busy"></cube-spin>
       <div class="centreblock">
             <div  v-for="event in events" :key="event['.key']">
-                <div class="imagebox">
-                  <img v-bind:src="event.imageurl"  alt=""  /><br>
-                   <div class="infobox">
-                    <strong>{{event.name}}</strong><br>
-                    <!-- <div v-html="eventVenue(event)"></div> -->
+              <div class="eventrow">
+
+                  <div class="eventimagebox">
+                    <img v-bind:src="event.imageurl"  alt=""  /><br>
+                  </div>
+
+                  <div class="eventinfobox">
+                      <strong>{{event.name}}</strong><br>
                       <small>The party is at {{event.venuename}}</small><br>
                       <small>from {{event.from}} to {{event.to}}</small><br>
                       <small>{{event.venueaddress}}</small><br>
-                      <!-- <small>{{event.venuelatlong}}</small><br> -->
+                  </div>
+                      
+                  <div class="eventbuttonbox">
                       <router-link :to="{ name: 'Event', params: { eventdata: event}}">
-                        <button id="myButton" class="foo bar">Buy</button>
+                        <button >Buy</button>
                       </router-link>
-                      </div>
-                </div>
+                  </div>
+                    
+              </div>
             </div>
-      </div>
+       </div>
   </div>
 </template>
 
 <script>
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
-   import { EventBus } from '../eventbus.js';
-  // import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
+    // import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
 
 export default {
   name: 'home',
@@ -34,7 +39,7 @@ export default {
   data() {
       return {
          busy: true,
-        position: 'absolute'
+        position: 'relative'
       }
     },
 
@@ -43,27 +48,26 @@ firebase () {
         events: db.ref('events') 
         // events: {
         // source: db.ref('events') ,
-        // // asObject: true,
-        //   readyCallback: () =>   
+        //     readyCallback: () =>   
         //   {
-        //     debugger;
         //     this.position = this.events.length > 1? 'relative': 'absolute'
-        //     EventBus.$emit('footerpositionchange', position);
+        //     this.$eventHub.$emit('footerpositionchange', position);
+        //     //EventBus.$emit('footerpositionchange', position);
         //     this.busy = false;
         // },
         // }
-        }
+         }
       },
 
 created() {
-  EventBus.$emit('eventimageurl', '');
+  this.$eventHub.$emit('eventimageurl', '');
   
 },
  
- mounted(){
+//  mounted(){
  
- EventBus.$emit('footerpositionchange', this.position);
- }
+//  EventBus.$emit('footerpositionchange', this.position);
+//  }
   // created(){
       
   //         this.$bindAsObject(

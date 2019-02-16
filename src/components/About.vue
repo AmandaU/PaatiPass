@@ -7,8 +7,7 @@
 
 <script>
   import axios from "axios";
-  import { EventBus } from '../eventbus.js';
-
+  
 export default {
   name: 'about',
 
@@ -27,7 +26,7 @@ firebase () {
       },
 
 created() {
-  EventBus.$emit('eventimageurl', '');
+  this.$eventHub.$emit('eventimageurl', '');
  },
 
 

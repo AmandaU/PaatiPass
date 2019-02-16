@@ -5,15 +5,12 @@
 </template>
 
 <script>
-   
-   import { EventBus } from '../eventbus.js';
-  
-
+ 
 export default {
   name: 'contact',
 
   created() {
-   EventBus.$emit('eventimageurl', '');
+   this.$eventHub.$emit('eventimageurl', '');
    },
 
 

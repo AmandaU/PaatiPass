@@ -1,13 +1,14 @@
 <template>
   <div class="generalcontent"><br><br>
-   <h1>{{ eventdata.name }}</h1>
-   <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
-   <h2>{{ eventdata.venuename }}</h2>
-   <small>{{ eventdata.venueaddress }}</small><br>
-  <small>{{eventdata.venuelatlong}}</small><br>
-   <cube-spin v-if="busy"></cube-spin>
-     <div class="centreblock">
-    <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+   <div class="centreblock">
+      <h1>{{ eventdata.name }}</h1>
+      <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
+      <h2>{{ eventdata.venuename }}</h2>
+      <small>{{ eventdata.venueaddress }}</small><br>
+      <small>{{eventdata.venuelatlong}}</small><br>
+      <cube-spin v-if="busy"></cube-spin>
+    
+     <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
           <div  class="box">
                <strong>{{pricebreak.name}}</strong>
                 <strong> R {{pricebreak.price}}</strong>
@@ -37,7 +38,6 @@
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
   import {zapperConfig} from '../config';
-  import { EventBus } from '../eventbus.js';
   
   let myEventsRef = db.ref('events')
   let myPromotions = db.ref('promotions')
@@ -196,7 +196,7 @@ export default {
 
 created() {
  
- EventBus.$emit('eventimageurl', this.eventdata.imageurl);
+ this.$eventHub.$emit('eventimageurl', this.eventdata.imageurl);
       let userid =  "";
       if(firebase.auth().currentUser)
       {

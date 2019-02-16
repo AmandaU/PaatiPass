@@ -3,7 +3,7 @@
   
   <nav class="nav" > 
     <div class="home hoveritem"  @click="navigate('Home')">
-       <img src="../assets/home.png"  alt=""  /><br>
+       <img src="../assets/home1.png"  alt=""  /><br>
     </div>
     <div class="menu">
      <!-- <div class="hoveritem"  v-on:click="navigate('About')" >About</div> -->
@@ -75,16 +75,16 @@ methods: {
     left: 0;
     width: 100vw;
     z-index: 10;
-  height:8vh;
+    height:8vh;
 }
 
 .home {
   position: relative;
   text-align: left;
-  left:60;
+  left:20px;
   display: flex;
   float: left;
-  padding-left: 30px;
+  padding-left: 10px;
   justify-content:center;
   align-content:center;
  

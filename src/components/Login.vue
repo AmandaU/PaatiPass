@@ -12,10 +12,10 @@
 </template>
 
 <script>
- import firebase from 'firebase';
+  import firebase from 'firebase';
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
-  import { EventBus } from '../eventbus.js';
-  export default {
+ 
+ export default {
     name: 'login',
     data() {
       return {
@@ -32,7 +32,7 @@
   },
 
  created() {
-   EventBus.$emit('eventimageurl', '');
+   this.$eventHub.$emit('eventimageurl', '');
     },
 
  methods: {

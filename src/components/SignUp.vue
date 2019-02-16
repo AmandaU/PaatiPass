@@ -22,8 +22,7 @@
    import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
-   import { EventBus } from '../eventbus.js';
-
+  
    let myUsersRef = db.ref('users')
 
  export default {
@@ -58,7 +57,7 @@
       },
 
 created() {
-     EventBus.$emit('eventimageurl', 'absolute');
+     this.$eventHub.$emit('eventimageurl', 'absolute');
     },
 
     methods: {

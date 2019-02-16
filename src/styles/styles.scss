@@ -116,6 +116,7 @@ button {
 }
 
 .container {
+  min-height: 70vh;
   height:100%;
   width:100%;
   float:right;
@@ -189,13 +190,24 @@ button {
   
 }
 
-.imagebox {
-  //background-color: rgb(248, 248, 246);
-  //border: 1px solid rgb(230, 228, 228);
+
+.eventrow{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  width: 100%;
+  height:100%;
+  
+}
+
+.eventimagebox {
+  float: left;
   height: auto;
-  width: 40vw;
   margin: 20px;
   bottom: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 0.4;
 
   img {
     width: 100%;
@@ -203,17 +215,34 @@ button {
   }
  }
 
- .infobox {
-  background-color: rgb(252, 252, 252);
-  height: auto;
-  margin: 0px;
-  text-align: center;     /* will center text in <p>, which is not a flex item */
-  padding: 10px;  
+ .eventinfobox {
+  display: flex;
+  flex-direction: column;
+  flex: 0.4;
+  align-items: center;
+  text-align: center; 
+  justify-content: center;
+    
+}
+
+.eventbuttonbox{
+  display: flex;
+  flex-direction: column;
+  flex: 0.2;
+  cursor: pointer;
+  align-items: center;
+  text-align: center; 
+  justify-content: center;
+
+  button {
+      width: 100%;
+    }
+
 }
 
  .box {
   background-color: rgba(252, 252, 252, 0.966);
-  border: 1px solid rgb(226, 225, 225);
+  border: 1px solid rgb(225, 225, 226);
   width: 50vh;
   height: auto;
   margin: 5px;
@@ -269,6 +298,24 @@ button {
       margin: 20px;
      }
 
+     //Events
+    .eventrow{
+      flex-direction: row;
+     }
+    
+    .eventimagebox {
+      flex: 0.4;
+     }
+    
+     .eventinfobox {
+      flex: 0.4;
+    }
+    
+    .eventbuttonbox{
+      flex: 0.2;
+  }
+  
+    
 }
 
 @media all and (max-width: 600px) {
@@ -292,6 +339,24 @@ button {
   .imagebox {
     width: 70vw;
     margin: 2px;
+    }
+
+    //Events
+    .eventrow{
+      flex-direction: column;
+     }
+    
+    .eventimagebox {
+      flex: 1;
+     }
+    
+     .eventinfobox {
+      flex: 1;
+    }
+    
+    .eventbuttonbox{
+      flex: 1;
+     
     }
 }
 

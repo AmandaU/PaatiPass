@@ -9,9 +9,8 @@
               <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div> 
             </div>
         </div>
-     
-        <router-view />
-        <BottomNav></BottomNav>
+       <router-view />
+      <BottomNav></BottomNav>
     </div>
      
   </div>
@@ -20,7 +19,7 @@
 <script>
 import BottomNav from './components/BottomNav'
 import Navigation from './components/Navigation'
-import { EventBus } from './eventbus.js';
+//import { EventBus } from './eventbus.js';
 
 export default {
   name: 'app',
@@ -38,7 +37,7 @@ export default {
 
   mounted() {
 
-    EventBus.$on('eventimageurl', imageurl => {
+    this.$eventHub.$on('eventimageurl', imageurl => {
   
    if(imageurl == '')
    {
@@ -53,7 +52,7 @@ export default {
 
 beforeDestroy: function() {
     // Clean up
-    bus.$off('eventimageurl', '');
+    this.$eventHub.$off('eventimageurl', '');
     
   },
 }
