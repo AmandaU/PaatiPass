@@ -6,6 +6,7 @@
 
 <script>
 import $Scriptjs from 'scriptjs';
+import {googleMapApi} from '../config';
 
 export default {
   name: 'GoogleMap',
@@ -25,8 +26,8 @@ export default {
   },
 
   mounted: function () {
-     
-      $Scriptjs('https://maps.googleapis.com/maps/api/js?key=AIzaSyDsxTsf_KCxsgiJC4dQpQlsM9gf7cvy5aE', () => {
+     let key = 'https://maps.googleapis.com/maps/api/js?key=' + googleMapApi.key;
+      $Scriptjs(key, () => {
       this.initMap()
     });
 
