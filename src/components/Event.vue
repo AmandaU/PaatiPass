@@ -1,6 +1,8 @@
 <template>
-  <div class="generalcontent"><br><br>
+  <div class="generalcontent">
+  <br><br>
    <div class="centreblock">
+     <cube-spin v-if="busy"></cube-spin>
       <h1>{{ eventdata.name }}</h1>
       <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
       <h2>{{ eventdata.venuename }}</h2>
@@ -8,7 +10,7 @@
       <small>{{eventdata.venuelatlong}}</small><br>
       <cube-spin v-if="busy"></cube-spin>
     
-     <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+      <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
           <div  class="box">
                <strong>{{pricebreak.name}}</strong>
                 <strong> R {{pricebreak.price}}</strong>
@@ -25,7 +27,9 @@
                   <br>
                     <button v-show="shoppingcart.tickets > 0" @click="BuyTickets(pricebreak)" >Buy</button>
               </div>
-          </div>
+        </div>
+        <br>
+        <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="eventdata.venueaddress"></GoogleMap>
         
       </div>
   </div>
@@ -38,6 +42,7 @@
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
   import {zapperConfig} from '../config';
+  import GoogleMap from '../components/GoogleMap'
   
   let myEventsRef = db.ref('events')
   let myPromotions = db.ref('promotions')
@@ -45,9 +50,11 @@
 export default {
   name: 'event',
   components: {
-      CubeSpin
-    },
+      CubeSpin,
+      GoogleMap
+  },
   props: {
+     isbusy: true,
       shared: "",
       eventdata: {
         type: Object,
@@ -75,6 +82,10 @@ export default {
       shoppingcart: {},
       title : '',
       address: '',
+      addressCoordinate: {
+        latitude: '',
+        longitude: ''
+        },
       price: '',
       greaterThan800: window.innerWidth > 800
       }
@@ -224,6 +235,8 @@ created() {
         zapperPaymentId: 0,
         zapperReference: ""
       };
+      this.addressCoordinate.latitude = this.eventdata.venuelatlong.split(',')[0];
+      this.addressCoordinate.longitude = this.eventdata.venuelatlong.split(',')[1];
     },
  
 };

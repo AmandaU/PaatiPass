@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-     <cube-spin v-if="busy"></cube-spin>
       <div class="centreblock">
+        <cube-spin v-if="busy"></cube-spin>
             <div  v-for="event in events" :key="event['.key']">
               <div class="eventrow">
 
@@ -31,14 +31,16 @@
 <script>
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
-    // import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
+   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
 
 export default {
   name: 'home',
-
+  components: {
+      CubeSpin
+    },
   data() {
       return {
-         busy: true,
+         busy: false,
         position: 'relative'
       }
     },

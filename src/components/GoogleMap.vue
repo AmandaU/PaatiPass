@@ -1,0 +1,83 @@
+<template>
+  <div class="google-map" id="Googlemap" ref="map">
+      
+  </div>
+</template>
+
+<script>
+import $Scriptjs from 'scriptjs';
+
+export default {
+  name: 'GoogleMap',
+  props: [
+      'name',
+      'addressCoordinate',
+      'venueaddress'
+      ],
+  data: function () {
+    return {
+  
+    map: null,
+    bounds: null,
+    markers: [],
+    mapOptions:{}
+    }
+  },
+
+  mounted: function () {
+     
+      $Scriptjs('https://maps.googleapis.com/maps/api/js?key=AIzaSyDsxTsf_KCxsgiJC4dQpQlsM9gf7cvy5aE', () => {
+      this.initMap()
+    });
+
+  },
+  
+
+methods:
+{
+   
+    initMap: function(){
+        this.mapOptions = {
+            center: new google.maps.LatLng(this.addressCoordinate.latitude, this.addressCoordinate.longitude),
+            zoom: 10,
+            mapTypeId: 'roadmap'
+        }
+        this.map = new google.maps.Map(document.getElementById("Googlemap"), this.mapOptions);
+        const position = new google.maps.LatLng(this.addressCoordinate.latitude, this.addressCoordinate.longitude);
+        const marker = new google.maps.Marker({ 
+            position,
+            map: this.map
+       });
+
+       var infowindow = new google.maps.InfoWindow();
+        let self = this;
+       google.maps.event.addListener(marker, 'mouseover', (function(marker) {
+            return function() {
+                infowindow.setContent(self.venueaddress);
+                infowindow.open(self.map, marker);
+            }
+            })(marker));
+
+        google.maps.event.addListener(marker, 'click', (function(marker) {
+            return function() {
+                infowindow.setContent(self.venueaddress);
+                infowindow.open(self.map, marker);
+                window.location.href = 'http://maps.google.com/?ll=' + self.addressCoordinate.latitude + ',' + self.addressCoordinate.longitude;
+            }
+            })(marker));
+
+    }
+   
+}
+
+};
+</script>
+
+<style scoped>
+.google-map {
+  width: 800px;
+  height: 600px;
+  margin: 0 auto;
+  background: gray;
+}
+</style>
