@@ -9,7 +9,10 @@
               <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div> 
             </div>
         </div>
-       <router-view />
+       <keep-alive include="Event">
+        <router-view />
+        </keep-alive>
+       
       <BottomNav></BottomNav>
     </div>
      

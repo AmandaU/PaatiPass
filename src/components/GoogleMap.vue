@@ -15,23 +15,32 @@ export default {
       'addressCoordinate',
       'venueaddress'
       ],
+
   data: function () {
     return {
-  
-    map: null,
-    bounds: null,
-    markers: [],
-    mapOptions:{}
+      map: null,
+      bounds: null,
+      markers: [],
+      mapOptions:{}
     }
   },
 
-  mounted: function () {
+mounted: function () {
      let key = 'https://maps.googleapis.com/maps/api/js?key=' + googleMapApi.key;
       $Scriptjs(key, () => {
       this.initMap()
     });
 
   },
+
+  // created() {
+  //   debugger;
+  //    let key = 'https://maps.googleapis.com/maps/api/js?key=' + googleMapApi.key;
+  //     $Scriptjs(key, () => {
+  //     this.initMap()
+  //   });
+
+  // },
   
 
 methods:
@@ -42,6 +51,7 @@ methods:
             center: new google.maps.LatLng(this.addressCoordinate.latitude, this.addressCoordinate.longitude),
             zoom: 10,
             mapTypeId: 'roadmap'
+            
         }
         this.map = new google.maps.Map(document.getElementById("Googlemap"), this.mapOptions);
         const position = new google.maps.LatLng(this.addressCoordinate.latitude, this.addressCoordinate.longitude);
@@ -78,7 +88,8 @@ methods:
 .google-map {
   width: 800px;
   height: 600px;
+  /* height: calc(width * 1.3); */
   margin: 0 auto;
-  background: gray;
+  background: rgb(204, 203, 203);
 }
 </style>

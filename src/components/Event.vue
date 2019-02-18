@@ -3,11 +3,11 @@
   <br><br>
    <div class="centreblock">
      <cube-spin v-if="busy"></cube-spin>
-      <h1>{{ eventdata.name }}</h1>
-      <h2>{{ eventdata.from }} - {{ eventdata.to }}</h2>
-      <h2>{{ eventdata.venuename }}</h2>
-      <small>{{ eventdata.venueaddress }}</small><br>
-      <small>{{eventdata.venuelatlong}}</small><br>
+      <h1>{{ event.name }}</h1>
+      <h2>{{ event.from }} - {{ event.to }}</h2>
+      <h2>{{ event.venuename }}</h2>
+      <small>{{ event.venueaddress }}</small><br>
+      <small>{{event.venuelatlong}}</small><br>
       <cube-spin v-if="busy"></cube-spin>
     
       <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
@@ -29,7 +29,7 @@
               </div>
         </div>
         <br>
-        <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="eventdata.venueaddress"></GoogleMap>
+        <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
         
       </div>
   </div>
@@ -44,55 +44,89 @@
   import {zapperConfig} from '../config';
   import GoogleMap from '../components/GoogleMap'
   
-  let myEventsRef = db.ref('events')
-  let myPromotions = db.ref('promotions')
- 
 export default {
   name: 'event',
   components: {
       CubeSpin,
       GoogleMap
   },
-  props: {
-     isbusy: true,
-      shared: "",
-      eventdata: {
-        type: Object,
-        required: true 
+ 
+  data: function () {
+    return {
+      
+      event:{
+        name: "",
+        from: "",
+        to: "",
+        venueaname: "",
+        venueaddress: "",
+        venuelatlong: "",
       },
-  },
-
-  firebase () {
-    let  eventid = String(this.$props.eventdata.id) 
-    return {
-      
-      promos: myPromotions,
-      tickets: db.ref('tickets'),
-      events: myEventsRef,
-      pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
-      
-      }
-    },
-
-  data : function ()  {
-    return {
       busy: false,
       events: [],
       pricebreaks: [],
       shoppingcart: {},
-      title : '',
-      address: '',
       addressCoordinate: {
         latitude: '',
         longitude: ''
         },
-      price: '',
       greaterThan800: window.innerWidth > 800
       }
   },
 
+  firebase () {
+     let eventid = Number(window.location.hash.substring(8,9) );
+    return {
+      promos: db.ref('promotions'),
+      tickets: db.ref('tickets'),
+      pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
+      events: {
+        source: db.ref('events').orderByChild("id").equalTo(eventid),
+          readyCallback: () =>   
+          {
+           this.event = this.events[0];
+           this.setEvent();
+          },
+        },
+      }
+    },
+ 
   methods: 
   { 
+
+  setEvent()
+  {
+    debugger;
+      this.$eventHub.$emit('eventimageurl', this.event.imageurl);
+      let userid =  "";
+      
+      this.shoppingcart = {
+        email: "",
+        name: "",
+        userid: userid,
+        eventid: this.event.id,
+        eventname: this.event.name,
+        tickets: 0,
+        reference: 'JA' + Math.random().toString(36).substr(2, 9),
+        from: this.event.from,
+        to: this.event.to,
+        promocode: "",
+        promotionvalue: 0,
+        totalPaid: 0,
+        number: "0",
+        pricebreak: {},
+        venuename: this.event.venuename,
+        venueaddress: this.event.venueaddress,
+        venuelatlong: this.event.venuelatlong,
+        zapperPaymentMethod: false,
+        zapperPaymentId: 0,
+        zapperReference: ""
+      };
+      this.addressCoordinate.latitude = this.event.venuelatlong.split(',')[0];
+      this.addressCoordinate.longitude = this.event.venuelatlong.split(',')[1];
+       this.busy = false;
+  },
+
   ticketsSelected: function(event, pricebreak) {
        this.shoppingcart.tickets = Number(event.target.value);
        this.shoppingcart.pricebreak = pricebreak;
@@ -100,7 +134,7 @@ export default {
 
   BuyTickets: function(pricebreak) {
        this.busy = true;
-        var key = pricebreak['.key'];
+       var key = pricebreak['.key'];
      
        let totalreserved  = Number(pricebreak.reserved) + Number(this.shoppingcart.tickets);
        if(totalreserved > Number(pricebreak.number))
@@ -206,38 +240,7 @@ export default {
   },
 
 created() {
- 
- this.$eventHub.$emit('eventimageurl', this.eventdata.imageurl);
-      let userid =  "";
-      if(firebase.auth().currentUser)
-      {
-        userid = firebase.auth().currentUser.uid;
-      }
-      this.shoppingcart = {
-        email: "",
-        name: "",
-        userid: userid,
-        eventid: this.eventdata.id,
-        eventname: this.eventdata.name,
-        tickets: 0,
-        reference: 'JA' + Math.random().toString(36).substr(2, 9),
-        from: this.eventdata.from,
-        to: this.eventdata.to,
-        promocode: "",
-        promotionvalue: 0,
-        totalPaid: 0,
-        number: "0",
-        pricebreak: {},
-        venuename: this.eventdata.venuename,
-        venueaddress: this.eventdata.venueaddress,
-        venuelatlong: this.eventdata.venuelatlong,
-        zapperPaymentMethod: false,
-        zapperPaymentId: 0,
-        zapperReference: ""
-      };
-      this.addressCoordinate.latitude = this.eventdata.venuelatlong.split(',')[0];
-      this.addressCoordinate.longitude = this.eventdata.venuelatlong.split(',')[1];
-    },
+  },
  
 };
 </script>

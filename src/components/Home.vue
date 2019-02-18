@@ -17,7 +17,7 @@
                   </div>
                       
                   <div class="eventbuttonbox">
-                      <router-link :to="{ name: 'Event', params: { eventdata: event}}">
+                      <router-link :to="{ name: 'Event', params: { eventid: event.id}}">
                         <button >Buy</button>
                       </router-link>
                   </div>

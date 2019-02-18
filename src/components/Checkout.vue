@@ -268,6 +268,7 @@ watch: {
       {
          instance = this;
       }
+      
       let key = this.shoppingcart.pricebreak['.key'];
       let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.tickets);
       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
@@ -277,14 +278,14 @@ watch: {
       this.$router.replace({ name: 'Success', params: {ticketid: String(this.$props.shoppingcart.reference)}});
     },
 
-    buyTicket() {
+    // buyTicket() {
        
-       this.busy = true;
-       var key = this.shoppingcart.pricebreak['.key'];
-       let totalreserved  = this.shoppingcart.pricebreak.reserved + this.shoppingcart.tickets;
-       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
-       this.ProcessPayment();
-     },
+    //    this.busy = true;
+    //    var key = this.shoppingcart.pricebreak['.key'];
+    //    let totalreserved  = this.shoppingcart.pricebreak.reserved + this.shoppingcart.tickets;
+    //    this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+    //    this.ProcessPayment();
+    //  },
   }
 }
 

@@ -67,13 +67,13 @@ const router = new Router({
       // },
     },
     {
-    path: '/event',
+    path: '/event/:eventid', 
     name: 'Event',
     component: Event, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
     // meta: {
     //   requiresAuth: true,
     // },
-    props: true,
+   // props: true,
     }, 
     {
       path: '/checkout',

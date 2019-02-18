@@ -8,6 +8,19 @@ Vue.config.productionTip = false;
 
 let app = ''
 Vue.prototype.$eventHub = new Vue(); 
+
+// created() {
+//   firebase.initializeApp(
+//     {
+//       apiKey: "...",
+//       authDomain: "....",
+//       databaseURL: "..."
+//       ...
+//     }
+//   )
+// }
+// }).$mount('#app')
+
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
    
