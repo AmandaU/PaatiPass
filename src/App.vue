@@ -4,9 +4,10 @@
     <div class="fullpage" >
         <div class="banner">
             <div class="row">
-              <div class="column left" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
+              <div class="column" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
+              <!-- <div class="column left" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
               <div class="column middle" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
-              <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div> 
+              <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>  -->
             </div>
         </div>
        <keep-alive include="Event">

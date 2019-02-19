@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <div class="generalcontent" >
     <cube-spin v-if="busy"></cube-spin>
     <h3>Sign In</h3>
     <input type="text" v-model="email" placeholder="Email"><br>
@@ -8,6 +9,8 @@
        <p>You don't have an account ? You can 
           <span @click="goToSignup()" style="color:blue;cursor:pointer">create one</span>
          </p>
+
+           </div>
     </div>
 </template>
 

@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <br>
       <div class="centreblock">
         <cube-spin v-if="busy"></cube-spin>
             <div  v-for="event in events" :key="event['.key']">
@@ -10,18 +11,22 @@
                   </div>
 
                   <div class="eventinfobox">
+                    <br> 
                       <strong>{{event.name}}</strong><br>
                       <small>The party is at {{event.venuename}}</small><br>
                       <small>from {{event.from}} to {{event.to}}</small><br>
-                      <small>{{event.venueaddress}}</small><br>
+                      <small>{{event.venueaddress}}</small><br> 
                   </div>
                       
                   <div class="eventbuttonbox">
                       <router-link :to="{ name: 'Event', params: { eventid: event.id}}">
-                        <button >Buy</button>
+                         <img src="../assets/rightarrow.jpg"  alt="About"  /><br>
+                        <!-- <button >Buy</button> -->
                       </router-link>
                   </div>
-                    
+
+                  <div class="thinline"></div>
+      
               </div>
             </div>
        </div>

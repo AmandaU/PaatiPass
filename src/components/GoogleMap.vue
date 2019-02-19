@@ -1,7 +1,6 @@
 <template>
   <div class="google-map" id="Googlemap" ref="map">
-      
-  </div>
+   </div>
 </template>
 
 <script>
@@ -86,10 +85,19 @@ methods:
 
 <style scoped>
 .google-map {
-  width: 800px;
-  height: 600px;
+   
+    width:800px;
+    height:600px;
+
   /* height: calc(width * 1.3); */
   margin: 0 auto;
   background: rgb(204, 203, 203);
+}
+
+@media all and (max-width: 600px) {
+  .google-map {
+    width:100%;
+    height:400px;
+  }
 }
 </style>

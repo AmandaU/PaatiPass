@@ -1,38 +1,73 @@
 <template>
   <div class="generalcontent">
-  <br><br>
-   <div class="centreblock">
-     <cube-spin v-if="busy"></cube-spin>
+  
+   <div class="column">
+     
       <h1>{{ event.name }}</h1>
       <h2>{{ event.from }} - {{ event.to }}</h2>
       <h2>{{ event.venuename }}</h2>
       <small>{{ event.venueaddress }}</small><br>
-      <small>{{event.venuelatlong}}</small><br>
-      <cube-spin v-if="busy"></cube-spin>
-    
-      <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
-          <div  class="box">
-               <strong>{{pricebreak.name}}</strong>
-                <strong> R {{pricebreak.price}}</strong>
-                 <h1 v-show="!isTicketsAvailable(pricebreak)">SOLD OUT !! </h1>
-               <div v-show="isTicketsAvailable(pricebreak)" >
-                  <small>{{ total(pricebreak) }}</small><br>
-                  <select 
-                      @change="ticketsSelected($event,pricebreak)" >
-                      <option value="" disabled selected>Select number of tickets</option>
-                      <option v-for="ticket in numberOfTicketsAvailable(pricebreak)" v-bind:key="ticket" v-bind:value="ticket"  >
-                        {{ ticket}}
-                      </option>
-                  </select>
-                  <br>
-                    <button v-show="shoppingcart.tickets > 0" @click="BuyTickets(pricebreak)" >Buy</button>
-              </div>
+      <br>
+     <cube-spin v-if="busy"></cube-spin>
+        <div class="centreblock">
+          <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+          <div class="pricebreakrow">
+
+            <div class="pricebreakcolumn1">
+                <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
+                
+                 <small>{{ total(pricebreak) }}</small><br>
+            </div>
+
+            <div  class="pricebreakcolumn2">
+                      <h1 v-show="!isTicketsAvailable(pricebreak)" >SOLD OUT !! </h1>
+                     
+                      <div v-show="isTicketsAvailable(pricebreak)" class="pricebreaknumberrow" >
+
+                         <div  class="ticketselection ">
+                            <div v-show="shoppingcart.tickets > 0" class="pricebreakdetailitem"> {{shoppingcart.tickets}}    </div>
+                         </div><br>
+
+                          <div  class="ticketselection ">
+
+                            <div  class="pricebreakbuttonbox">
+                              <img src="../assets/plus.jpg"  alt="plus"  @click="ticketsSelected(pricebreak,true)" class="pricebreakimage"/>
+                              <img src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
+                             </div>   
+                                <!-- <select 
+                                    @change="ticketsSelected($event,pricebreak)" >
+                                    <option value="" disabled selected>Select number of tickets</option>
+                                    <option v-for="ticket in numberOfTicketsAvailable(pricebreak)" v-bind:key="ticket" v-bind:value="ticket"  >
+                                      {{ ticket}}
+                                    </option>
+                                </select> -->
+                          </div> 
+
+                          <div  class="ticketselection " >  
+                              <div v-show="shoppingcart.tickets > 0" @click="BuyTickets(pricebreak)" class="pricebreakdetailitem">Buy</div>
+                          </div>
+
+                      </div> 
+                  
+            </div>
+
+           
+
+              
+          
+
         </div>
-        <br>
+
+      
+         
+          
+        </div>
+        <br> <br>
         <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
-        
+         <br>
       </div>
-  </div>
+      </div>
+  
   
   </div>
 </template>
@@ -96,7 +131,6 @@ export default {
 
   setEvent()
   {
-    debugger;
       this.$eventHub.$emit('eventimageurl', this.event.imageurl);
       let userid =  "";
       
@@ -127,8 +161,13 @@ export default {
        this.busy = false;
   },
 
-  ticketsSelected: function(event, pricebreak) {
-       this.shoppingcart.tickets = Number(event.target.value);
+  ticketsSelected: function( pricebreak, add) {
+    if(this.shoppingcart.tickets > pricebreak.tickets)
+    {
+      alert("no more tickets at tis price");
+      return;
+    }
+       this.shoppingcart.tickets = add ? this.shoppingcart.tickets + 1 :this.shoppingcart.tickets - 1;
        this.shoppingcart.pricebreak = pricebreak;
     },
 

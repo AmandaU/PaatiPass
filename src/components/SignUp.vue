@@ -1,5 +1,6 @@
 <template>
   <div class="signup" >
+    <div class="generalcontent" >
     <cube-spin v-if="busy"></cube-spin>
     <p>Let's create a new account !</p>
     <input type="text" v-model="newUser.firstname" placeholder="First name"><br>
@@ -13,7 +14,7 @@
     <button @click="signUp" >Sign Up</button>
     <p>or go back to <span @click="goBackToLogin()" style="color:blue;cursor:pointer">login</span>
          </p>
-    
+     </div>
   </div>
 </template>
 

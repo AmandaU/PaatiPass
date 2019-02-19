@@ -2,8 +2,9 @@
 <div> 
   
   <nav class="nav" > 
-    <div class="home hoveritem"  @click="navigate('Home')">
-       <img src="../assets/home1.png"  alt=""  /><br>
+    
+    <div class="home hoveritem"  @click="navigate('Home')">Home
+       <!-- <img src="../assets/home1.png"  alt=""  /><br> -->
     </div>
     <div class="menu">
      <!-- <div class="hoveritem"  v-on:click="navigate('About')" >About</div> -->
@@ -75,10 +76,12 @@ methods: {
     left: 0;
     width: 100vw;
     z-index: 10;
-    height:8vh;
+    height:5vh;
 }
 
 .home {
+  font-weight: 200;
+  font-size: 20px;
   position: relative;
   text-align: left;
   left:20px;
