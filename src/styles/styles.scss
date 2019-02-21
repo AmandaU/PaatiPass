@@ -117,7 +117,7 @@ button {
   min-height: calc(100vh- 60px);
 }
 
-.container {
+.centralcontainer {
   min-height: 70vh;
   height:100%;
   width:100%;
@@ -183,7 +183,7 @@ button {
 }
 
 .centreblock {
-  background-color: rgb(243, 241, 241);
+  background-color:white;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -191,7 +191,7 @@ button {
   text-align: center;
   margin: 0, auto;
   padding-left: 50px;
-   padding-right: 50px;
+  padding-right: 50px;
 }
 
 //events
@@ -203,6 +203,7 @@ button {
   justify-content: center;
   align-items: center;
   text-align: center;
+  min-width: 100%;
   width: 100%;
   height:100%;
   margin-bottom: 20px;
@@ -254,13 +255,12 @@ button {
  }
 
 .thinline{
+  min-width: 100%;
   width: 100%;
   margin-left:  30px;
   margin-right:  30px;
   height: 1px;
-  // margin: 10,auto;
-  // padding-left: 5px;
-  // padding-right: 5px;
+  margin-top:5px;
   background-color: rgb(211, 212, 212);
 }
 
@@ -275,10 +275,10 @@ button {
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 70vw;
+  width: 800px;
   height:100px;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin-bottom: 1px;
+  margin-top: 0px;
   padding-bottom: 20px;
   padding-top: 20px;
 
@@ -297,14 +297,14 @@ button {
   vertical-align: middle;
    padding: 10px;
    padding-left: 20px;
-   //margin:10px;
+  
 }
 
 .pricebreakcolumn2{
   //background-color:rgb(107, 31, 126);
   width: 100%;
   height: 100%;
-    display: flex;
+  display: flex;
   flex-direction: column;
   flex: 0.3;
   align-items: right;
@@ -314,44 +314,55 @@ button {
   padding: 10px;
 }
 
-.pricebreakbuttonbox{
-  //background-color: rgba(235, 129, 129, 0.966);
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  text-align: center; 
-  justify-content: center;
-  vertical-align: middle;
-  cursor: pointer;
-  width: 100%;
-  height: 100%;
-    
-}
 .pricebreakimage{
-  width:20px;
-  height:20px;
   
+  width:25px;
+  height:25px;
+  margin-right: 10px;
+  border: 1px solid rgb(225, 225, 226);
+  border-radius: 5px;
+  padding: 2px;
+ 
+ 
 }
 
 .ticketselection{
-  flex: 0.3;
+  flex: 0.34;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   width: 100%;
   height: 100%;
+  flex-direction: flex;
+  align-items: center;
+  text-align: center; 
+  justify-content: center;
+  vertical-align: middle;
 }
 
-
-
 .pricebreakdetailitem{
-  //background-color: rgba(94, 163, 134, 0.966);
+ // background-color: rgba(94, 163, 134, 0.966);
  display: grid;
  place-items: center;
  height: 100%;
  padding:5px;
+ 
 }
 
+.buybutton{
+  display: grid;
+  place-items: center;
+  height: 100%;
+  padding:5px;
+  padding-left: 15px;
+  padding-right:15px;
+  padding-top:5px;
+  padding-bottom:5px;
+  color:rgb(57, 105, 138);
+  border: 1px solid rgb(57, 105, 138);
+  border-radius: 5px;
+  margin:0;
+}
 
 .pricebreaknumberrow{
   //background-color:rgb(17, 177, 110);
@@ -442,15 +453,40 @@ button {
     .eventbuttonbox{
       flex: 0.2;
   }
+
+  
   
   .pricebreakrow {
-    width: 80vw;
-   margin-bottom: 10px;
+    width: 600px;
+    height:100px;
+    margin-bottom: 10px;
     margin-top: 10px;
     padding-bottom: 10px;
     padding-top: 10px;
   }
-    
+
+  .pricebreaknumberrow{
+    width: 100%;
+  }
+  
+  .pricebreakcolumn1{
+   
+    flex: 0.5;
+    align-items: left;
+    text-align: left; 
+    justify-content: left;
+    vertical-align: middle;
+  
+  }
+  
+  .pricebreakcolumn2{
+   
+    flex: 0.5;
+    align-items: right;
+    text-align: right; 
+    justify-content: right;
+    vertical-align: middle;
+    }
 }
 
 @media all and (max-width: 600px) {
@@ -494,7 +530,8 @@ button {
       flex: 1;
      }
      .pricebreakrow {
-      width: 90vw;
+      width: 450px;
+      height:150px;
       margin-bottom: 5px;
       margin-top: 5px;
       padding-bottom: 5px;
@@ -503,6 +540,28 @@ button {
      flex-wrap: nowrap;
     }
 
+    .pricebreaknumberrow{
+      width: 80%;
+    }
+
+    .pricebreakcolumn1{
+   
+      flex: 1;
+      align-items: center;
+      text-align: center; 
+      justify-content: center;
+      vertical-align: middle;
+    
+    }
+    
+    .pricebreakcolumn2{
+     
+      flex: 1;
+      align-items: center;
+      text-align: center; 
+      justify-content: center;
+      vertical-align: middle;
+        }
 }
 
 }

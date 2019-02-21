@@ -1,5 +1,5 @@
 <template>
-  <div class="generalcontent">
+  <div class="centralcontainer">
     <h1>This is the contacts page</h1>
   </div>
 </template>

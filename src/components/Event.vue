@@ -1,5 +1,5 @@
 <template>
-  <div class="generalcontent">
+  <div class="centralcontainer">
   
    <div class="column">
      
@@ -10,30 +10,30 @@
       <br>
      <cube-spin v-if="busy"></cube-spin>
         <div class="centreblock">
-          <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
-          <div class="pricebreakrow">
+          <br>
+            <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+              <div class="pricebreakrow">
+            
+                <div class="pricebreakcolumn1">
+                  <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
+                  <br>
+                  <small>{{ total(pricebreak) }}</small>
+                </div>
 
-            <div class="pricebreakcolumn1">
-                <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
-                
-                 <small>{{ total(pricebreak) }}</small><br>
-            </div>
-
-            <div  class="pricebreakcolumn2">
-                      <h1 v-show="!isTicketsAvailable(pricebreak)" >SOLD OUT !! </h1>
+                <div  class="pricebreakcolumn2">
+                      <div v-show="!isTicketsAvailable(pricebreak)" class="pricebreakdetailitem">SOLD OUT !! </div>
                      
                       <div v-show="isTicketsAvailable(pricebreak)" class="pricebreaknumberrow" >
 
                          <div  class="ticketselection ">
-                            <div v-show="shoppingcart.tickets > 0" class="pricebreakdetailitem"> {{shoppingcart.tickets}}    </div>
+                            <div v-show="pricebreak.tickets > 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}    </div>
                          </div><br>
 
                           <div  class="ticketselection ">
-
                             <div  class="pricebreakbuttonbox">
                               <img src="../assets/plus.jpg"  alt="plus"  @click="ticketsSelected(pricebreak,true)" class="pricebreakimage"/>
                               <img src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
-                             </div>   
+                            </div>   
                                 <!-- <select 
                                     @change="ticketsSelected($event,pricebreak)" >
                                     <option value="" disabled selected>Select number of tickets</option>
@@ -44,29 +44,19 @@
                           </div> 
 
                           <div  class="ticketselection " >  
-                              <div v-show="shoppingcart.tickets > 0" @click="BuyTickets(pricebreak)" class="pricebreakdetailitem">Buy</div>
+                              <div v-show="pricebreak.tickets > 0" @click="BuyTickets(pricebreak)" class="buybutton">Buy</div>
                           </div>
 
                       </div> 
-                  
+                </div>
+              <div class="thinline"></div>  
             </div>
-
-           
-
-              
-          
-
-        </div>
-
-      
-         
-          
         </div>
         <br> <br>
-        <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
+      <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
          <br>
-      </div>
-      </div>
+    </div>
+  </div>
   
   
   </div>
@@ -114,7 +104,16 @@ export default {
     return {
       promos: db.ref('promotions'),
       tickets: db.ref('tickets'),
-      pricebreaks:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
+      pricebreaks: {
+       source:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
+          readyCallback: () =>   
+          {
+          //   this.pricebreaks.forEach(element => {
+          //    element.tickets = 0;
+          //  });
+           
+          },
+      },
       events: {
         source: db.ref('events').orderByChild("id").equalTo(eventid),
           readyCallback: () =>   
@@ -128,7 +127,7 @@ export default {
  
   methods: 
   { 
-
+  
   setEvent()
   {
       this.$eventHub.$emit('eventimageurl', this.event.imageurl);
@@ -138,20 +137,13 @@ export default {
         email: "",
         name: "",
         userid: userid,
-        eventid: this.event.id,
-        eventname: this.event.name,
-        tickets: 0,
+        event: this.event,
         reference: 'JA' + Math.random().toString(36).substr(2, 9),
-        from: this.event.from,
-        to: this.event.to,
-        promocode: "",
+         promocode: "",
         promotionvalue: 0,
         totalPaid: 0,
         number: "0",
         pricebreak: {},
-        venuename: this.event.venuename,
-        venueaddress: this.event.venueaddress,
-        venuelatlong: this.event.venuelatlong,
         zapperPaymentMethod: false,
         zapperPaymentId: 0,
         zapperReference: ""
@@ -162,20 +154,21 @@ export default {
   },
 
   ticketsSelected: function( pricebreak, add) {
-    if(this.shoppingcart.tickets > pricebreak.tickets)
+    if(pricebreak.tickets == 0 && !add)return;
+    if(pricebreak.tickets + pricebreak.sold > pricebreak.number)
     {
-      alert("no more tickets at tis price");
+      alert("no more tickets at this price");
       return;
     }
-       this.shoppingcart.tickets = add ? this.shoppingcart.tickets + 1 :this.shoppingcart.tickets - 1;
-       this.shoppingcart.pricebreak = pricebreak;
+    pricebreak.tickets = add ? pricebreak.tickets + 1 : pricebreak.tickets - 1;
+    
     },
 
   BuyTickets: function(pricebreak) {
        this.busy = true;
        var key = pricebreak['.key'];
      
-       let totalreserved  = Number(pricebreak.reserved) + Number(this.shoppingcart.tickets);
+       let totalreserved  = Number(pricebreak.reserved) + Number(pricebreak.tickets);
        if(totalreserved > Number(pricebreak.number))
        {
          let n = (totalreserved - Number(pricebreak.number));
@@ -189,10 +182,8 @@ export default {
            return;
          }
        }
-        this.shoppingcart.total  = String(Number(this.shoppingcart.tickets) * Number(pricebreak.price));
-        this.shoppingcart.pricebreakvalue = pricebreak.price;
-        this.shoppingcart.pricebreakkey = key;
-        this.shoppingcart.pricebreakreserved = pricebreak.reserved;
+       
+        this.shoppingcart.pricebreak = pricebreak;
         this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
 
         this.busy = false;
@@ -206,7 +197,6 @@ export default {
         {
           this.$router.replace({ name: 'Checkout', params: {shoppingcart: this.shoppingcart}});
         }
-       
       },
 
   media800Enter(mediaQueryString) {
@@ -260,26 +250,26 @@ export default {
   total : function(pricebreak) {
       if(this.isTicketsAvailable(pricebreak))
       {
-        if(this.shoppingcart.pricebreak && this.shoppingcart.pricebreak.id == pricebreak.id)
-        {
-          if(this.shoppingcart.tickets == 0) return  "";
-          let total = Number(this.shoppingcart.tickets) * Number(pricebreak.price);
-          return 'You will purchase  ' +  this.shoppingcart.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
-        }
+         if( pricebreak.tickets == 0) return  "";
+          let total = Number(pricebreak.tickets) * Number(pricebreak.price);
+          return 'You will purchase  ' +  pricebreak.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
       }
     },
 
-    isTicketsAvailable : function(pricebreak) {
+  isTicketsAvailable : function(pricebreak) {
      if(Number(pricebreak.reserved) == 0 && Number(pricebreak.sold == 0))
       {
         return true;
       }
         return Number(pricebreak.sold) < Number(pricebreak.number);
       },
-  },
 
-created() {
-  },
+   
+ },
+
+  computed: {
+
+  }
  
 };
 </script>

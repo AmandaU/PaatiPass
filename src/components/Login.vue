@@ -1,21 +1,23 @@
 <template>
   <div class="login">
-    <div class="generalcontent" >
-    <cube-spin v-if="busy"></cube-spin>
-    <h3>Sign In</h3>
-    <input type="text" v-model="email" placeholder="Email"><br>
-    <input type="password" v-model="password" placeholder="Password"><br>
+    <div class="centralcontainer" >
+       <div class="centreblock">
+        <cube-spin v-if="busy"></cube-spin>
+        <br>
+         <h3>Sign In</h3>
+        <input type="text" v-model="email" placeholder="Email"><br>
+        <input type="password" v-model="password" placeholder="Password"><br>
         <button @click="login">Connection</button>
-       <p>You don't have an account ? You can 
+        <p>You don't have an account ? You can 
           <span @click="goToSignup()" style="color:blue;cursor:pointer">create one</span>
          </p>
-
+ </div>
            </div>
     </div>
 </template>
 
 <script>
-  import firebase from 'firebase';
+  import firebase from '../firebase-config';
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
  
  export default {
@@ -35,7 +37,8 @@
   },
 
  created() {
-   this.$eventHub.$emit('eventimageurl', '');
+   let img = this.shoppingcart? this.shoppingcart.event.imageurl:'';
+   this.$eventHub.$emit('eventimageurl', img);
     },
 
  methods: {
@@ -46,15 +49,24 @@
       },
     
     login: function() {
+      debugger;
       this.busy = true;
        let self = this;
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (user) => {
            alert('Successful login');
-          
-          self.$props.shoppingcart.userid = user.user.uid;
-          self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
-          self.busy = false;
+            this.$eventHub.$emit('loggedin', '');
+          debugger;
+          if(self.$props.shoppingcart)
+          {
+            self.$props.shoppingcart.userid = user.user.uid;
+            self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
+            self.busy = false;
+          }
+          else
+          {
+             self.$router.replace({ name: 'Home', params: {shoppingcart: self.$props.shoppingcart}});
+          }
            
         },
         (err) => {

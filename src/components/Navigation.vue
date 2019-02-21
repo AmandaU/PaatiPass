@@ -8,8 +8,8 @@
     </div>
     <div class="menu">
      <!-- <div class="hoveritem"  v-on:click="navigate('About')" >About</div> -->
-      <div class="hoveritem"  v-on:click="navigate('Login')" >Login</div>
-      <div class="hoveritem"  v-on:click="navigate('Register')" >Register</div>
+      <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Login')" >Login</div>
+      <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Register')" >Register</div>
       <!-- <div class="hoveritem"  v-on:click="navigate('Contact')" >Contact</div> -->
       <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
     <!-- <router-link class="hoveritem" v-for="routes in links" 
@@ -24,33 +24,57 @@
 
 <script>
 
-import firebase from 'firebase';
+ import firebase from '../firebase-config';
 
 export default {
   name: 'Navigation',
 data() {
     return {
-      
+    isLoggedin: false
     }
   },
 
-  computed:{
+firebase () {
+      return {
+       }
+    },
+
+computed:{
   
-    isLoggedin : function()
-    {
-      return (firebase.auth().currentUser);
-    }
-  },
+  //   isLoggedin : function()
+  //   {
+  //      return (firebase.auth().currentUser);
+  //   }
+ },
+
+created() {
+  if(firebase.auth().currentUser)
+  {
+    this.isLoggedin = true;
+  }
+ },
+
+ mounted() {
+     let self = this;
+  this.$eventHub.$on('loggedin', ()=> {
+    debugger;
+      self.isLoggedin = true;
+  });
+ },
 
 methods: {
     navigate (navPath) {
-    
+    debugger;
       if(navPath == "Logout")
        {
-        firebase.auth().signOut().then(function() { 
+         let self = this;
+         firebase.auth().signOut().then(function() { 
           console.log('Signed Out');
            alert('You have successfully logged out');
-          this.$router.replace({ name: 'Home'});
+            //this.$router.push({path: '/Home',})
+            debugger;
+            self.isLoggedin = false;
+            self.$router.replace({ name: 'Home'});
            }, 
            function(error) {
               console.error('Sign Out Error', error); 
@@ -70,8 +94,8 @@ methods: {
 <style> 
 
 .nav{
-   background-color:white;
-   position: fixed;
+    background-color:white;
+    position: fixed;
     top: 0;
     left: 0;
     width: 100vw;

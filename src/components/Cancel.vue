@@ -1,5 +1,5 @@
 <template>
-  <div class="generalcontent">
+  <div class="centralcontainer">
     <h1>Your payment was not successful and has been cancelled</h1>
     
   </div>

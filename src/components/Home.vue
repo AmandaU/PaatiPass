@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="centralcontainer">
     <br>
       <div class="centreblock">
         <cube-spin v-if="busy"></cube-spin>
@@ -52,18 +52,8 @@ export default {
 
 firebase () {
         return {
-        events: db.ref('events') 
-        // events: {
-        // source: db.ref('events') ,
-        //     readyCallback: () =>   
-        //   {
-        //     this.position = this.events.length > 1? 'relative': 'absolute'
-        //     this.$eventHub.$emit('footerpositionchange', position);
-        //     //EventBus.$emit('footerpositionchange', position);
-        //     this.busy = false;
-        // },
-        // }
-         }
+          events: db.ref('events') ,
+          }
       },
 
 created() {

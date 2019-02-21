@@ -94,10 +94,17 @@ methods:
   background: rgb(204, 203, 203);
 }
 
+@media all and (max-width: 800px) {
+  .google-map {
+    width:600px;
+    height:450px;
+  }
+}
+
 @media all and (max-width: 600px) {
   .google-map {
-    width:100%;
-    height:400px;
+    width:450px;
+    height:337px;
   }
 }
 </style>

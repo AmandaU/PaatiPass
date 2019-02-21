@@ -1,19 +1,20 @@
 <template>
   <div class="signup" >
-    <div class="generalcontent" >
-    <cube-spin v-if="busy"></cube-spin>
-    <p>Let's create a new account !</p>
-    <input type="text" v-model="newUser.firstname" placeholder="First name"><br>
-    <input type="text" v-model="newUser.surname" placeholder="Surname"><br>
-    <input type="text" v-model="newUser.email" placeholder="Email"><br>
-    <input type="password" v-model="newUser.password" placeholder="Password"><br>
-    <vue-tel-input class="tel"  v-model="newUser.cellphone"
-                  @onInput="onInput"
-                  :preferredCountries="['za']">
-   </vue-tel-input><br>
-    <button @click="signUp" >Sign Up</button>
-    <p>or go back to <span @click="goBackToLogin()" style="color:blue;cursor:pointer">login</span>
-         </p>
+    <div class="centralcontainer" >
+      <div class="centreblock">
+          <cube-spin v-if="busy"></cube-spin>
+          <p>Let's create a new account !</p>
+          <input type="text" v-model="newUser.firstname" placeholder="First name"><br>
+          <input type="text" v-model="newUser.surname" placeholder="Surname"><br>
+          <input type="text" v-model="newUser.email" placeholder="Email"><br>
+          <input type="password" v-model="newUser.password" placeholder="Password"><br>
+          <vue-tel-input class="tel"  v-model="newUser.cellphone"
+                        @onInput="onInput"
+                        :preferredCountries="['za']">
+          </vue-tel-input><br>
+          <button @click="signUp" >Sign Up</button>
+          <p>or go back to <span @click="goBackToLogin()" style="color:blue;cursor:pointer">login</span></p>
+        </div>
      </div>
   </div>
 </template>
@@ -56,9 +57,9 @@
           myusers: myUsersRef    
         }
       },
-
 created() {
-     this.$eventHub.$emit('eventimageurl', 'absolute');
+  let img = this.shoppingcart? this.shoppingcart.event.imageurl:'';
+   this.$eventHub.$emit('eventimageurl', img);
     },
 
     methods: {
@@ -103,9 +104,18 @@ created() {
     firebase.auth().createUserWithEmailAndPassword(this.newUser.email, this.newUser.password).then(
       (user) => {
           alert('Your account has been created')
-          
-          self.$props.shoppingcart.userid = user.uid;
-          self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
+           this.$eventHub.$emit('loggedin', '');
+          if(self.$props.shoppingcart)
+          {
+            self.$props.shoppingcart.userid = user.user.uid;
+            self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
+            self.busy = false;
+          }
+          else
+          {
+             self.$router.replace({ name: 'Home', params: {shoppingcart: self.$props.shoppingcart}});
+          }
+         
         
       },
       (err) => {
