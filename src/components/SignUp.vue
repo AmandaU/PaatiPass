@@ -3,19 +3,21 @@
     <div class="centralcontainer" >
       <div class="centreblock">
           <cube-spin v-if="busy"></cube-spin>
+          <div class="loginblock">
           <p>Let's create a new account !</p>
-          <input type="text" v-model="newUser.firstname" placeholder="First name"><br>
-          <input type="text" v-model="newUser.surname" placeholder="Surname"><br>
-          <input type="text" v-model="newUser.email" placeholder="Email"><br>
-          <input type="password" v-model="newUser.password" placeholder="Password"><br>
+          <input type="text" v-model="newUser.firstname" placeholder="First name" class="loginitem"><br>
+          <input type="text" v-model="newUser.surname" placeholder="Surname" class="loginitem"><br>
+          <input type="text" v-model="newUser.email" placeholder="Email" class="loginitem"><br>
+          <input type="password" v-model="newUser.password" placeholder="Password" class="loginitem"><br>
           <vue-tel-input class="tel"  v-model="newUser.cellphone"
                         @onInput="onInput"
                         :preferredCountries="['za']">
           </vue-tel-input><br>
-          <button @click="signUp" >Sign Up</button>
+          <button @click="signUp" class="loginitem">Sign Up</button>
           <p>or go back to <span @click="goBackToLogin()" style="color:blue;cursor:pointer">login</span></p>
         </div>
      </div>
+   </div>
   </div>
 </template>
 
@@ -70,7 +72,7 @@ created() {
       },
 
        logout: function() {
-      firebase.auth().signOut().then(() => {
+       firebase.auth().signOut().then(() => {
         this.$router.replace('login')
       })
     },

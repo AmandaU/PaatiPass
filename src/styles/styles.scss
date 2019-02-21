@@ -57,7 +57,7 @@ $theme-font:  verdana, sans-serif;
 
 .tel {
   margin:0 auto;
-  width: 21%;
+  width: 100%;
   align-items: center;
   justify-content: center;
   display: flex;
@@ -194,6 +194,22 @@ button {
   padding-right: 50px;
 }
 
+.loginitem {
+  margin-top: 10px;
+  width: 100%;
+  cursor: pointer;
+  height:30px;
+}
+
+.loginblock {
+  width: 400px;
+  background-color:white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
 //events
 .eventrow{
   background-color: white;
@@ -435,6 +451,10 @@ button {
       width: 50vw;
       margin: 20px;
      }
+ 
+    .loginblock {
+      width: 400px;
+     }
 
      //Events
     .eventrow{
@@ -511,6 +531,10 @@ button {
     width: 70vw;
     margin: 2px;
     }
+
+    .loginblock {
+      width: 100%;
+     }
 
     //Events
     .eventrow{

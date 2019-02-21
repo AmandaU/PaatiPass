@@ -4,13 +4,15 @@
        <div class="centreblock">
         <cube-spin v-if="busy"></cube-spin>
         <br>
+        <div class="loginblock">
          <h3>Sign In</h3>
-        <input type="text" v-model="email" placeholder="Email"><br>
-        <input type="password" v-model="password" placeholder="Password"><br>
-        <button @click="login">Connection</button>
+        <input type="text" v-model="email" placeholder="Email"  class="loginitem"><br>
+        <input type="password" v-model="password" placeholder="Password"  class="loginitem"><br>
+        <button @click="login" class="loginitem">Connection</button>
         <p>You don't have an account ? You can 
           <span @click="goToSignup()" style="color:blue;cursor:pointer">create one</span>
          </p>
+         </div>
  </div>
            </div>
     </div>
@@ -49,14 +51,13 @@
       },
     
     login: function() {
-      debugger;
-      this.busy = true;
+      
+     this.busy = true;
        let self = this;
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (user) => {
            alert('Successful login');
             this.$eventHub.$emit('loggedin', '');
-          debugger;
           if(self.$props.shoppingcart)
           {
             self.$props.shoppingcart.userid = user.user.uid;

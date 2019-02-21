@@ -266,7 +266,6 @@ watch: {
     },
 
     saveTicketLocal(instance) {
-      debugger;
      if(!instance)
       {
          instance = this;

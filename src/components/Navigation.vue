@@ -9,7 +9,7 @@
     <div class="menu">
      <!-- <div class="hoveritem"  v-on:click="navigate('About')" >About</div> -->
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Login')" >Login</div>
-      <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Register')" >Register</div>
+      <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Signup')" >Register</div>
       <!-- <div class="hoveritem"  v-on:click="navigate('Contact')" >Contact</div> -->
       <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
     <!-- <router-link class="hoveritem" v-for="routes in links" 
@@ -40,11 +40,7 @@ firebase () {
     },
 
 computed:{
-  
-  //   isLoggedin : function()
-  //   {
-  //      return (firebase.auth().currentUser);
-  //   }
+
  },
 
 created() {
@@ -57,14 +53,12 @@ created() {
  mounted() {
      let self = this;
   this.$eventHub.$on('loggedin', ()=> {
-    debugger;
-      self.isLoggedin = true;
+     self.isLoggedin = true;
   });
  },
 
 methods: {
     navigate (navPath) {
-    debugger;
       if(navPath == "Logout")
        {
          let self = this;
@@ -72,7 +66,6 @@ methods: {
           console.log('Signed Out');
            alert('You have successfully logged out');
             //this.$router.push({path: '/Home',})
-            debugger;
             self.isLoggedin = false;
             self.$router.replace({ name: 'Home'});
            }, 
