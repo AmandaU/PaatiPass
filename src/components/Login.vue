@@ -4,11 +4,11 @@
        <div class="centreblock">
         <cube-spin v-if="busy"></cube-spin>
         <br>
-        <div class="loginblock">
+        <div class="infoblock">
          <h3>Sign In</h3>
-        <input type="text" v-model="email" placeholder="Email"  class="loginitem"><br>
-        <input type="password" v-model="password" placeholder="Password"  class="loginitem"><br>
-        <button @click="login" class="loginitem">Connection</button>
+        <input type="text" v-model="email" placeholder="Email"  class="infoblockitem"><br>
+        <input type="password" v-model="password" placeholder="Password"  class="infoblockitem"><br>
+        <button @click="login" class="infoblockitem">Login</button>
         <p>You don't have an account ? You can 
           <span @click="goToSignup()" style="color:blue;cursor:pointer">create one</span>
          </p>

@@ -1,6 +1,6 @@
 <template>
   <div class="centralcontainer">
-    <br>
+    <br> <br>
       <div class="centreblock">
         <cube-spin v-if="busy"></cube-spin>
             <div  v-for="event in events" :key="event['.key']">
@@ -11,11 +11,10 @@
                   </div>
 
                   <div class="eventinfobox">
-                    <br> 
-                      <strong>{{event.name}}</strong><br>
+                       <strong>{{event.name}}</strong><br>
                       <small>The party is at {{event.venuename}}</small><br>
                       <small>from {{event.from}} to {{event.to}}</small><br>
-                      <small>{{event.venueaddress}}</small><br> 
+                      <small>{{event.venueaddress}}</small><br>
                   </div>
                       
                   <div class="eventbuttonbox">

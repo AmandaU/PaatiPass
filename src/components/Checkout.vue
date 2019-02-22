@@ -8,10 +8,12 @@
       <h1>Check out:</h1>
       <h2>{{ shoppingcart.event.name }}</h2>
       <h2>R {{ purchasevalue }}</h2>
-      <h3 v-show="!haspromo">If you have a promo code, please enter it here:</h3>
-      <h3 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h3>
-      <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
-      <input  type="text" v-model="promocode" placeholder="Promo code"><br>
+      <div class="infoblock">
+        <h3 v-show="!haspromo">If you have a promo code, please enter it here:</h3>
+        <h3 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h3>
+        <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
+        <input  type="text" v-model="promocode" placeholder="Promo code" class="infoblockitem"><br>
+      </div>
       <!-- <creditcard  @eventname="updateparent"></creditcard> -->
       <button v-show="isready" @click="saveTicketLocal()" >Buy</button><br>
       <br>
@@ -109,7 +111,7 @@ export default {
           {
             self.shoppingcart.zapperPaymentId = paymentResult.paymentId;
             localStorage.setItem(this.shoppingcart.reference, JSON.stringify(self.shoppingcart));
-            tselfhis.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
+            self.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
           }
           });
       })
@@ -156,7 +158,7 @@ watch: {
             this.invalidpromo = true;
             this.haspromo = false;
             this.shoppingcart.promocode = "";
-            this.shoppingcart.promotionvalue = '';
+            this.shoppingcart.promotionvalue = 0;
             this.purchasevalue = String(this.total);
           }
 
@@ -259,20 +261,21 @@ watch: {
       }
       instance.shoppingcart.zapperPaymentMethod = isZapper;
       let key = instance.shoppingcart.pricebreak['.key'];
-      let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.tickets);
+      let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);
       instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
       localStorage.setItem(instance.shoppingcart.reference, JSON.stringify(instance.shoppingcart));
       
     },
 
     saveTicketLocal(instance) {
+      debugger;
      if(!instance)
       {
          instance = this;
       }
       
       let key = this.shoppingcart.pricebreak['.key'];
-      let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.tickets);
+      let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.pricebreak.tickets);
       this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
       //this.$firebaseRefs.promotions.child(this.promocode['.key']).child('isUsed').set(true);
       localStorage.setItem(this.shoppingcart.reference, JSON.stringify(this.shoppingcart));

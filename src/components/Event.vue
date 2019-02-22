@@ -131,12 +131,11 @@ export default {
   setEvent()
   {
       this.$eventHub.$emit('eventimageurl', this.event.imageurl);
-      let userid =  "";
       
       this.shoppingcart = {
         email: "",
         name: "",
-        userid: userid,
+        userid: "",
         event: this.event,
         reference: 'JA' + Math.random().toString(36).substr(2, 9),
          promocode: "",

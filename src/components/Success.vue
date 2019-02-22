@@ -1,26 +1,30 @@
 <template>
   <div class="success">
-    <br>
-    <h1>Your payment was successful</h1>
-      <cube-spin v-if="isReady"></cube-spin>
-      <div width="75%">
-        <p>{{message1}}</p>
-        <p>{{message2}}</p>
-        <p>{{message3}}</p>
-      </div>
-    <br>
-      <div v-show="isReady " class="centreblock">
-       <div  v-for="guest in guests" :key="guest.reference">
-        <div  class="box">
-          <h3>Ticket reference number: {{guest.reference}}</h3>
-            <input  width="80%" type="text" v-model="guest.name" placeholder="Name" v-show="guests.length > 1"><br>
-            <input width="80%" type="email" v-model="guest.email"  placeholder="Email" v-show="guests.length > 1"><br>
-            <qrcode-vue  :value="guest.reference"></qrcode-vue>'
+     <div class="centralcontainer" >
+        <div class="centreblock">
+          <br>
+          <h1>Your payment was successful</h1>
+          <cube-spin v-if="isReady"></cube-spin>
+          
+          <h3>{{message1}}</h3>
+          <h3>{{message2}}</h3>
+          <h3>{{message3}}</h3>
+          <br>
+          <div v-show="isReady " class="infoblock">
+            <div  v-for="guest in guests" :key="guest.reference">
+              <!-- <div  class="box"> -->
+                <h3>Ticket reference number: {{guest.reference}}</h3>
+                <input   type="text" v-model="guest.name" placeholder="Name" v-show="guests.length > 1" class="infoblockitem"><br>
+                <input  type="email" v-model="guest.email"  placeholder="Email" v-show="guests.length > 1" class="infoblockitem">><br>
+                <qrcode-vue  :value="guest.reference"></qrcode-vue>'
+                <div class="thinline"></div>  
+                <br>
+            </div>
+              <br>
+              <button v-show="isReady && guests.length > 1" @click="sendGuestTickets()" class="infoblockitem">Email your guest tickets</button>
+         </div>
         </div>
-      </div>
-        <button v-show="isReady && guests.length > 1" @click="sendGuestTickets()" >Email your guest tickets</button>
    </div>
-    
    </div>
 </template>
 
@@ -82,11 +86,13 @@ firebase() {
    },
 
   created(){
-
+debugger;
        let currentuser = firebase.auth().currentUser;
       if(localStorage.getItem(this.$props.ticketid))
       {
          this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
+         this.shoppingcart.userid = currentuser.uid;
+         this.shoppingcart.email = currentuser.email;
         this.$bindAsArray(
             "users",
             db.ref('users').orderByChild("email").equalTo(currentuser.email).limitToFirst(1),
@@ -207,34 +213,33 @@ methods: {
     {
          let key = this.shoppingcart.pricebreak['.key'];
          let pricebreak = this.pricebreaks[key];
-          const sold = Number(pricebreak.sold) + Number(this.shoppingcart.tickets);
+          const sold = Number(pricebreak.sold) + Number(this.shoppingcart.pricebreak.tickets);
           this.$firebaseRefs.pricebreaksRef.child(key).child('sold').set(sold);
          
-            for(let i = 0; i < this.shoppingcart.tickets ; i++)
+            for(let i = 0; i < this.shoppingcart.pricebreak.tickets ; i++)
             {
               if(i == 0 && this.shoppingcart.promocode)
               {
                 this.processPromoCode(this.shoppingcart.promocode);
               }
-              let ref = this.shoppingcart.eventname.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
+              let ref = this.shoppingcart.event.name.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
               var haspromo = i == 0 && this.shoppingcart.promocode;
               let ticket = {
                   
                   email:  this.user.email,
                   name:  this.userName,
                   userid: this.shoppingcart.userid,
-                  eventid: this.shoppingcart.eventid,
-                  eventname: this.shoppingcart.eventname,
-                  from: this.shoppingcart.from,
-                  to: this.shoppingcart.to,
-                  pricebreakvalue: this.shoppingcart.pricebreakvalue,
-                  price: this.shoppingcart.pricebreakvalue,
+                  eventid: this.shoppingcart.event.id,
+                  eventname: this.shoppingcart.event.name,
+                  from: this.shoppingcart.event.from,
+                  to: this.shoppingcart.event.to,
+                  price: this.shoppingcart.pricebreak.price ,
                   reference: ref,
                   promocode: haspromo? this.shoppingcart.promocode : "",
-                  promotionvalue: haspromo? this.shoppingcart.promotionvalue :0,
-                  venuename: this.shoppingcart.venuename,
-                  venueaddress: this.shoppingcart.venueaddress,
-                  venuelatlong: this.shoppingcart.venuelatlong
+                  promotionvalue: this.shoppingcart.promotionvalue ,
+                  venuename: this.shoppingcart.event.venuename,
+                  venueaddress: this.shoppingcart.event.venueaddress,
+                  venuelatlong: this.shoppingcart.event.venuelatlong
                 }
                 this.tickets.push(ticket);
                  this.$firebaseRefs.ticketsRef.push(ticket);
@@ -246,12 +251,16 @@ methods: {
     setConfirmationInfo(){
       
         const reference = 'Purchase reference number: ' + this.shoppingcart.reference;
-        const total = String(Number(this.shoppingcart.tickets) * Number(this.shoppingcart.total));
-        const numberOfTickets = Number(this.shoppingcart.tickets) > 1? ' tickets at R': ' ticket for R';
-        const each = this.shoppingcart.tickets > 1? ' each': '';
-        this.message1 = 'You have successfully purchased ' + this.shoppingcart.tickets + numberOfTickets + this.shoppingcart.total + ' for ' + this.shoppingcart.eventname;
+        const total = String((Number(this.shoppingcart.pricebreak.tickets) * Number(this.shoppingcart.pricebreak.price)) - this.shoppingcart.promotionvalue);
+        const numberOfTickets = Number(this.shoppingcart.pricebreak.tickets) > 1? ' tickets at R': ' ticket for R';
+        const each = this.shoppingcart.pricebreak.tickets > 1? ' each': '';
+        this.message1 = 'You have successfully purchased ' + this.shoppingcart.pricebreak.tickets + numberOfTickets + this.shoppingcart.pricebreak.price + each + ' for ' + this.shoppingcart.event.name +'. ' ;
+        if(this.shoppingcart.promocode)
+        {
+          this.message1 += ' You used your promotion code (' + this.shoppingcart.promocode + ') to the value of R' + this.shoppingcart.promotionvalue;
+        }
         this.message2 = 'The total deducted from your account is R' + total;
-        if(this.shoppingcart.tickets > 1)
+        if(this.shoppingcart.pricebreak.tickets > 1)
         {
           this.message3 = 'You have been emailed all the tickets with their QR codes which must be presented at the door by the ticket holder. ' +
           'For your convenience, you may enter the name and email address of the ticket holders and we will email them the ticket as well.';
