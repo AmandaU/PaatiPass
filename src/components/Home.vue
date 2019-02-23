@@ -57,8 +57,7 @@ firebase () {
 
 created() {
   this.$eventHub.$emit('eventimageurl', '');
-  
-},
+ },
  
 //  mounted(){
  

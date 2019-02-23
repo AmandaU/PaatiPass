@@ -20,18 +20,21 @@
 
 <script>
   import firebase from '../firebase-config';
+  import {  db } from '../firebase-config';
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
  
  export default {
     name: 'login',
     data() {
       return {
-         busy: false,
-        email: '',
-        password: ''
+         busy: true,
+        email: "",
+        password: "",
+        users: []
       }
     },
      props: {
+       eventid: '',
        shoppingcart: {
         type: Object,
         required: true // User can accept a userData object on params, or not. It's totally optional.
@@ -39,10 +42,11 @@
   },
 
  created() {
-   let img = this.shoppingcart? this.shoppingcart.event.imageurl:'';
-   this.$eventHub.$emit('eventimageurl', img);
+    let img = this.shoppingcart.event? this.shoppingcart.event.imageurl:'';
+    this.$eventHub.$emit('eventimageurl', img);
     },
 
+   
  methods: {
 
       goToSignup ()
@@ -56,18 +60,36 @@
        let self = this;
       firebase.auth().signInWithEmailAndPassword(this.email, this.password).then(
         (user) => {
-           alert('Successful login');
-            this.$eventHub.$emit('loggedin', '');
-          if(self.$props.shoppingcart)
-          {
-            self.$props.shoppingcart.userid = user.user.uid;
-            self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
-            self.busy = false;
-          }
-          else
-          {
-             self.$router.replace({ name: 'Home', params: {shoppingcart: self.$props.shoppingcart}});
-          }
+          let uid = user.user.uid;
+          alert('Successful login');
+          self.$eventHub.$emit('loggedin', '');
+          self.$bindAsArray(
+                  "users",
+                 db.ref('users').orderByChild("uid").equalTo(uid).limitToFirst(1),
+                  null,
+                  () => {
+                    if(self.users[0].isAdmin)
+                    {
+                      self.$eventHub.$emit('isAdmin', '');
+                    }
+
+                    if(self.$props.shoppingcart)
+                    {
+                      self.$props.shoppingcart.userid = uid;
+                      self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
+                      self.busy = false;
+                    }
+                    else if(self.$props.eventid)
+                    {
+                      self.$router.replace({ name: 'Event', params: {eventid: self.$props.shoppingcart}});
+                     
+                    }
+                    else
+                    {
+                      self.$router.replace({ name: 'Home'});
+                    }
+                  }
+                );
            
         },
         (err) => {

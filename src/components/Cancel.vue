@@ -1,8 +1,9 @@
 <template>
-  <div class="centralcontainer">
+    <div class="centralcontainer" >
+      <div class="centreblock">
     <h1>Your payment was not successful and has been cancelled</h1>
-    
-  </div>
+      </div>
+    </div>
 </template>
 
 <script>
@@ -39,7 +40,7 @@ export default {
 
 firebase() {
     
-    let pricebreakid = this.shoppingcart.pricebreakid;
+    let pricebreakid = this.shoppingcart.pricebreak.id;
         return {
           pricebreaks: {
             source: db.ref('pricebreaks'),//.orderByChild("id").equalTo(this.$props.pricebreakid).limitToFirst(1),
@@ -47,7 +48,7 @@ firebase() {
                 readyCallback: () =>   
                 {
                   this.pricebreak = this.pricebreaks[pricebreakid];
-                 UpdateData();
+                  UpdateData();
                 }
               },
          }
@@ -56,7 +57,7 @@ firebase() {
   methods: {
      UpdateData()
       {
-        let reserved = Number(pricebreak.reserved - this.shoppingcart.tickets);
+        let reserved = Number(pricebreak.reserved - this.shoppingcart.pricebreak.tickets);
         this.$firebaseRefs.pricebreaks.child(pricebreak['.key']).child('reserved').set(reserved);
       }
   }

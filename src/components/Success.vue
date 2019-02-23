@@ -86,7 +86,7 @@ firebase() {
    },
 
   created(){
-debugger;
+
        let currentuser = firebase.auth().currentUser;
       if(localStorage.getItem(this.$props.ticketid))
       {
@@ -239,7 +239,8 @@ methods: {
                   promotionvalue: this.shoppingcart.promotionvalue ,
                   venuename: this.shoppingcart.event.venuename,
                   venueaddress: this.shoppingcart.event.venueaddress,
-                  venuelatlong: this.shoppingcart.event.venuelatlong
+                  venuelatlong: this.shoppingcart.event.venuelatlong,
+                  used: false
                 }
                 this.tickets.push(ticket);
                  this.$firebaseRefs.ticketsRef.push(ticket);
@@ -270,7 +271,6 @@ methods: {
           this.message3 = 'You will receive an email with this QR code that needs to be presented at the door of the venue';
         }
         this.isReady = true;
-       
     },
   },
 };

@@ -2,22 +2,17 @@
 <div> 
   
   <nav class="nav" > 
-    
-    <div class="home hoveritem"  @click="navigate('Home')">Home
-       <!-- <img src="../assets/home1.png"  alt=""  /><br> -->
+
+    <div class="menu menuleft">
+      <div class="hoveritem"  @click="navigate('Home')">Home</div>
+      <div class="hoveritem" v-show="isAdmin" v-on:click="navigate('ScanQR')" >Scan QR</div>
     </div>
-    <div class="menu">
-     <!-- <div class="hoveritem"  v-on:click="navigate('About')" >About</div> -->
+    <div class="menu menuright">
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Login')" >Login</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Signup')" >Register</div>
-      <!-- <div class="hoveritem"  v-on:click="navigate('Contact')" >Contact</div> -->
-      <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
-    <!-- <router-link class="hoveritem" v-for="routes in links" 
-             v-bind:key="routes.id" 
-             v-on:click="navigate('${routes.page}')"
-            
-             ></router-link> -->
+       <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
     </div>
+
   </nav> 
 </div>
 </template>
@@ -30,7 +25,8 @@ export default {
   name: 'Navigation',
 data() {
     return {
-    isLoggedin: false
+    isLoggedin: false,
+    isAdmin: false
     }
   },
 
@@ -39,22 +35,20 @@ firebase () {
        }
     },
 
-computed:{
-
- },
-
-created() {
-  if(firebase.auth().currentUser)
-  {
-    this.isLoggedin = true;
-  }
- },
-
  mounted() {
-     let self = this;
-  this.$eventHub.$on('loggedin', ()=> {
-     self.isLoggedin = true;
-  });
+    let self = this;
+    this.$eventHub.$on('loggedin', ()=> {
+      self.isLoggedin = true;
+    });
+
+    this.$eventHub.$on('isAdmin', ()=> {
+      self.isAdmin = true;
+    });
+
+    if(firebase.auth().currentUser)
+    {
+      this.isLoggedin = true;
+    }
  },
 
 methods: {
@@ -73,11 +67,20 @@ methods: {
               console.error('Sign Out Error', error); 
               });
        }
+       if(window.location.hash.length > 8 && window.location.hash.substring(2,7) == "event")
+       {
+         if(navPath == "Login" || navPath == "Signup")
+         {
+            this.$router.replace({ name: navPath, params: {eventid: window.location.hash.substring(9,9)}});
+         }
+       }
        else
        {
-         let gotopath = '/' + navPath;
-         this.$router.push({path: gotopath,})
+         this.$router.replace({ name: navPath});
+        //  let gotopath = '/' + navPath;
+        //  this.$router.push({path: gotopath,})
        }
+       
     }
 },
   
@@ -96,7 +99,7 @@ methods: {
     height:5vh;
 }
 
-.home {
+/* .home {
   font-weight: 200;
   font-size: 20px;
   position: relative;
@@ -108,23 +111,34 @@ methods: {
   justify-content:center;
   align-content:center;
  
-}
+} */
 
  .menu {
   position: relative;
   height:30px;
-  width:120px;
-  text-align: right;
+  width:auto;
   bottom: 0px;
-  right:60;
   font-weight: 200;
   font-size: 20px;
   display: flex;
-  float: right;
   padding-bottom: 5px;
-  padding-right: 40px;
   flex-direction:row; 
 }
+
+.menuleft{
+ left:30;
+ text-align: left;
+ float: left;
+ padding-left: 40px;
+}
+
+.menuright{
+ right:30;
+ text-align: right;
+ float: right;
+ padding-right: 40px;
+}
+
   .spacing { 
     Margin-right: 10px; 
   } 

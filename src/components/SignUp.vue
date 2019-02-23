@@ -50,6 +50,7 @@
           email: '',
           password: '',
           cellphone: '',
+          isAdmin: false
         }
       }
     },
@@ -86,6 +87,7 @@ created() {
           this.newUser.email = '',
           this.newUser.cellphone = '',
           this.newUser.uid = '',
+          this.newUser.isAdmin = false,
           this.busy = false;
       alert("Succeessfully added")
   },
@@ -107,18 +109,22 @@ created() {
       (user) => {
           alert('Your account has been created')
            this.$eventHub.$emit('loggedin', '');
-          if(self.$props.shoppingcart)
-          {
-            self.$props.shoppingcart.userid = user.user.uid;
-            self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
-            self.busy = false;
-          }
-          else
-          {
-             self.$router.replace({ name: 'Home', params: {shoppingcart: self.$props.shoppingcart}});
-          }
-         
-        
+            if(self.$props.shoppingcart)
+            {
+              self.$props.shoppingcart.userid = uid;
+              self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
+              self.busy = false;
+            }
+            else if(self.$props.eventid)
+            {
+              self.$router.replace({ name: 'Event', params: {eventid: self.$props.shoppingcart}});
+              
+            }
+            else
+            {
+              self.$router.replace({ name: 'Home'});
+            }
+            
       },
       (err) => {
         alert('Oops. ' + err.message)

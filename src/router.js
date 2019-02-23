@@ -10,7 +10,7 @@ import Contact from './components/Contact.vue';
 import Checkout from './components/Checkout.vue';
 import Success from './components/Success.vue';
 import Cancel from './components/Cancel.vue';
-import Notify from './components/Notify.vue';
+import ScanQR from './components/ScanQR.vue';
 import VueTelInput from 'vue-tel-input'
 import VueFire from 'vuefire'
 import LoadScript from 'vue-plugin-load-script';
@@ -101,10 +101,12 @@ const router = new Router({
       props: true,
     },     
     {
-      path: '/notify',
-      name: 'Notify',
-      component: Notify,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-      props: true,
+      path: '/scanqr',
+      name: 'ScanQR',
+      component: ScanQR,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      meta: {
+        requiresAuth: true, requiresAdmin:true
+      },
     },        
   ],
 });
@@ -116,10 +118,10 @@ router.beforeEach((to, from, next) => {
 
   if (requiresAuth && !currentUser)
     next('login');
-  // else if (!requiresAuth && currentUser)
-  //   next('home');
-  else
+  else{
     next();
+  }
+   
 });
 
 export default router;

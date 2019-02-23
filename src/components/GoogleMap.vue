@@ -32,16 +32,6 @@ mounted: function () {
 
   },
 
-  // created() {
-  //   debugger;
-  //    let key = 'https://maps.googleapis.com/maps/api/js?key=' + googleMapApi.key;
-  //     $Scriptjs(key, () => {
-  //     this.initMap()
-  //   });
-
-  // },
-  
-
 methods:
 {
    
