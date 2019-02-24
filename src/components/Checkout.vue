@@ -194,30 +194,31 @@ watch: {
 
     total: function()
     {
-        return this.shoppingcart.pricebreak.tickets * Number(this.shoppingcart.pricebreak.price);
+      var theTotal = 0;
+      this.shoppingcart.pricebreaks.forEach(pricebreak => {
+          theTotal += pricebreak.tickets * Number(pricebreak.price);
+      });
+     return theTotal;
     },
     // a computed getter
     payFastUrl: function () {
      
-         let key = this.shoppingcart.pricebreak['.key'];
         const url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.shoppingcart.event.name 
         + '&item_description=tickets&amount=' + this.purchasevalue + '.00' 
-        + '&return_url=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ;//+ '%26pricebreakid%3D' + key;
-        + '&cancel_url=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ;//+ '%26pricebreakid%3D' + key ;
+        + '&return_url=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&cancel_url=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         //console.log(url);
         return url;
     },
 
      zapperUrl: function () {
      
-         let key = this.shoppingcart.pricebreak['.key'];
-       
         const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
         '|10,60|1:10[38|Paati+Passports,39|ZAR';
         const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
         '&appName=Paati+Passports' +
-        '&successCallbackURL=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ;//+ '%26pricebreakid%3D' + key ;
-        '&failureCallbackURL=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ;//+ '%26pricebreakid%3D' + key ;
+        '&successCallbackURL=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&failureCallbackURL=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         return url;
     },
   },
@@ -260,24 +261,19 @@ watch: {
          instance = this;
       }
       instance.shoppingcart.zapperPaymentMethod = isZapper;
-      let key = instance.shoppingcart.pricebreak['.key'];
-      let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);
-      instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+      // let key = instance.shoppingcart.pricebreak['.key'];
+      // let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);
+      // instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
       localStorage.setItem(instance.shoppingcart.reference, JSON.stringify(instance.shoppingcart));
       
     },
 
     saveTicketLocal(instance) {
-     if(!instance)
-      {
-         instance = this;
-      }
-      
-      let key = this.shoppingcart.pricebreak['.key'];
-      let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.pricebreak.tickets);
-      this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
-      //this.$firebaseRefs.promotions.child(this.promocode['.key']).child('isUsed').set(true);
-      localStorage.setItem(this.shoppingcart.reference, JSON.stringify(this.shoppingcart));
+     
+      // let key = this.shoppingcart.pricebreak['.key'];
+      // let totalreserved  = Number(this.shoppingcart.pricebreak.reserved) + Number(this.shoppingcart.pricebreak.tickets);
+      // this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+       localStorage.setItem(this.shoppingcart.reference, JSON.stringify(this.shoppingcart));
       //test
       this.$router.replace({ name: 'Success', params: {ticketid: String(this.$props.shoppingcart.reference)}});
     },

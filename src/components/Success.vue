@@ -82,12 +82,27 @@ firebase() {
 
     userName: function () {
       return this.user.firstname + ' ' + this.user.surname;
-    }
+    },
+   
+    totalTickets: function () {
+      var total = 0;
+      this.shoppingcart.pricebreaks.forEach(element => {
+        total += element.tickets;
+      });
+      return total;
    },
 
-  created(){
+    totalTicketValue: function () {
+      var value = 0;
+      this.shoppingcart.pricebreaks.forEach(element => {
+        value += Number(element.tickets * element.price);
+      });
+      return value ;
+    },
+  },
 
-       let currentuser = firebase.auth().currentUser;
+  created(){
+      let currentuser = firebase.auth().currentUser;
       if(localStorage.getItem(this.$props.ticketid))
       {
          this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
@@ -203,7 +218,6 @@ methods: {
     createSecuritySignature: function (posToken,posKey)
     {
       var plainValue =  posToken.concat("&").concat(posKey).toUpperCase();
-
       var hash =  sha256(plainValue);
       hash = hash.Replace("-", "");
       return hash;
@@ -211,19 +225,18 @@ methods: {
 
     setTicket ()
     {
-         let key = this.shoppingcart.pricebreak['.key'];
-         let pricebreak = this.pricebreaks[key];
-          const sold = Number(pricebreak.sold) + Number(this.shoppingcart.pricebreak.tickets);
+       var isPromoProcessed = false;
+      this.shoppingcart.pricebreaks.forEach(pricebreak => {
+ 
+         let key = pricebreak['.key'];
+         const sold = Number(pricebreak.sold) + Number(pricebreak.tickets);
           this.$firebaseRefs.pricebreaksRef.child(key).child('sold').set(sold);
          
-            for(let i = 0; i < this.shoppingcart.pricebreak.tickets ; i++)
+            for(let i = 0; i < pricebreak.tickets ; i++)
             {
-              if(i == 0 && this.shoppingcart.promocode)
-              {
-                this.processPromoCode(this.shoppingcart.promocode);
-              }
+               var haspromo = !isPromoProcessed && this.shoppingcart.promocode;
               let ref = this.shoppingcart.event.name.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
-              var haspromo = i == 0 && this.shoppingcart.promocode;
+              
               let ticket = {
                   
                   email:  this.user.email,
@@ -233,7 +246,7 @@ methods: {
                   eventname: this.shoppingcart.event.name,
                   from: this.shoppingcart.event.from,
                   to: this.shoppingcart.event.to,
-                  price: this.shoppingcart.pricebreak.price ,
+                  price: pricebreak.price ,
                   reference: ref,
                   promocode: haspromo? this.shoppingcart.promocode : "",
                   promotionvalue: this.shoppingcart.promotionvalue ,
@@ -244,24 +257,32 @@ methods: {
                 }
                 this.tickets.push(ticket);
                  this.$firebaseRefs.ticketsRef.push(ticket);
+                 if(haspromo)
+                {
+                  this.processPromoCode(this.shoppingcart.promocode);
+                  isPromoProcessed = true;
+                }
             }
-            this.setConfirmationInfo();
-            this.createGuestTickets();
+     });
+     
+        this.setConfirmationInfo();
+        this.createGuestTickets();
      },
 
     setConfirmationInfo(){
-      
+        debugger;
+  
         const reference = 'Purchase reference number: ' + this.shoppingcart.reference;
-        const total = String((Number(this.shoppingcart.pricebreak.tickets) * Number(this.shoppingcart.pricebreak.price)) - this.shoppingcart.promotionvalue);
-        const numberOfTickets = Number(this.shoppingcart.pricebreak.tickets) > 1? ' tickets at R': ' ticket for R';
-        const each = this.shoppingcart.pricebreak.tickets > 1? ' each': '';
-        this.message1 = 'You have successfully purchased ' + this.shoppingcart.pricebreak.tickets + numberOfTickets + this.shoppingcart.pricebreak.price + each + ' for ' + this.shoppingcart.event.name +'. ' ;
+        var total = String(this.totalTicketValue - this.shoppingcart.promotionvalue);
+        var numberOfTickets = this.totalTickets > 1? ' tickets': ' ticket';
+        var each = this.totalTickets > 1? ' each': '';
+        this.message1 = 'You have successfully purchased ' + this.totalTickets + numberOfTickets +  ' for ' + this.shoppingcart.event.name +'. ' ;
         if(this.shoppingcart.promocode)
         {
           this.message1 += ' You used your promotion code (' + this.shoppingcart.promocode + ') to the value of R' + this.shoppingcart.promotionvalue;
         }
-        this.message2 = 'The total deducted from your account is R' + total;
-        if(this.shoppingcart.pricebreak.tickets > 1)
+        this.message2 = 'The total deducted from your account is R' + total + '.00';
+        if(this.totalTickets > 1)
         {
           this.message3 = 'You have been emailed all the tickets with their QR codes which must be presented at the door by the ticket holder. ' +
           'For your convenience, you may enter the name and email address of the ticket holders and we will email them the ticket as well.';

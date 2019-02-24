@@ -1,7 +1,7 @@
 <template>
   <div class="centralcontainer">
   
-   <div class="column">
+   <div class="centreblock">
      
       <h1>{{ event.name }}</h1>
       <h2>{{ event.from }} - {{ event.to }}</h2>
@@ -9,15 +9,15 @@
       <small>{{ event.venueaddress }}</small><br>
       <br>
      <cube-spin v-if="busy"></cube-spin>
-        <div class="centreblock">
+        <div class="eventblock">
           <br>
+           <div class="pricebreakblock">
             <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
               <div class="pricebreakrow">
             
                 <div class="pricebreakcolumn1">
                   <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
-                  <br>
-                  <small>{{ total(pricebreak) }}</small>
+                   <small>{{ total(pricebreak) }}</small>
                 </div>
 
                 <div  class="pricebreakcolumn2">
@@ -27,12 +27,11 @@
 
                          <div  class="ticketselection ">
                             <div v-show="pricebreak.tickets > 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}    </div>
-                         </div><br>
+                        <br>
 
-                          <div  class="ticketselection ">
                             <div  class="pricebreakbuttonbox">
                               <img src="../assets/plus.jpg"  alt="plus"  @click="ticketsSelected(pricebreak,true)" class="pricebreakimage"/>
-                              <img src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
+                              <img v-show="pricebreak.tickets > 0" src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
                             </div>   
                                 <!-- <select 
                                     @change="ticketsSelected($event,pricebreak)" >
@@ -43,19 +42,37 @@
                                 </select> -->
                           </div> 
 
-                          <div  class="ticketselection " >  
-                              <div v-show="pricebreak.tickets > 0" @click="BuyTickets(pricebreak)" class="buybutton">Buy</div>
-                          </div>
-
                       </div> 
                 </div>
-              <div class="thinline"></div>  
+
+                <div class="thinline"></div>  
+
+              </div>
             </div>
+           </div>
+
+          <div class="shoppingcartblock">
+            <div class="checkoutblock">
+              <h2>Checkout</h2>
+
+              <div  class="checkoutrow ">
+                  <div  class="checkouttickets ">
+                    <small>Number of tickets: {{totalTickets}}</small>
+                  </div> 
+                  <div  class="checkouttickettotal ">
+                    <small>{{totalTicketValue}}</small>
+                  </div> 
+               </div>  
+             <br> 
+              <div v-show="totalTickets > 0" @click="BuyTickets()" class="buybutton">Buy</div>
+           </div>
         </div>
-        <br> <br>
+       
+  </div>
+         <br> <br><br>
       <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
          <br>
-    </div>
+    
   </div>
   
   
@@ -108,9 +125,7 @@ export default {
        source:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
           readyCallback: () =>   
           {
-          //   this.pricebreaks.forEach(element => {
-          //    element.tickets = 0;
-          //  });
+          this.shoppingcart.pricebreaks = this.pricebreaks;
            
           },
       },
@@ -142,7 +157,7 @@ export default {
         promotionvalue: 0,
         totalPaid: 0,
         number: "0",
-        pricebreak: {},
+        pricebreak: [],
         zapperPaymentMethod: false,
         zapperPaymentId: 0,
         zapperReference: ""
@@ -161,31 +176,31 @@ export default {
     }
     pricebreak.tickets = add ? pricebreak.tickets + 1 : pricebreak.tickets - 1;
     
-    },
+  },
 
-  BuyTickets: function(pricebreak) {
-       this.busy = true;
-       var key = pricebreak['.key'];
+  BuyTickets: function() {
+      // this.busy = true;
+      //  var key = pricebreak['.key'];
      
-       let totalreserved  = Number(pricebreak.reserved) + Number(pricebreak.tickets);
-       if(totalreserved > Number(pricebreak.number))
-       {
-         let n = (totalreserved - Number(pricebreak.number));
-         if(n == 1)
-         {
-           alert('There is only 1 ticket left at this price');
-         }
-         else
-         {
-           alert('There are ' + String(n) + ' tickets at this price, that are reserved. Please choose another price break or try again later');
-           return;
-         }
-       }
+      //  let totalreserved  = Number(pricebreak.reserved) + Number(pricebreak.tickets);
+      //  if(totalreserved > Number(pricebreak.number))
+      //  {
+      //    let n = (totalreserved - Number(pricebreak.number));
+      //    if(n == 1)
+      //    {
+      //      alert('There is only 1 ticket left at this price');
+      //    }
+      //    else
+      //    {
+      //      alert('There are ' + String(n) + ' tickets at this price, that are reserved. Please choose another price break or try again later');
+      //      return;
+      //    }
+      //  }
        
-        this.shoppingcart.pricebreak = pricebreak;
-        this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
+      //   this.shoppingcart.pricebreak = pricebreak;
+      //   this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
 
-        this.busy = false;
+        //this.busy = false;
         const currentUser = firebase.auth().currentUser;
         
         if (!currentUser)
@@ -267,6 +282,24 @@ export default {
  },
 
   computed: {
+
+    totalTickets: function()
+    {
+      var total = 0;
+      this.pricebreaks.forEach(element => {
+        total += element.tickets;
+      });
+      return total ; 
+   },
+
+    totalTicketValue: function()
+    {
+      var value = 0;
+      this.pricebreaks.forEach(element => {
+        value += Number(element.tickets * element.price);
+      });
+      return value == 0? "R 0.00": String('R' + value + '.00');
+    },
 
   }
  

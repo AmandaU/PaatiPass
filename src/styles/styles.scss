@@ -182,6 +182,87 @@ button {
   transform: scale(1.1,0.98); 
 }
 
+.eventblock{
+  background-color:white;
+  display: flex;
+  flex-direction: row;
+  margin: 0, auto;
+  width: 80%;
+ }
+
+.pricebreakblock{
+  flex: 0.6;
+  background-color:white;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+  //margin: 0, auto;
+  
+}
+
+.shoppingcartblock{
+  flex: 0.4;
+  background-color:white;
+  display: flex;
+  justify-content: center;
+  flex-direction: row;
+   vertical-align: top;
+   margin-left: 30px;
+   margin-top:30px;
+}
+
+.checkoutblock{
+  width: 80%;
+  height: auto;
+  background-color:white;
+  display: flex;
+  flex-direction: column;
+   vertical-align: top;
+  border: 1px solid rgb(225, 225, 226);
+  border-radius: 5px;
+   margin: 0, auto; 
+  
+}
+
+.checkoutrow{
+  background-color:white;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+ 
+  margin: 0, auto;
+  padding: 20px;
+}
+
+.checkouttickets{
+  flex: 0.6;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+   height: 100%;
+  flex-direction: flex;
+  align-items: left;
+  text-align: left; 
+  justify-content: left;
+  vertical-align: middle;
+}
+
+.checkouttickettotal{
+  flex: 0.4;
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+   height: 100%;
+  flex-direction: flex;
+  align-items: right;
+  text-align: right; 
+  justify-content: right;
+  vertical-align: middle;
+}
+
+
 .centreblock {
   background-color:white;
   display: flex;
@@ -290,7 +371,7 @@ button {
   justify-content: center;
   align-items: center;
   text-align: center;
-  width: 800px;
+  width: 100%;
   height:100px;
   margin-bottom: 1px;
   margin-top: 0px;
@@ -315,13 +396,13 @@ button {
   
 }
 
-.pricebreakcolumn2{
+.pricebreakcolumn2 {
   //background-color:rgb(107, 31, 126);
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
-  flex: 0.3;
+  flex:0.3;
   align-items: right;
   text-align: right; 
   justify-content: right;
@@ -342,9 +423,9 @@ button {
 }
 
 .ticketselection{
-  flex: 0.34;
+  //flex: 0.5;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   cursor: pointer;
   width: 100%;
   height: 100%;
@@ -365,19 +446,16 @@ button {
 }
 
 .buybutton{
+  
   display: grid;
   place-items: center;
-  height: 100%;
-  padding:5px;
-  padding-left: 15px;
-  padding-right:15px;
-  padding-top:5px;
-  padding-bottom:5px;
+  margin: 20px;
+  cursor: pointer;
+ height: 20%;
   color:rgb(57, 105, 138);
   border: 1px solid rgb(57, 105, 138);
   border-radius: 5px;
-  margin:0;
-}
+  }
 
 .pricebreaknumberrow{
   //background-color:rgb(17, 177, 110);
@@ -386,9 +464,9 @@ button {
   flex-wrap: wrap;
   width: 100%;
   height: 100%;
-  align-items: centre;
-  text-align: centre; 
-  justify-content: centre;
+  align-items: right;
+  text-align: right; 
+  justify-content: right;
   vertical-align: middle;
 }
 
@@ -459,10 +537,8 @@ button {
     .eventrow{
       flex-direction: row;
       flex-wrap: wrap;
-     
       margin-left:10px;
       margin-right:10px;
-     
      }
     
     .eventimagebox {
@@ -477,10 +553,21 @@ button {
       flex: 0.2;
    }
 
-  
+  //pricebreaks
+
+  .eventblock{
+    background-color:white;
+    display: flex;
+    flex-direction: column;
+    margin: 0, auto;
+    width: 80%;
+   }
   
   .pricebreakrow {
-    width: 600px;
+    //width: 600px;
+    justify-content: left;
+    align-items: left;
+    text-align: left;
     height:100px;
     margin-bottom: 10px;
     margin-top: 10px;
@@ -488,10 +575,6 @@ button {
     padding-top: 10px;
   }
 
-  .pricebreaknumberrow{
-    width: 100%;
-  }
-  
   .pricebreakcolumn1{
    
     flex: 0.5;
@@ -499,6 +582,8 @@ button {
     text-align: left; 
     justify-content: left;
     vertical-align: middle;
+    padding: 0px;
+    padding-left: 0px;
   
   }
   
@@ -509,6 +594,27 @@ button {
     text-align: right; 
     justify-content: right;
     vertical-align: middle;
+    padding: 0px;
+    }
+
+    .ticketselection{
+      flex: 1;
+    }
+
+    .pricebreakblock{
+      flex: 1;
+     
+      //margin: 0, auto;
+      
+    }
+    
+    .shoppingcartblock{
+      flex: 1;
+       margin-left: 30px;
+    }
+
+    .checkoutblock{
+      width: 80%;
     }
 }
 
@@ -564,7 +670,7 @@ button {
      }
 
      .pricebreakrow {
-      width: 450px;
+      //width: 450px;
       height:150px;
       margin-bottom: 5px;
       margin-top: 5px;
@@ -572,10 +678,6 @@ button {
       padding-top: 5px;
       flex-direction: column;
      flex-wrap: nowrap;
-    }
-
-    .pricebreaknumberrow{
-      width: 80%;
     }
 
     .pricebreakcolumn1{
@@ -595,7 +697,15 @@ button {
       text-align: center; 
       justify-content: center;
       vertical-align: middle;
-        }
-}
+    }
+    
+    .shoppingcartblock{
+      flex: 1;
+       margin-left: 0px;
+    }
 
+    .checkoutblock{
+      width: 100%;
+    }
+  }
 }

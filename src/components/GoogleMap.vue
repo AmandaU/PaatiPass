@@ -76,8 +76,8 @@ methods:
 <style scoped>
 .google-map {
    
-    width:800px;
-    height:600px;
+  width:800px;
+  height:600px;
 
   /* height: calc(width * 1.3); */
   margin: 0 auto;
