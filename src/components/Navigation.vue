@@ -65,6 +65,7 @@ firebase () {
 
 methods: {
     navigate (navPath) {
+      debugger;
       if(navPath == "Logout")
        {
          let self = this;
@@ -84,6 +85,9 @@ methods: {
          if(navPath == "Login" || navPath == "Signup")
          {
             this.$router.replace({ name: navPath, params: {eventid: window.location.hash.substring(9,9)}});
+         }
+         else{
+           this.$router.replace({ name: navPath});
          }
        }
        else

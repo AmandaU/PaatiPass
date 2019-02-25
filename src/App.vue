@@ -3,18 +3,13 @@
     <Navigation ></Navigation>
     <div class="fullpage" >
         <div class="banner">
-            <div class="row">
-              <div class="column" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
-              <!-- <div class="column left" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
-              <div class="column middle" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
-              <div class="column right" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>  -->
-            </div>
+          <div class=" backimage" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
+         
+            <img class="frontimage" v-bind:src="imageurl"  alt=""  /> 
+         
         </div>
-       <keep-alive include="Event">
         <router-view />
-        </keep-alive>
-       
-      <BottomNav></BottomNav>
+        <BottomNav></BottomNav>
     </div>
      
   </div>
