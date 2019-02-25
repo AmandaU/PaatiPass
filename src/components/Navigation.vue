@@ -20,13 +20,15 @@
 <script>
 
  import firebase from '../firebase-config';
+ import {  db } from '../firebase-config';
 
 export default {
   name: 'Navigation',
 data() {
     return {
     isLoggedin: false,
-    isAdmin: false
+    isAdmin: false,
+    user: []
     }
   },
 
@@ -45,9 +47,19 @@ firebase () {
       self.isAdmin = true;
     });
 
-    if(firebase.auth().currentUser)
-    {
-      this.isLoggedin = true;
+   var user = firebase.auth().currentUser;
+    if(user){
+       this.isLoggedin = true;
+      this.$bindAsArray(
+                "users",
+                db.ref('users').orderByChild("uid").equalTo(user.uid).limitToFirst(1),
+                null,
+                () => {
+                  if(this.users[0].isAdmin)
+                  {
+                    this.isAdmin = true;
+                  }
+                });
     }
  },
 

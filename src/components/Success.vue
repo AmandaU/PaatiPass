@@ -225,6 +225,7 @@ methods: {
 
     setTicket ()
     {
+      debugger;
        var isPromoProcessed = false;
       this.shoppingcart.pricebreaks.forEach(pricebreak => {
  
