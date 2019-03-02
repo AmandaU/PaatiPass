@@ -12,7 +12,7 @@
           <br>
           <div v-show="isReady " class="infoblock">
             <div  v-for="guest in guests" :key="guest.reference">
-              <!-- <div  class="box"> -->
+             
                 <h3>Ticket reference number: {{guest.reference}}</h3>
                 <input   type="text" v-model="guest.name" placeholder="Name" v-show="guests.length > 1" class="infoblockitem"><br>
                 <input  type="email" v-model="guest.email"  placeholder="Email" v-show="guests.length > 1" class="infoblockitem">><br>

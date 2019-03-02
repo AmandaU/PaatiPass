@@ -1,35 +1,47 @@
 <template>
-  <div class="hello">
-     <div class="centralcontainer">
+      <div class="centralcontainer">
        <div class="centreblock">
-      <media :query="{maxWidth: 800}" @media-enter="media800Enter" @media-leave="media800Leave"> </Media> 
-      
-      <cube-spin v-if="!isready"></cube-spin>
-      <h1>Check out:</h1>
-      <h2>{{ shoppingcart.event.name }}</h2>
-      <h2>R {{ purchasevalue }}</h2>
-      <div class="infoblock">
-        <h3 v-show="!haspromo">If you have a promo code, please enter it here:</h3>
-        <h3 v-show="haspromo">Your promotion value is: R {{ shoppingcart.promotionvalue }}</h3>
-        <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
-        <input  type="text" v-model="promocode" placeholder="Promo code" class="infoblockitem"><br>
-      </div>
-      <!-- <creditcard  @eventname="updateparent"></creditcard> -->
-      <button v-show="isready" @click="saveTicketLocal()" >Buy</button><br>
-      <br>
-          <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
-        <!-- <a v-show="isready" href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
-        <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=12581557&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D12345%26pricebreakid%3D6789&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fticketid%3D12345%26pricebreakid%3D6789"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
-  
-      <a v-show="isready" @click="saveTicket(false)"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
+            <media :query="{maxWidth: 800}" @media-enter="media800Enter" @media-leave="media800Leave"> </Media> 
+            
+            <cube-spin v-if="!isready"></cube-spin>
+            <h1>Check out:</h1>
+            <h2>{{ shoppingcart.event.name }}</h2>
+            <h2>R {{ purchasevalue }}</h2>
+            <div class="infoblock">
+              <strong >{{promoText}}</strong>
+              <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
+              <input  type="text" v-model="promocode" placeholder="Promo code" class="infoblockitem"><br>
+          </div>
+
+          <div class="infoblock"  v-show="shoppingcart.ticketHolders.length > 0">
+              <strong >Each ticket will be emailed. You may change the name and email address to that of the person who will be using the ticket at the event</strong>
+              <br>
+                  <div  v-for="ticketHolder in shoppingcart.ticketHolders" :key="ticketHolder['.key'] ">
+                    <div class="ticketHolderBlock">
+                      <!-- <small>Ticket {{ticketHolder.ticketNumber}}</small> -->
+                      <input type="text" v-model="ticketHolder.name" :placeholder="userName" class="ticketHolderItem"><br>
+                      <input type="text" v-model="ticketHolder.email" :placeholder="buyer.email" class="ticketHolderItem"><br>
+                    </div>
+                  </div>
+               <br>
+          </div>
+
+        <!-- <creditcard  @eventname="updateparent"></creditcard> -->
+        <button v-show="isready" @click="saveTicketLocal()" >Buy</button><br>
         <br>
-      <a v-show="showZapperAppIcon" @click="saveTicket(true)"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
+            <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
+          <!-- <a v-show="isready" href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
+          <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=12581557&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D12345%26pricebreakid%3D6789&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fticketid%3D12345%26pricebreakid%3D6789"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
     
-      <br>
-      <div id="Zapper" v-show="showZapperQRCode"></div>
+          <a v-show="isready" @click="saveTicket(false)"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
+            <br>
+          <a v-show="showZapperAppIcon" @click="saveTicket(true)"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
+        
+          <br>
+          <div id="Zapper" v-show="showZapperQRCode"></div>
        </div>
    </div>
-  </div>
+ 
 </template>
 
 <script>
@@ -68,7 +80,10 @@ export default {
         purchasevalue: "",
         haspromo: false,
         isready: false,
-        buyer: {},
+        buyer: {
+          name: "",
+          email:""
+        },
          merchantID: '10011455',//'12581557',
         merchantKey: 'ztdbyg14s7nyd',//'49qsjtvgayqaw',//
         greaterThan800: window.innerWidth > 800
@@ -87,6 +102,19 @@ export default {
           readyCallback: () =>   
           {
             this.buyer = this.users[0];
+            var count = 0;
+            this.shoppingcart.pricebreaks.forEach(pricebreak => {
+              for(let i = 0;i <  pricebreak.tickets;i++)
+                {
+                  this.shoppingcart.ticketHolders.push({
+                      name : "",
+                      email: "",
+                      ticketNumber: count
+                    });
+                      count++;
+                 }
+               
+           });
             this.isready = true;
         },
         }
@@ -172,6 +200,17 @@ watch: {
 
   computed: {
 
+    promoText: function(){
+
+      return this.haspromo? 'Your promotion value is: R ' + this.shoppingcart.promotionvalue  
+      : 'If you have a promo code, please enter it here:'
+    },
+
+    userName: function () {
+      debugger;
+      return this.buyer? this.buyer.firstname + ' ' + this.buyer.surname: "";
+    },
+
     isMobile: function()
     {
         return navigator.userAgent.match(/Android/i) ||
@@ -225,11 +264,9 @@ watch: {
   },
 
   created() {
-   
-    this.shoppingcart = this.$props.shoppingcart;
-    this.purchasevalue = this.total;  
-
-  },
+     this.shoppingcart = this.$props.shoppingcart;
+     this.purchasevalue = this.total;  
+    },
 
   methods: {
 
@@ -261,6 +298,14 @@ watch: {
       {
          instance = this;
       }
+
+      instance.shoppingcart.ticketHolders.forEach(ticketHolder => {
+        if(!ticketHolder.name) 
+        {
+          ticketHolder.name = instance.userName;
+          ticketHolder.email = instance.buyer.email;
+        }
+      });
       instance.shoppingcart.zapperPaymentMethod = isZapper;
       // let key = instance.shoppingcart.pricebreak['.key'];
       // let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);

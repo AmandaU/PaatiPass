@@ -15,7 +15,7 @@
             
                 <div class="pricebreakcolumn1">
                   <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
-                  <small>{{ total(pricebreak) }}</small>
+                  <!-- <small>{{ total(pricebreak) }}</small> -->
                 </div>
 
                 <div  class="pricebreakcolumn2">
@@ -60,40 +60,34 @@
 
                 </div>  
               </div>
-              <br>  
-              
-              <div  class="checkoutrow ">
+              <br>
 
-                <div  class="checkouttickets ">
-                   <br>
-                    <small>Total: {{totalTickets}}</small>
-                </div>
-
-                <div  class="checkouttickettotal ">
-                  <div class="thinline"></div>  <br>
-                   <small>{{totalTicketValue}}</small>
-                  </div>
+                <div  class="checkoutrow ">
+                   <div  class="checkouttickets "/>
+                   <div  class="checkouttickettotal "> 
+                     <div class="thinline"></div>  
+                   </div> 
                 </div> 
+
+                 <div  class="checkoutrow ">
+                  <div  class="checkouttickets ">
+                      <small>Total: {{totalTickets}}</small>
+                  </div>
+
+                  <div  class="checkouttickettotal "> 
+                    <small>{{totalTicketValue}}</small>
+                    </div>
+                  </div> 
               
                 <br> 
+               
                 <div v-show="totalTickets > 0" @click="BuyTickets()" class="buybutton">Buy</div>
              
             </div>  
           </div>
       </div>
        
-       <br>
-       <strong>Each ticket will be emailed. You may change the name and email address to that of the person who will be using the ticket at the event</strong>
-        <div class="infoblock">
-            <div  v-for="ticketHolder in ticketHolders" :key="ticketHolder['.key'] ">
-              <div  flex-direction="row">
-                <input type="text" v-model="newUser.surname" placeholder="Surname" class="infoblockitem"><br>
-                <input type="text" v-model="newUser.email" placeholder="Email" class="infoblockitem"><br>
-              </div>
-            </div>
-        </div>
-       <br>
-
+      <br>
         <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
       <br>
 
@@ -129,12 +123,7 @@ export default {
         venueaddress: "",
         venuelatlong: "",
       },
-      ticketHolder: {
-        name: "",
-        email: ""
-      },
-      ticketHolders:[],
-      busy: false,
+       busy: false,
       events: [],
       pricebreaks: [],
       shoppingcart: {},
@@ -176,11 +165,12 @@ export default {
   setEvent()
   {
       this.$eventHub.$emit('eventimageurl', this.event.imageurl);
+      var currentUser = firebase.auth().currentUser;
       
       this.shoppingcart = {
-        email: "",
+        email: currentUser? currentUser.email: "",
         name: "",
-        userid: "",
+        userid: currentUser? currentUser.uid: "",
         event: this.event,
         reference: 'JA' + Math.random().toString(36).substr(2, 9),
         ticketHolders: [],
@@ -206,11 +196,6 @@ export default {
       return;
     }
     pricebreak.tickets = add ? pricebreak.tickets + 1 : pricebreak.tickets - 1;
-    
-    this.ticketHolders.add({
-      name : this.shoppingcart.name,
-      email: this.shoppingcart.email
-    })
   },
 
   BuyTickets: function() {
@@ -285,23 +270,23 @@ export default {
         })
       },
 
-  numberOfTicketsAvailable(pricebreak)
-  {
-    let ticketNumber = [];
-    let available = Number(pricebreak.number ) - Number(pricebreak.sold);
-    for (let i = 1; i < available; i++) { 
-      if(i == 11) break;
-        ticketNumber[i] = String(i);
-    }
-    return ticketNumber;
-  },
+  // numberOfTicketsAvailable(pricebreak)
+  // {
+  //   let ticketNumber = [];
+  //   let available = Number(pricebreak.number ) - Number(pricebreak.sold);
+  //   for (let i = 1; i < available; i++) { 
+  //     if(i == 11) break;
+  //       ticketNumber[i] = String(i);
+  //   }
+  //   return ticketNumber;
+  // },
           
   total : function(pricebreak) {
       if(this.isTicketsAvailable(pricebreak))
       {
          if( pricebreak.tickets == 0) return  "";
           let total = Number(pricebreak.tickets) * Number(pricebreak.price);
-          return 'You will purchase  ' +  pricebreak.tickets + ' at R' + pricebreak.price + ' each. The total is R ' + total;
+          return 'You will purchase  ' +  pricebreak.tickets + ' at R' + pricebreak.price + ' each. The total is' + String('R ' + total + '.00');
       }
     },
 
