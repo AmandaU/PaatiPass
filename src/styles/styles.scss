@@ -543,11 +543,8 @@ button {
   //pricebreaks
 
   .eventblock{
-    background-color:white;
-    display: flex;
     flex-direction: column;
-    margin: 0, auto;
-    width: 80%;
+     width: 80%;
    }
   
   .pricebreakrow {
@@ -654,6 +651,11 @@ button {
     .eventbuttonbox{
       flex: 1;
       padding-bottom: 10px;
+     }
+
+     .eventblock{
+      flex-direction: column;
+       width: 100%;
      }
 
      .pricebreakrow {

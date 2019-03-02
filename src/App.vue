@@ -1,17 +1,15 @@
 <template>
   <div id="app">
     <Navigation ></Navigation>
-    <div class="fullpage" >
+      <div class="fullpage" >
         <div class="banner">
-          <div class=" backimage" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
-         
+            <div class=" backimage" v-bind:style="{ 'background-image': 'url(' + imageurl + ')' }"></div>
             <img class="frontimage" v-bind:src="imageurl"  alt=""  /> 
-         
         </div>
         <router-view />
         <BottomNav></BottomNav>
-    </div>
-     
+      </div>
+      
   </div>
 </template>
 

@@ -19,8 +19,7 @@
                       
                   <div class="eventbuttonbox">
                       <router-link :to="{ name: 'Event', params: { eventid: event.id}}">
-                         <img src="../assets/rightarrow.jpg"  alt="About"  /><br>
-                        <!-- <button >Buy</button> -->
+                         <img src="../assets/rightarrow.jpg"  alt="About" /><br>
                       </router-link>
                   </div>
 

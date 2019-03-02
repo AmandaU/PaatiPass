@@ -39,7 +39,7 @@
   import firebase from '../firebase-config';
   import {zapperConfig} from '../config';
   import {  db } from '../firebase-config';
-  import axios from "axios";
+ // import axios from "axios";
   import md5 from "js-md5";
   import qs from "qs";
 
@@ -100,7 +100,8 @@ export default {
 
       this.$loadScript("https://code.zapper.com/zapper.js")
       .then(() => {
-        zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
+        // zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
+        zapper("#Zapper", self.merchantId, self.siteId, '5.00',self.shoppingcart.reference, function (paymentResult) {
            self.shoppingcart.paymentMethod = isZapper? 1: 0;
           if(payment.status == 1)
           {
@@ -205,20 +206,20 @@ watch: {
      
         const url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.shoppingcart.event.name 
         + '&item_description=tickets&amount=' + this.purchasevalue + '.00' 
-        + '&return_url=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        + '&cancel_url=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&return_url=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&cancel_url=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         //console.log(url);
         return url;
     },
 
      zapperUrl: function () {
-     
-        const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
+     // const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
+        const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + '5.00' + '|11,66|' + this.shoppingcart.reference +
         '|10,60|1:10[38|Paati+Passports,39|ZAR';
         const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
         '&appName=Paati+Passports' +
-        '&successCallbackURL=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        '&failureCallbackURL=http%3A%2F%2F192.168.8.112%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&successCallbackURL=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&failureCallbackURL=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         return url;
     },
   },

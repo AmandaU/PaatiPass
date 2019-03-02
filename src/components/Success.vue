@@ -237,7 +237,7 @@ methods: {
             {
                var haspromo = !isPromoProcessed && this.shoppingcart.promocode;
               let ref = this.shoppingcart.event.name.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
-              
+              let qrcode = ref + '|' + this.user.firstname + ' ' + this.user.surname + '|' + this.user.email;
               let ticket = {
                   
                   email:  this.user.email,
@@ -249,6 +249,7 @@ methods: {
                   to: this.shoppingcart.event.to,
                   price: pricebreak.price ,
                   reference: ref,
+                  qrcode: qrcode,
                   promocode: haspromo? this.shoppingcart.promocode : "",
                   promotionvalue: this.shoppingcart.promotionvalue ,
                   venuename: this.shoppingcart.event.venuename,

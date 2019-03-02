@@ -37,12 +37,12 @@
        eventid: '',
        shoppingcart: {
         type: Object,
-        required: true // User can accept a userData object on params, or not. It's totally optional.
+       // required: true // User can accept a userData object on params, or not. It's totally optional.
       }
   },
 
  created() {
-    let img = this.shoppingcart.event? this.shoppingcart.event.imageurl:'';
+    let img = this.shoppingcart? this.shoppingcart.event? this.shoppingcart.event.imageurl:'' : '';
     this.$eventHub.$emit('eventimageurl', img);
     },
 

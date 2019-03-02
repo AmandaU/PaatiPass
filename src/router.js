@@ -62,18 +62,11 @@ const router = new Router({
       path: '/contact',
       name: 'Contact',
       component: Contact, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-      // meta: {
-      //   requiresAuth: true,
-      // },
     },
     {
     path: '/event/:eventid', 
     name: 'Event',
     component: Event, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    // meta: {
-    //   requiresAuth: true,
-    // },
-   // props: true,
     }, 
     {
       path: '/checkout',
@@ -90,9 +83,9 @@ const router = new Router({
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
       //test
-      // props: (route) => ({
-      //   ticketid: route.query.ticketid,
-      //     })
+      props: (route) => ({
+        ticketid: route.query.ticketid,
+          })
     },     
     {
       path: '/Cancel',

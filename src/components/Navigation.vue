@@ -65,7 +65,6 @@ firebase () {
 
 methods: {
     navigate (navPath) {
-      debugger;
       if(navPath == "Logout")
        {
          let self = this;

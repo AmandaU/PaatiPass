@@ -3,6 +3,9 @@ import App from './App.vue';
 import router from './router';
 import 'vue-tel-input/dist/vue-tel-input.css';
 import firebase from './firebase-config';
+// import LoadScript from 'vue-plugin-load-script';
+ 
+// Vue.use(LoadScript);
 
 Vue.config.productionTip = false;
 

@@ -1,8 +1,6 @@
 <template>
   <div class="centralcontainer">
-  
    <div class="centreblock">
-     
       <h1>{{ event.name }}</h1>
       <h2>{{ event.from }} - {{ event.to }}</h2>
       <h2>{{ event.venuename }}</h2>
@@ -17,7 +15,7 @@
             
                 <div class="pricebreakcolumn1">
                   <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
-                   <small>{{ total(pricebreak) }}</small>
+                  <small>{{ total(pricebreak) }}</small>
                 </div>
 
                 <div  class="pricebreakcolumn2">
@@ -27,19 +25,13 @@
 
                          <div  class="ticketselection ">
                             <div v-show="pricebreak.tickets > 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}    </div>
-                        <br>
+                            <br>
 
                             <div  class="pricebreakbuttonbox">
                               <img src="../assets/plus.jpg"  alt="plus"  @click="ticketsSelected(pricebreak,true)" class="pricebreakimage"/>
                               <img v-show="pricebreak.tickets > 0" src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
                             </div>   
-                                <!-- <select 
-                                    @change="ticketsSelected($event,pricebreak)" >
-                                    <option value="" disabled selected>Select number of tickets</option>
-                                    <option v-for="ticket in numberOfTicketsAvailable(pricebreak)" v-bind:key="ticket" v-bind:value="ticket"  >
-                                      {{ ticket}}
-                                    </option>
-                                </select> -->
+                               
                           </div> 
 
                       </div> 
@@ -55,28 +47,61 @@
             <div class="checkoutblock">
               <h2>Checkout</h2>
 
-              <div  class="checkoutrow ">
+              <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+                <div  class="checkoutrow ">
+                
                   <div  class="checkouttickets ">
-                    <small>Number of tickets: {{totalTickets}}</small>
-                  </div> 
+                    <small>{{pricebreak.name}}: {{pricebreak.tickets}}</small>
+                  </div>
+
                   <div  class="checkouttickettotal ">
-                    <small>{{totalTicketValue}}</small>
+                    <small>{{totalTicketValueForPriceBreak(pricebreak)}}</small>
                   </div> 
-               </div>  
-             <br> 
-              <div v-show="totalTickets > 0" @click="BuyTickets()" class="buybutton">Buy</div>
-           </div>
-        </div>
+
+                </div>  
+              </div>
+              <br>  
+              
+              <div  class="checkoutrow ">
+
+                <div  class="checkouttickets ">
+                   <br>
+                    <small>Total: {{totalTickets}}</small>
+                </div>
+
+                <div  class="checkouttickettotal ">
+                  <div class="thinline"></div>  <br>
+                   <small>{{totalTicketValue}}</small>
+                  </div>
+                </div> 
+              
+                <br> 
+                <div v-show="totalTickets > 0" @click="BuyTickets()" class="buybutton">Buy</div>
+             
+            </div>  
+          </div>
+      </div>
        
+       <br>
+       <strong>Each ticket will be emailed. You may change the name and email address to that of the person who will be using the ticket at the event</strong>
+        <div class="infoblock">
+            <div  v-for="ticketHolder in ticketHolders" :key="ticketHolder['.key'] ">
+              <div  flex-direction="row">
+                <input type="text" v-model="newUser.surname" placeholder="Surname" class="infoblockitem"><br>
+                <input type="text" v-model="newUser.email" placeholder="Email" class="infoblockitem"><br>
+              </div>
+            </div>
+        </div>
+       <br>
+
+        <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
+      <br>
+
   </div>
-         <br> <br><br>
-      <GoogleMap name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
-         <br>
     
   </div>
   
-  
-  </div>
+ 
 </template>
 
 <script>
@@ -104,6 +129,11 @@ export default {
         venueaddress: "",
         venuelatlong: "",
       },
+      ticketHolder: {
+        name: "",
+        email: ""
+      },
+      ticketHolders:[],
       busy: false,
       events: [],
       pricebreaks: [],
@@ -153,7 +183,8 @@ export default {
         userid: "",
         event: this.event,
         reference: 'JA' + Math.random().toString(36).substr(2, 9),
-         promocode: "",
+        ticketHolders: [],
+        promocode: "",
         promotionvalue: 0,
         totalPaid: 0,
         number: "0",
@@ -176,6 +207,10 @@ export default {
     }
     pricebreak.tickets = add ? pricebreak.tickets + 1 : pricebreak.tickets - 1;
     
+    this.ticketHolders.add({
+      name : this.shoppingcart.name,
+      email: this.shoppingcart.email
+    })
   },
 
   BuyTickets: function() {
@@ -266,22 +301,36 @@ export default {
       {
          if( pricebreak.tickets == 0) return  "";
           let total = Number(pricebreak.tickets) * Number(pricebreak.price);
-          return 'You will purchase  ' +  pricebreak.tickets + ' at R' + pricebreak.price + ' each. The total is R' + total;
+          return 'You will purchase  ' +  pricebreak.tickets + ' at R' + pricebreak.price + ' each. The total is R ' + total;
       }
     },
 
-  isTicketsAvailable : function(pricebreak) {
+   isTicketsAvailable : function(pricebreak) {
      if(Number(pricebreak.reserved) == 0 && Number(pricebreak.sold == 0))
       {
         return true;
       }
         return Number(pricebreak.sold) < Number(pricebreak.number);
-      },
+     },
 
-   
+    totalTicketValueForPriceBreak: function(pricebreak){
+      var value = Number(pricebreak.tickets * pricebreak.price);
+      return value == 0? "R 0.00": String('R ' + value + '.00');
+    },
  },
 
   computed: {
+
+    isMobile: function()
+    {
+        return navigator.userAgent.match(/Android/i) ||
+          navigator.userAgent.match(/webOS/i) ||
+          navigator.userAgent.match(/iPhone/i) ||
+          navigator.userAgent.match(/iPad/i) ||
+          navigator.userAgent.match(/iPod/i) ||
+          navigator.userAgent.match(/BlackBerry/i) ||
+          navigator.userAgent.match(/Windows Phone/i) ;
+    },
 
     totalTickets: function()
     {
@@ -298,9 +347,8 @@ export default {
       this.pricebreaks.forEach(element => {
         value += Number(element.tickets * element.price);
       });
-      return value == 0? "R 0.00": String('R' + value + '.00');
+      return value == 0? "R 0.00": String('R ' + value + '.00');
     },
-
   }
  
 };

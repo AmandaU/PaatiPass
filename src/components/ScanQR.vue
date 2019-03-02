@@ -1,49 +1,56 @@
 <template>
-    <div class="centralcontainer">
-        <h1 padding-left="20px">Scan the QR Code</h1>
-        <vue-qr-reader 
-        :key="qrScannerKey"
-         v-on:code-scanned="codeArrived" 
-         stop-on-scanned="false"
-         responsive="true"/>
-    </div>
+  <div class="centralcontainer">
+    <br> <br>
+    <h1 padding-left="50px">Scan the QR Code</h1>
+      <div >
+            <vue-qr-reader 
+            :key="qrScannerKey"
+            v-on:code-scanned="codeArrived" 
+            stop-on-scanned="false"
+            responsive="true"/>
+      </div>
+      <h3 padding-left="20px">Ticket Purchaser: {{purchaser}}</h3>
+      <h3 padding-left="20px">Email address: {{email}}</h3>
+  </div>   
 </template>
 
 <script>
    import firebase from '../firebase-config';
    import {  db } from '../firebase-config';
    import VueQrReader from 'vue-qr-reader/dist/lib/vue-qr-reader.umd.js';
-
+  
 export default {
   name: 'scanqr',
 
  components: {
-      VueQrReader
+      VueQrReader,
   },
 
   mounted() {
    
-    if(localStorage.getItem(this.$props.ticketid))
-      {
-         this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
-       }
+    // if(localStorage.getItem(this.$props.ticketid))
+    //   {
+    //      this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
+    //    }
    },
 
   data() {
       return {
         busy: false,
         ticketReference: "",
-        ticket:{},
+        tickets: [],
+        purchaser: "",
+        email: "",
         qrScannerKey: 0,
-      }
+       }
     },
 
-  props: {
-    ticketid: {
-    type: String,
-    required: true,
-    }
-  },
+  // props: {
+  //   ticketid: {
+  //   type: String,
+  //   required: true,
+  //   }
+  // },
 
 firebase() {
     return {
@@ -55,7 +62,10 @@ methods: {
 
     codeArrived (code) {
         console.log(code);
-        this.ticketReference = code;
+        var splits = code.splits('|');
+        this.ticketReference = code[0];
+        this.purchaser = code[1];
+        this.email = code[2];
         this.UpdateData();
     },
 
@@ -80,7 +90,8 @@ methods: {
                // this.$router.go(0);
             }
         );
-    }
+    },
+
   }
   
 }
