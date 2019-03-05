@@ -15,7 +15,7 @@
             
                 <div class="pricebreakcolumn1">
                   <strong>{{pricebreak.name}} tickets at R {{pricebreak.price}} each </strong>
-                  <!-- <small>{{ total(pricebreak) }}</small> -->
+                  <small>{{ total(pricebreak) }}</small>
                 </div>
 
                 <div  class="pricebreakcolumn2">
@@ -24,7 +24,7 @@
                       <div v-show="isTicketsAvailable(pricebreak)" class="pricebreaknumberrow" >
 
                          <div  class="ticketselection ">
-                            <div v-show="pricebreak.tickets > 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}    </div>
+                            <div  v-show="pricebreak.tickets> 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}    </div>
                             <br>
 
                             <div  class="pricebreakbuttonbox">
@@ -87,7 +87,7 @@
           </div>
       </div>
        
-      <br>
+      <br> <br>
         <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
       <br>
 
@@ -114,7 +114,6 @@ export default {
  
   data: function () {
     return {
-      
       event:{
         name: "",
         from: "",
@@ -126,6 +125,8 @@ export default {
        busy: false,
       events: [],
       pricebreaks: [],
+       
+     // pricebreaks2: [],
       shoppingcart: {},
       addressCoordinate: {
         latitude: '',
@@ -144,9 +145,10 @@ export default {
        source:  db.ref('pricebreaks').orderByChild("eventid").equalTo(eventid) ,
           readyCallback: () =>   
           {
-          this.shoppingcart.pricebreaks = this.pricebreaks;
-           
-          },
+           this.pricebreaks.forEach((pricebreak) => {
+              pricebreak.ticketHolders = [];
+           });
+         },
       },
       events: {
         source: db.ref('events').orderByChild("id").equalTo(eventid),
@@ -173,12 +175,11 @@ export default {
         userid: currentUser? currentUser.uid: "",
         event: this.event,
         reference: 'JA' + Math.random().toString(36).substr(2, 9),
-        ticketHolders: [],
         promocode: "",
         promotionvalue: 0,
         totalPaid: 0,
         number: "0",
-        pricebreak: [],
+        pricebreaks: [],
         zapperPaymentMethod: false,
         zapperPaymentId: 0,
         zapperReference: ""
@@ -189,13 +190,24 @@ export default {
   },
 
   ticketsSelected: function( pricebreak, add) {
-    if(pricebreak.tickets == 0 && !add)return;
+   if(pricebreak.tickets == 0 && !add)return;
     if(pricebreak.tickets + pricebreak.sold > pricebreak.number)
     {
       alert("no more tickets at this price");
       return;
     }
-    pricebreak.tickets = add ? pricebreak.tickets + 1 : pricebreak.tickets - 1;
+     if(add ){
+       var ticket = {
+              name : "",
+              email: "",
+       };
+       pricebreak.ticketHolders.push(ticket);
+     }
+     else if(pricebreak.ticketHolders.length > 0)
+     {
+       pricebreak.ticketHolders.pop();
+     }
+   pricebreak.tickets = pricebreak.ticketHolders.length;
   },
 
   BuyTickets: function() {
@@ -220,7 +232,10 @@ export default {
       //   this.shoppingcart.pricebreak = pricebreak;
       //   this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(String(totalreserved));
 
-        //this.busy = false;
+       var filteredData =   this.pricebreaks.filter(function(pb) {
+            return pb.tickets > 0;
+          });
+        this.shoppingcart.pricebreaks = filteredData;
         const currentUser = firebase.auth().currentUser;
         
         if (!currentUser)
@@ -269,18 +284,7 @@ export default {
                       long: "34.99876"
         })
       },
-
-  // numberOfTicketsAvailable(pricebreak)
-  // {
-  //   let ticketNumber = [];
-  //   let available = Number(pricebreak.number ) - Number(pricebreak.sold);
-  //   for (let i = 1; i < available; i++) { 
-  //     if(i == 11) break;
-  //       ticketNumber[i] = String(i);
-  //   }
-  //   return ticketNumber;
-  // },
-          
+         
   total : function(pricebreak) {
       if(this.isTicketsAvailable(pricebreak))
       {
@@ -302,7 +306,8 @@ export default {
       var value = Number(pricebreak.tickets * pricebreak.price);
       return value == 0? "R 0.00": String('R ' + value + '.00');
     },
- },
+
+  },
 
   computed: {
 
@@ -321,8 +326,8 @@ export default {
     {
       var total = 0;
       this.pricebreaks.forEach(element => {
-        total += element.tickets;
-      });
+          total += element.tickets;
+       });
       return total ; 
    },
 
@@ -330,11 +335,13 @@ export default {
     {
       var value = 0;
       this.pricebreaks.forEach(element => {
-        value += Number(element.tickets * element.price);
+        
+         value += Number(element.tickets * element.price);
+        
       });
       return value == 0? "R 0.00": String('R ' + value + '.00');
     },
-  }
+ }
  
 };
 </script>

@@ -11,6 +11,8 @@
       </div>
       <h3 padding-left="20px">Ticket Purchaser: {{purchaser}}</h3>
       <h3 padding-left="20px">Email address: {{email}}</h3>
+       <h3 padding-left="20px">Ticket for: {{holder}}</h3>
+      <h3 padding-left="20px">Email address: {{holderemail}}</h3>
   </div>   
 </template>
 
@@ -28,10 +30,6 @@ export default {
 
   mounted() {
    
-    // if(localStorage.getItem(this.$props.ticketid))
-    //   {
-    //      this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
-    //    }
    },
 
   data() {
@@ -41,16 +39,11 @@ export default {
         tickets: [],
         purchaser: "",
         email: "",
+        holder: "",
+        holderemail: "",
         qrScannerKey: 0,
        }
     },
-
-  // props: {
-  //   ticketid: {
-  //   type: String,
-  //   required: true,
-  //   }
-  // },
 
 firebase() {
     return {
@@ -66,12 +59,14 @@ methods: {
         this.ticketReference = code[0];
         this.purchaser = code[1];
         this.email = code[2];
+        this.holder = code[3];
+        this.holderemail = code[4];
         this.UpdateData();
     },
 
     UpdateData()
     {
-      this.$bindAsArray(
+      this.$(
           "tickets",
           db.ref('tickets').orderByChild("reference").equalTo(this.ticketReference).limitToFirst(1),
           null,

@@ -13,15 +13,18 @@
               <input  type="text" v-model="promocode" placeholder="Promo code" class="infoblockitem"><br>
           </div>
 
-          <div class="infoblock"  v-show="shoppingcart.ticketHolders.length > 0">
+          <div class="infoblock"  >
               <strong >Each ticket will be emailed. You may change the name and email address to that of the person who will be using the ticket at the event</strong>
               <br>
-                  <div  v-for="ticketHolder in shoppingcart.ticketHolders" :key="ticketHolder['.key'] ">
+              <div  v-for="pricebreak in shoppingcart.pricebreaks" :key="pricebreak['.key'] ">
+                <small>Ticket {{pricebreak.name}}</small>
+                  <div  v-for="ticketHolder in pricebreak.ticketHolders" :key="ticketHolder['.key'] ">
                     <div class="ticketHolderBlock">
-                      <!-- <small>Ticket {{ticketHolder.ticketNumber}}</small> -->
+                      
                       <input type="text" v-model="ticketHolder.name" :placeholder="userName" class="ticketHolderItem"><br>
                       <input type="text" v-model="ticketHolder.email" :placeholder="buyer.email" class="ticketHolderItem"><br>
                     </div>
+                  </div>
                   </div>
                <br>
           </div>
@@ -74,7 +77,6 @@ export default {
         merchantId: zapperConfig.merchantId,
         siteId: zapperConfig.siteId,
         invalidpromo: false,
-        ticket: {},
         promotions: [],
         promocode: "",
         purchasevalue: "",
@@ -102,19 +104,6 @@ export default {
           readyCallback: () =>   
           {
             this.buyer = this.users[0];
-            var count = 0;
-            this.shoppingcart.pricebreaks.forEach(pricebreak => {
-              for(let i = 0;i <  pricebreak.tickets;i++)
-                {
-                  this.shoppingcart.ticketHolders.push({
-                      name : "",
-                      email: "",
-                      ticketNumber: count
-                    });
-                      count++;
-                 }
-               
-           });
             this.isready = true;
         },
         }
@@ -199,7 +188,7 @@ watch: {
 },
 
   computed: {
-
+ 
     promoText: function(){
 
       return this.haspromo? 'Your promotion value is: R ' + this.shoppingcart.promotionvalue  
@@ -207,8 +196,7 @@ watch: {
     },
 
     userName: function () {
-      debugger;
-      return this.buyer? this.buyer.firstname + ' ' + this.buyer.surname: "";
+     return this.buyer? this.buyer.firstname + ' ' + this.buyer.surname: "";
     },
 
     isMobile: function()
@@ -264,6 +252,7 @@ watch: {
   },
 
   created() {
+    debugger;
      this.shoppingcart = this.$props.shoppingcart;
      this.purchasevalue = this.total;  
     },

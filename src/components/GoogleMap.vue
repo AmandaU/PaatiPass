@@ -2,7 +2,7 @@
   <div >
     <a  @click="reCentremap()" style="float: right;text-decoration:underline;
     cursor: pointer">
-        <span >Re-centre map on event</span> 
+        <span >Re-centre map on event</span>  
     </a>
     <br>
      <div  :style="getMapStyle()" id="Googlemap" ref="map">

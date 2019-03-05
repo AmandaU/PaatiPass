@@ -5,24 +5,10 @@
           <br>
           <h1>Your payment was successful</h1>
           <cube-spin v-if="isReady"></cube-spin>
-          
           <h3>{{message1}}</h3>
           <h3>{{message2}}</h3>
           <h3>{{message3}}</h3>
           <br>
-          <div v-show="isReady " class="infoblock">
-            <div  v-for="guest in guests" :key="guest.reference">
-             
-                <h3>Ticket reference number: {{guest.reference}}</h3>
-                <input   type="text" v-model="guest.name" placeholder="Name" v-show="guests.length > 1" class="infoblockitem"><br>
-                <input  type="email" v-model="guest.email"  placeholder="Email" v-show="guests.length > 1" class="infoblockitem">><br>
-                <qrcode-vue  :value="guest.reference"></qrcode-vue>'
-                <div class="thinline"></div>  
-                <br>
-            </div>
-              <br>
-              <button v-show="isReady && guests.length > 1" @click="sendGuestTickets()" class="infoblockitem">Email your guest tickets</button>
-         </div>
         </div>
    </div>
    </div>
@@ -46,13 +32,12 @@ export default {
 
   data() {
       return {
-       
+        payFastRef: "",
         guests: [],
         users: [],
         user: {},
         pricebreaks:{},
         promotion: [],
-        tickets: [],
         shoppingcart: {},
         pricebreak:{},
         isReady: false,
@@ -69,16 +54,16 @@ export default {
       }
   },
 
-firebase() {
+ firebase() {
       return {
-           guestsRef: db.ref('guests'),
+           invoicesRef: db.ref('invoices'),
            ticketsRef: db.ref('tickets'),
            pricebreaksRef: db.ref('pricebreaks'),
            promotionsRef: db.ref('promotions')
          }
       },
 
-   computed: {
+  computed: {
 
     userName: function () {
       return this.user.firstname + ' ' + this.user.surname;
@@ -92,7 +77,7 @@ firebase() {
       return total;
    },
 
-    totalTicketValue: function () {
+  totalTicketValue: function () {
       var value = 0;
       this.shoppingcart.pricebreaks.forEach(element => {
         value += Number(element.tickets * element.price);
@@ -108,7 +93,7 @@ firebase() {
          this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
          this.shoppingcart.userid = currentuser.uid;
          this.shoppingcart.email = currentuser.email;
-        this.$bindAsArray(
+         this.$bindAsArray(
             "users",
             db.ref('users').orderByChild("email").equalTo(currentuser.email).limitToFirst(1),
             null,
@@ -127,7 +112,8 @@ firebase() {
                     }
                     else
                     {
-                     this.setTicket();
+                      this.shoppingcart.totalPaid =   String(this.totalTicketValue - this.shoppingcart.promotionvalue);
+                      this.setTicket();
                     }
                   }
                 );
@@ -152,37 +138,28 @@ methods: {
                 );
     },
 
-    createGuestTickets()
+    createInvoice()
     {
-        for(var ticketkey in this.tickets)
-        {
-          let ticket = this.tickets[ticketkey];
-          var guest = {
-            email: "",
-            name:  "",
-            eventname: ticket.eventname,
-            from: ticket.from,
-            to: ticket.to,
-            reference: ticket.reference,
-            venuename: this.shoppingcart.venuename,
-            venueaddress: this.shoppingcart.venueaddress,
-            venuelatlong: this.shoppingcart.venuelatlong
-          };
-          this.guests.push(guest);
-        }
-    },
-
-    sendGuestTickets()
-    {
-        for(var guestkey in this.guests)
-        {
-          let guest = this.guests[guestkey];
-           if(guest.email && guest.email != this.user.email)
-          {
-             this.$firebaseRefs.guestsRef.push(guest);
-          }
-        }
-         this.$router.replace({ name: 'Home'});
+      debugger;
+      this.processPromoCode(this.shoppingcart.promocode);
+      var initials = this.user.firstname.substring(0,1).toUpperCase() + this.user.surname.substring(0,1).toUpperCase();
+      var ref = initials + Math.random().toString(36).substr(2, 9);
+      
+      var invoice = {
+        reference: ref,
+        eventid: this.shoppingcart.event.id,
+        eventname: this.shoppingcart.event.name,
+        userid: this.user.uid,
+        email: this.user.email,
+        promocode: this.shoppingcart.promocode ,
+        promotionvalue: this.shoppingcart.promotionvalue ,
+        zapperRef: String(this.shoppingcart.zapperPaymentId),
+        payFastRef: this.payFastRef,
+        totalPaid: this.shoppingcart.totalPaid,
+        total: String(this.totalTicketValue),
+        totalTickets: this.totalTickets
+      }
+        this.$firebaseRefs.invoicesRef.push(invoice);
     },
 
     getZapperPaymentDetails()
@@ -206,7 +183,7 @@ methods: {
           .then((response) => {
               if(response.ReceiptStatus == 2)
               {
-                this.shoppingcart.zapperReference = response.ZapperId;
+                this.shoppingcart.zapperPaymentId = response.ZapperId;
                 this.shoppingcart.totalPaid = response.PaidAmount;
                 this.setTicket();
               }
@@ -225,56 +202,46 @@ methods: {
 
     setTicket ()
     {
-      debugger;
-       var isPromoProcessed = false;
-      this.shoppingcart.pricebreaks.forEach(pricebreak => {
+       this.shoppingcart.pricebreaks.forEach(pricebreak => {
  
          let key = pricebreak['.key'];
          const sold = Number(pricebreak.sold) + Number(pricebreak.tickets);
-          this.$firebaseRefs.pricebreaksRef.child(key).child('sold').set(sold);
-         
-            for(let i = 0; i < pricebreak.tickets ; i++)
-            {
-               var haspromo = !isPromoProcessed && this.shoppingcart.promocode;
-              let ref = this.shoppingcart.event.name.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
-              let qrcode = ref + '|' + this.user.firstname + ' ' + this.user.surname + '|' + this.user.email;
-              let ticket = {
-                  
-                  email:  this.user.email,
-                  name:  this.userName,
-                  userid: this.shoppingcart.userid,
-                  eventid: this.shoppingcart.event.id,
-                  eventname: this.shoppingcart.event.name,
-                  from: this.shoppingcart.event.from,
-                  to: this.shoppingcart.event.to,
-                  price: pricebreak.price ,
-                  reference: ref,
-                  qrcode: qrcode,
-                  promocode: haspromo? this.shoppingcart.promocode : "",
-                  promotionvalue: this.shoppingcart.promotionvalue ,
-                  venuename: this.shoppingcart.event.venuename,
-                  venueaddress: this.shoppingcart.event.venueaddress,
-                  venuelatlong: this.shoppingcart.event.venuelatlong,
-                  used: false
-                }
-                this.tickets.push(ticket);
-                 this.$firebaseRefs.ticketsRef.push(ticket);
-                 if(haspromo)
-                {
-                  this.processPromoCode(this.shoppingcart.promocode);
-                  isPromoProcessed = true;
-                }
+         this.$firebaseRefs.pricebreaksRef.child(key).child('sold').set(sold);
+          for(var holderkey in  pricebreak.ticketHolders )
+          {
+            var holder = pricebreak.ticketHolders[holderkey];
+           
+            let ref = this.shoppingcart.event.name.substring(0, 4).toUpperCase() +  Math.random().toString(36).substr(2, 9)
+            let qrcode = ref + '|' + this.userName + '|' + this.user.email + '|' + holder.name + '|' + holder.email;
+            
+            let ticket = {
+                ccemail: holder.email ==  ""? "" : this.user.email,
+                email:  holder.email == ""? this.user.email: holder.email,
+                holdername:  holder.name == ""? this.userName: holder.name,
+                buyername:  this.userName,
+                userid: this.shoppingcart.userid,
+                eventid: this.shoppingcart.event.id,
+                eventname: this.shoppingcart.event.name,
+                from: this.shoppingcart.event.from,
+                to: this.shoppingcart.event.to,
+                price: pricebreak.price ,
+                reference: ref,
+                qrcode: qrcode,
+                venuename: this.shoppingcart.event.venuename,
+                venueaddress: this.shoppingcart.event.venueaddress,
+                venuelatlong: this.shoppingcart.event.venuelatlong,
+                used: false
+              }
+                this.$firebaseRefs.ticketsRef.push(ticket);
             }
      });
      
         this.setConfirmationInfo();
-        this.createGuestTickets();
+        this.createInvoice();
      },
 
     setConfirmationInfo(){
-        debugger;
-  
-        const reference = 'Purchase reference number: ' + this.shoppingcart.reference;
+         const reference = 'Purchase reference number: ' + this.shoppingcart.reference;
         var total = String(this.totalTicketValue - this.shoppingcart.promotionvalue);
         var numberOfTickets = this.totalTickets > 1? ' tickets': ' ticket';
         var each = this.totalTickets > 1? ' each': '';
@@ -283,11 +250,10 @@ methods: {
         {
           this.message1 += ' You used your promotion code (' + this.shoppingcart.promocode + ') to the value of R' + this.shoppingcart.promotionvalue;
         }
-        this.message2 = 'The total deducted from your account is R' + total + '.00';
+        this.message2 = 'The total deducted from your account is R ' + total + '.00';
         if(this.totalTickets > 1)
         {
-          this.message3 = 'You have been emailed all the tickets with their QR codes which must be presented at the door by the ticket holder. ' +
-          'For your convenience, you may enter the name and email address of the ticket holders and we will email them the ticket as well.';
+          this.message3 = 'You have been emailed all the tickets with their QR codes which must be presented at the door by the ticket holder. ' ;
         }
         else
         {
@@ -295,6 +261,7 @@ methods: {
         }
         this.isReady = true;
     },
+    
   },
 };
 </script>
