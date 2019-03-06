@@ -7,7 +7,10 @@
               <div class="eventrow">
 
                   <div class="eventimagebox">
-                    <img v-bind:src="event.imageurl"  alt=""  /><br>
+                    
+                     <div  class="eventbackimage" v-bind:style="{ 'background-image': 'url(' + event.imageurl + ')'}"></div>
+                     <img class="eventfrontimage" v-bind:src="event.imageurl"  alt=""  /> 
+                   
                   </div>
 
                   <div class="eventinfobox">
@@ -22,10 +25,8 @@
                          <img src="../assets/rightarrow.jpg"  alt="About" /><br>
                       </router-link>
                   </div>
-
-                  <div class="thinline"></div>
-      
-              </div>
+               </div>
+               <div class="thinline"></div>
             </div>
        </div>
   </div>
