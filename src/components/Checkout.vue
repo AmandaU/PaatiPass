@@ -8,8 +8,8 @@
             <h2>{{ shoppingcart.event.name }}</h2>
             <h2>R {{ purchasevalue }}</h2>
             <div class="infoblock">
-              <strong >{{promoText}}</strong>
-              <small v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></small><br>
+              <strong v-show="!invalidpromo">{{promoText}}</strong>
+              <strong v-show="invalidpromo"><font color="red">Your promo code is not quite right yet...</font></strong>
               <input  type="text" v-model="promocode" placeholder="Promo code" class="infoblockitem"><br>
           </div>
 
@@ -17,16 +17,18 @@
               <strong >Each ticket will be emailed. You may change the name and email address to that of the person who will be using the ticket at the event</strong>
               <br>
               <div  v-for="pricebreak in shoppingcart.pricebreaks" :key="pricebreak['.key'] ">
-                <small>Ticket {{pricebreak.name}}</small>
+                 <div class="infoblockinner">
+                  <small >Ticket {{pricebreak.name}}</small>
+                 </div>
                   <div  v-for="ticketHolder in pricebreak.ticketHolders" :key="ticketHolder['.key'] ">
                     <div class="ticketHolderBlock">
-                      
                       <input type="text" v-model="ticketHolder.name" :placeholder="userName" class="ticketHolderItem"><br>
                       <input type="text" v-model="ticketHolder.email" :placeholder="buyer.email" class="ticketHolderItem"><br>
                     </div>
                   </div>
-                  </div>
-               <br>
+                
+             </div>
+              <br>
           </div>
 
         <!-- <creditcard  @eventname="updateparent"></creditcard> -->
@@ -38,10 +40,10 @@
     
           <a v-show="isready" @click="saveTicket(false)"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
             <br>
-          <a v-show="showZapperAppIcon" @click="saveTicket(true)"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
+          <a  v-show="showZapperAppIcon" @click="saveTicket(true)"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
         
           <br>
-          <div id="Zapper" v-show="showZapperQRCode"></div>
+          <div id="Zapper" v-show="showZapperQRCode" ></div>
        </div>
    </div>
  
@@ -88,7 +90,8 @@ export default {
         },
          merchantID: '10011455',//'12581557',
         merchantKey: 'ztdbyg14s7nyd',//'49qsjtvgayqaw',//
-        greaterThan800: window.innerWidth > 800
+        greaterThan800: window.innerWidth > 800,
+        zapperKey: 0,
       }
     },
 
@@ -111,35 +114,16 @@ export default {
      },
 
  mounted() {
-  
-     window.addEventListener('resize', this.handleWindowResize);
-    let self = this;
-
-      this.$loadScript("https://code.zapper.com/zapper.js")
-      .then(() => {
-        // zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
-        zapper("#Zapper", self.merchantId, self.siteId, '5.00',self.shoppingcart.reference, function (paymentResult) {
-           self.shoppingcart.paymentMethod = isZapper? 1: 0;
-          if(payment.status == 1)
-          {
-            self.shoppingcart.zapperPaymentId = paymentResult.payment.paymentId;
-            self.saveTicket(true,self);
-          }
-          else
-          {
-            self.shoppingcart.zapperPaymentId = paymentResult.paymentId;
-            localStorage.setItem(this.shoppingcart.reference, JSON.stringify(self.shoppingcart));
-            self.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
-          }
-          });
-      })
-      .catch(() => {
-        // Failed to fetch script
-      });
-    
+    window.addEventListener('resize', this.handleWindowResize);
     console.log('App mounted!');
-   
 },
+
+created() {
+     this.shoppingcart = this.$props.shoppingcart;
+     this.purchasevalue = this.total;  
+     this.loadZapperScript();
+    },
+
 watch: {
     promocode: function (val) {
   
@@ -166,6 +150,7 @@ watch: {
               this.shoppingcart.promocode = p.code;
               this.shoppingcart.promotionvalue = p.value;
               this.purchasevalue =  String(this.total - p.value);
+              if(!this.haspromo) this.loadZapperScript();
               this.haspromo = true;
             }
           }
@@ -174,10 +159,12 @@ watch: {
         if(!foundpromo) 
           {
             this.invalidpromo = true;
-            this.haspromo = false;
+            
             this.shoppingcart.promocode = "";
             this.shoppingcart.promotionvalue = 0;
             this.purchasevalue = String(this.total);
+            if(this.haspromo) this.loadZapperScript();
+            this.haspromo = false;
           }
 
       },
@@ -240,8 +227,8 @@ watch: {
     },
 
      zapperUrl: function () {
-     // const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
-        const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + '5.00' + '|11,66|' + this.shoppingcart.reference +
+      const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
+        //const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + '5.00' + '|11,66|' + this.shoppingcart.reference +
         '|10,60|1:10[38|Paati+Passports,39|ZAR';
         const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
         '&appName=Paati+Passports' +
@@ -251,13 +238,37 @@ watch: {
     },
   },
 
-  created() {
-    debugger;
-     this.shoppingcart = this.$props.shoppingcart;
-     this.purchasevalue = this.total;  
-    },
-
   methods: {
+
+    loadZapperScript()
+    {
+      let self = this;
+
+      this.$loadScript("https://code.zapper.com/zapper.js")
+      .then(() => {
+         zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
+           debugger;
+          self.shoppingcart.zapperPaymentMethod = true;
+          
+          if(paymentResult.status == 1)
+          {
+            self.shoppingcart.zapperPaymentId = paymentResult.payment.paymentId;
+            self.shoppingcart.totalPaid = paymentResult.payment.amountPaid;
+            self.shoppingcart.zapperReference = paymentResult.payment.zapperId;
+            self.saveTicket(true,self);
+          }
+          else
+          {
+            self.shoppingcart.zapperPaymentId = paymentResult.paymentId;
+            localStorage.setItem(self.shoppingcart.reference, JSON.stringify(self.shoppingcart));
+            self.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
+          }
+          });
+      })
+      .catch(() => {
+        // Failed to fetch script
+      });
+    },
 
      media800Enter(mediaQueryString) {
       this.greaterThan800 = false
@@ -283,22 +294,17 @@ watch: {
     },
    
     saveTicket(isZapper, instance) {
+      debugger;
       if(!instance)
       {
          instance = this;
       }
 
-      instance.shoppingcart.ticketHolders.forEach(ticketHolder => {
-        if(!ticketHolder.name) 
-        {
-          ticketHolder.name = instance.userName;
-          ticketHolder.email = instance.buyer.email;
-        }
-      });
       instance.shoppingcart.zapperPaymentMethod = isZapper;
       // let key = instance.shoppingcart.pricebreak['.key'];
       // let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);
       // instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
+      
       localStorage.setItem(instance.shoppingcart.reference, JSON.stringify(instance.shoppingcart));
       
     },

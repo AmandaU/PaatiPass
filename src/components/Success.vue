@@ -87,6 +87,7 @@ export default {
   },
 
   created(){
+    debugger;
       let currentuser = firebase.auth().currentUser;
       if(localStorage.getItem(this.$props.ticketid))
       {
@@ -140,7 +141,6 @@ methods: {
 
     createInvoice()
     {
-      debugger;
       this.processPromoCode(this.shoppingcart.promocode);
       var initials = this.user.firstname.substring(0,1).toUpperCase() + this.user.surname.substring(0,1).toUpperCase();
       var ref = initials + Math.random().toString(36).substr(2, 9);
