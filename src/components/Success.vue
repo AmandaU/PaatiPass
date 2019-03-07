@@ -153,7 +153,7 @@ methods: {
         email: this.user.email,
         promocode: this.shoppingcart.promocode ,
         promotionvalue: this.shoppingcart.promotionvalue ,
-        zapperRef: String(this.shoppingcart.zapperPaymentId),
+        zapperRef: String(this.shoppingcart.zapperReference),
         payFastRef: this.payFastRef,
         totalPaid: this.shoppingcart.totalPaid,
         total: String(this.totalTicketValue),
