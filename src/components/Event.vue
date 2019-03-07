@@ -1,16 +1,16 @@
 <template>
   <div class="centralcontainer">
-   <div class="centreblock">
+    <div class="centreblock">
       <h1>{{ event.name }}</h1>
       <h2>{{ event.from }} - {{ event.to }}</h2>
       <h2>{{ event.venuename }}</h2>
       <small>{{ event.venueaddress }}</small><br>
       <br>
-     <cube-spin v-if="busy"></cube-spin>
-        <div class="eventblock">
+      <cube-spin v-if="busy"></cube-spin>
+      <div class="eventblock">
           <br>
            <div class="pricebreakblock">
-            <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
+             <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
               <div class="pricebreakrow">
             
                 <div class="pricebreakcolumn1">
@@ -19,32 +19,31 @@
                 </div>
 
                 <div  class="pricebreakcolumn2">
-                      <div v-show="!isTicketsAvailable(pricebreak)" class="pricebreakdetailitem">SOLD OUT !! </div>
-                     
-                      <div v-show="isTicketsAvailable(pricebreak)" class="pricebreaknumberrow" >
+                     <div v-show="!isTicketsAvailable(pricebreak)" class="pricebreakdetailitem">SOLD OUT !! </div>
+                
+                     <div v-show="isTicketsAvailable(pricebreak)" class="pricebreaknumberrow" >
 
-                         <div  class="ticketselection ">
-                            <div  v-show="pricebreak.tickets> 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}    </div>
-                            <br>
+                        <div  class="ticketselection ">
+                          <div  v-show="pricebreak.tickets> 0" class="pricebreakdetailitem"> {{pricebreak.tickets}}</div>
+                        </div>  
+                        <br>
 
-                            <div  class="pricebreakbuttonbox">
-                              <img src="../assets/plus.jpg"  alt="plus"  @click="ticketsSelected(pricebreak,true)" class="pricebreakimage"/>
-                              <img v-show="pricebreak.tickets > 0" src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
-                            </div>   
-                               
-                          </div> 
+                        <div  class="pricebreakbuttonbox">
+                          <img src="../assets/plus.jpg"  alt="plus"  @click="ticketsSelected(pricebreak,true)" class="pricebreakimage"/>
+                          <img v-show="pricebreak.tickets > 0" src="../assets/minus.png"  alt="minus"  @click="ticketsSelected(pricebreak, false)" class="pricebreakimage"/><br>
+                        </div>   
+                  
+                    </div> 
+                </div>  
 
-                      </div> 
-                </div>
+                 <div class="thinline"></div>  
 
-                <div class="thinline"></div>  
-
-              </div>
-            </div>
+              </div> 
+             </div> 
            </div>
 
           <div class="shoppingcartblock">
-            <div class="checkoutblock">
+             <div class="checkoutblock">
               <h2>Checkout</h2>
 
               <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key'] ">
@@ -63,13 +62,13 @@
               <br>
 
                 <div  class="checkoutrow ">
-                   <div  class="checkouttickets "/>
-                   <div  class="checkouttickettotal "> 
-                     <div class="thinline"></div>  
-                   </div> 
+                    <div  class="checkouttickets "/>
+                    <div  class="checkouttickettotal "> 
+                      <div class="thinline"></div>  
+                    </div> 
                 </div> 
 
-                 <div  class="checkoutrow ">
+                  <div  class="checkoutrow ">
                   <div  class="checkouttickets ">
                       <small>Total: {{totalTickets}}</small>
                   </div>
@@ -80,22 +79,21 @@
                   </div> 
               
                 <br> 
-               
+                
                 <div v-show="totalTickets > 0" @click="BuyTickets()" class="buybutton">Buy</div>
-             
+              
             </div>  
-          </div>
-      </div>
-       
-      <br> <br>
-        <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
-      <br>
+          </div> 
 
-  </div>
-    
+      </div> 
+  
+
+      <br> <br>
+      <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
+      <br>
+    </div>
   </div>
   
- 
 </template>
 
 <script>

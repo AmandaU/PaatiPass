@@ -113,6 +113,7 @@ button {
 
 .centralcontainer {
   min-height: 70vh;
+  max-width: 100vw;
   height:100%;
   width:100%;
   float:right;
@@ -163,7 +164,8 @@ button {
   display: flex;
   flex-direction: row;
   margin: 0, auto;
-  width: 80%;
+  width: 90%;
+  //max-width: 90%;
  }
 
 .pricebreakblock{
@@ -171,10 +173,11 @@ button {
   background-color:white;
   display: flex;
   flex-direction: column;
-  justify-content: left;
-  align-items: left;
-  text-align: left;
-  //margin: 0, auto;
+  margin: 0, auto;
+  // justify-content: left;
+  // align-items: left;
+  // text-align: left;
+  
   
 }
 
@@ -182,8 +185,11 @@ button {
   flex: 0.4;
   background-color:white;
   display: flex;
-  justify-content: center;
-  flex-direction: row;
+  flex-direction: column;
+  margin: 0, auto;
+ justify-content: right;
+  align-items: right;
+  text-align: center;
    vertical-align: top;
    margin-left: 30px;
    margin-top:30px;
@@ -195,7 +201,9 @@ button {
   background-color:white;
   display: flex;
   flex-direction: column;
-   vertical-align: top;
+   vertical-align: top; 
+   align-items: right;
+   justify-content: right;
   border: 1px solid rgb(225, 225, 226);
   border-radius: 5px;
    margin: 0, auto; 
@@ -240,6 +248,8 @@ button {
 
 
 .centreblock {
+  max-width: 100%;
+  width: 100%;
   background-color:white;
   display: flex;
   flex-direction: column;
@@ -348,7 +358,7 @@ button {
   }
 
 .thinline{
-  width: 90vw;
+  width: 100%;
   height:200px;
   margin-bottom: 0px;
   margin-top: 0px;
@@ -392,7 +402,7 @@ button {
 
 .pricebreakrow {
  
-  background-color: white;
+  background-color:white;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -409,8 +419,8 @@ button {
 }
 
 .pricebreakcolumn1{
-  //background-color: white;
-  width : 100%;
+  background-color: white;
+  //width : 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -424,9 +434,9 @@ button {
   
 }
 
-.pricebreakcolumn2 {
-  //background-color:rgb(107, 31, 126);
-  width: 100%;
+.pricebreakcolumn2{
+  background-color:white;
+  //width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -446,16 +456,29 @@ button {
   border: 1px solid rgb(225, 225, 226);
   border-radius: 5px;
   padding: 2px;
- 
- 
+  
 }
 
-.ticketselection{
-  //flex: 0.5;
+.pricebreakbuttonbox{
+  background-color:white;
   display: flex;
   flex-direction: row;
   cursor: pointer;
-  width: 100%;
+  flex: 0.6;
+  height: 100%;
+  flex-direction: flex;
+  align-items: center;
+  text-align: right; 
+  justify-content: right;
+  vertical-align: middle;
+}
+
+.ticketselection{
+  flex: 0.4;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+  //width: 100%;
   height: 100%;
   flex-direction: flex;
   align-items: center;
@@ -486,7 +509,7 @@ button {
   }
 
 .pricebreaknumberrow{
-  //background-color:rgb(17, 177, 110);
+  background-color:white;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -593,12 +616,13 @@ button {
   //pricebreaks
 
   .eventblock{
-    flex-direction: column;
-     width: 80%;
+    flex-direction: row;
+     width: 100%;
    }
   
   .pricebreakrow {
     //width: 600px;
+    flex-direction: row;
     justify-content: left;
     align-items: left;
     text-align: left;
@@ -631,24 +655,19 @@ button {
     padding: 0px;
     }
 
-    .ticketselection{
-      flex: 1;
-    }
-
+   
     .pricebreakblock{
-      flex: 1;
-     
+      flex: 0.7;
       //margin: 0, auto;
-      
     }
     
     .shoppingcartblock{
-      flex: 1;
-       margin-left: 30px;
+      flex: 0.3;
+       //margin-left: 30px;
     }
 
     .checkoutblock{
-      width: 80%;
+      width: 100%;
     }
 }
 
@@ -738,21 +757,27 @@ button {
 
     .pricebreakcolumn1{
    
-      flex: 1;
+       flex: 1;
       align-items: center;
       text-align: center; 
       justify-content: center;
       vertical-align: middle;
-    
+     
     }
     
     .pricebreakcolumn2{
-     
+      flex-direction: row;
       flex: 1;
       align-items: center;
       text-align: center; 
       justify-content: center;
       vertical-align: middle;
+      
+    }
+
+    .pricebreakblock{
+      flex: 1;
+      //margin: 0, auto;
     }
     
     .shoppingcartblock{

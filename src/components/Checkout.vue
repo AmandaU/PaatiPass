@@ -233,8 +233,8 @@ watch: {
      
         const url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.shoppingcart.event.name 
         + '&item_description=tickets&amount=' + this.purchasevalue + '.00' 
-        + '&return_url=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        + '&cancel_url=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&return_url=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&cancel_url=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         //console.log(url);
         return url;
     },
@@ -245,8 +245,8 @@ watch: {
         '|10,60|1:10[38|Paati+Passports,39|ZAR';
         const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
         '&appName=Paati+Passports' +
-        '&successCallbackURL=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        '&failureCallbackURL=http%3A%2F%2F192.168.8.109%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&successCallbackURL=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&failureCallbackURL=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         return url;
     },
   },
