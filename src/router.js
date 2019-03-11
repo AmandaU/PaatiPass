@@ -85,7 +85,7 @@ const router = new Router({
       //test
       props: (route) => ({
         ticketid: route.query.ticketid,
-          })
+      })
     },     
     {
       path: '/Cancel',

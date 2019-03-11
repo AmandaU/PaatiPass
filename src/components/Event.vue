@@ -68,7 +68,7 @@
                     </div> 
                 </div> 
 
-                  <div  class="checkoutrow ">
+                <div  class="checkoutrow ">
                   <div  class="checkouttickets ">
                       <small>Total: {{totalTickets}}</small>
                   </div>
@@ -76,7 +76,7 @@
                   <div  class="checkouttickettotal "> 
                     <small>{{totalTicketValue}}</small>
                     </div>
-                  </div> 
+                </div> 
               
                 <br> 
                 
@@ -100,7 +100,6 @@
   import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
   import firebase from '../firebase-config';
   import {  db } from '../firebase-config';
-  import {zapperConfig} from '../config';
   import GoogleMap from '../components/GoogleMap'
   
 export default {

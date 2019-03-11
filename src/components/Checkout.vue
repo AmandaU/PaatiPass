@@ -38,12 +38,13 @@
           <!-- <a v-show="isready" href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=10011455&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fid%3D12345&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fid%3D12345"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
           <!-- <a href="https://sandbox.payfast.co.za/eng/process?cmd=_paynow&amp;receiver=12581557&amp;item_name=Event&amp;item_description=tickets&amp;amount=100.00&amp;return_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D12345%26pricebreakid%3D6789&amp;cancel_url=http%3A%2F%2F192.168.8.107%3A8080%2F%23%2FCancel%2F%3Fticketid%3D12345%26pricebreakid%3D6789"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a> -->
     
-          <a v-show="isready" @click="saveTicket(false)"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
+          <a v-show="isready" @click="saveTicket()"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
             <br>
-          <a  v-show="showZapperAppIcon" @click="saveTicket(true)"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
+          <a  v-show="showZapperAppIcon" @click="saveTicket()"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
         
           <br>
           <div id="Zapper" v-show="showZapperQRCode" ></div>
+           <!-- <div id="Zapper"  class="zapper"></div> -->
        </div>
    </div>
  
@@ -59,6 +60,7 @@
  // import axios from "axios";
   import md5 from "js-md5";
   import qs from "qs";
+  //import zapper from 'zapperjs'
 
   
 export default {
@@ -76,6 +78,7 @@ export default {
 
   data() {
       return {
+        zapperConfig: zapperConfig,
         merchantId: zapperConfig.merchantId,
         siteId: zapperConfig.siteId,
         invalidpromo: false,
@@ -122,6 +125,7 @@ created() {
      this.shoppingcart = this.$props.shoppingcart;
      this.purchasevalue = this.total;  
      this.loadZapperScript();
+    // this.loadZapperV2();
     },
 
 watch: {
@@ -150,7 +154,10 @@ watch: {
               this.shoppingcart.promocode = p.code;
               this.shoppingcart.promotionvalue = p.value;
               this.purchasevalue =  String(this.total - p.value);
-              if(!this.haspromo) this.loadZapperScript();
+              if(!this.haspromo)  this.loadZapperScript();
+            //    paymentWidget.update({
+            //     amount: this.purchasevalue
+            // })
               this.haspromo = true;
             }
           }
@@ -163,7 +170,10 @@ watch: {
             this.shoppingcart.promocode = "";
             this.shoppingcart.promotionvalue = 0;
             this.purchasevalue = String(this.total);
-            if(this.haspromo) this.loadZapperScript();
+            if(this.haspromo)  this.loadZapperScript();
+            // paymentWidget.update({
+            //     amount: this.purchasevalue
+            // })
             this.haspromo = false;
           }
 
@@ -220,34 +230,72 @@ watch: {
      
         const url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.shoppingcart.event.name 
         + '&item_description=tickets&amount=' + this.purchasevalue + '.00' 
-        + '&return_url=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        + '&cancel_url=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&return_url=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&cancel_url=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         //console.log(url);
         return url;
     },
 
      zapperUrl: function () {
       const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
-        //const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + '5.00' + '|11,66|' + this.shoppingcart.reference +
         '|10,60|1:10[38|Paati+Passports,39|ZAR';
         const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
         '&appName=Paati+Passports' +
-        '&successCallbackURL=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        '&failureCallbackURL=http%3A%2F%2F192.168.8.104%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&successCallbackURL=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        '&failureCallbackURL=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
         return url;
     },
   },
 
   methods: {
 
+    loadZapperV2()
+    {
+        const paymentWidget = new zapper.payments.PaymentWidget(
+        "Zapper",
+        {
+            merchantId: 39547,
+            siteId: 47945,
+            amount: 10.50,
+            reference: "JA12345" 
+        })
+
+        //  const paymentWidget = new zapper.payments.PaymentWidget(
+        // "Zapper",
+        // {
+        //     merchantId: this.zapperConfig.merchantId,
+        //     siteId: this.zapperConfig.siteId,
+        //     amount: this.purchasevalue,
+        //     reference: this.shoppingcart.reference 
+        // })
+
+        // paymentWidget.on('payment', ({ status, paidAmount, zapperId, reference }) => {    
+        //    self.shoppingcart.zapperPaymentMethod = true;
+        //   debugger;
+        //   if(status == 1)
+        //   {
+        //     self.shoppingcart.totalPaid = paidAmount;
+        //     self.shoppingcart.zapperPaymentId  = zapperId;
+        //     self.shoppingcart.zapperReference = reference;
+        //     self.saveTicket(true,self);
+        //      self.$router.replace({ name: 'Success', params: {ticketparam: self.shoppingcart.reference}});
+        //   }
+        //   else
+        //   {
+        //     self.shoppingcart.zapperPaymentId = zapperId;
+        //      self.shoppingcart.zapperReference = reference;
+        //     localStorage.setItem(self.shoppingcart.reference, JSON.stringify(self.shoppingcart));
+        //     self.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
+        //   }
+        //})
+    },
+
     loadZapperScript()
     {
       let self = this;
-
-      this.$loadScript("https://code.zapper.com/zapper.js")
+     this.$loadScript("https://code.zapper.com/zapper.js")
       .then(() => {
          zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
-           debugger;
           self.shoppingcart.zapperPaymentMethod = true;
           
           if(paymentResult.status == 1)
@@ -255,7 +303,8 @@ watch: {
             self.shoppingcart.zapperPaymentId = paymentResult.payment.paymentId;
             self.shoppingcart.totalPaid = paymentResult.payment.amountPaid;
             self.shoppingcart.zapperReference = paymentResult.payment.zapperId;
-            self.saveTicket(true,self);
+            self.saveTicket(self);
+             self.$router.replace({ name: 'Success', params: {ticketparam: self.shoppingcart.reference}});
           }
           else
           {
@@ -293,20 +342,19 @@ watch: {
         this.containerWidth = event.currentTarget.innerWidth/3; 
     },
    
-    saveTicket(isZapper, instance) {
-      debugger;
+    saveTicket(instance) {
       if(!instance)
       {
          instance = this;
       }
 
-      instance.shoppingcart.zapperPaymentMethod = isZapper;
+     // instance.shoppingcart.zapperPaymentMethod = isZapper;
       // let key = instance.shoppingcart.pricebreak['.key'];
       // let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);
       // instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
       
       localStorage.setItem(instance.shoppingcart.reference, JSON.stringify(instance.shoppingcart));
-      
+  
     },
 
     saveTicketLocal(instance) {

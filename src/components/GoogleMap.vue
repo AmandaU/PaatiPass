@@ -103,6 +103,7 @@ methods:
            window.onresize = function() {
           
             const mapdiv = document.getElementById('Googlemap');
+            if(!mapdiv)return;
              mapdiv.style.height = self.getMapHeight();
             mapdiv.style.width = self.getMapWidth();
             mapdiv.style.paddingTop = self.getMapPadding();

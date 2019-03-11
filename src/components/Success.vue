@@ -20,7 +20,7 @@ import firebase from '../firebase-config';
 import {  db } from '../firebase-config';
 import QrcodeVue from 'qrcode.vue';
 import CubeSpin from 'vue-loading-spinner/src/components/ScaleOut'
-import axios from "axios";
+import axios from 'axios';
 import { sha256, sha224 } from 'js-sha256';
 
 export default {
@@ -32,6 +32,7 @@ export default {
 
   data() {
       return {
+        zapperDetails: zapperConfig,
         payFastRef: "",
         guests: [],
         users: [],
@@ -50,8 +51,9 @@ export default {
  props: {
       ticketid: {
         type: String,
-        required: true,
-      }
+        //required: true,
+      },
+      ticketparam: ""
   },
 
  firebase() {
@@ -87,11 +89,13 @@ export default {
   },
 
   created(){
-    debugger;
       let currentuser = firebase.auth().currentUser;
-      if(localStorage.getItem(this.$props.ticketid))
+      alert(String(this.$props.ticketid));
+       alert(String(this.$props.ticketparam));
+      var ticketid = this.$props.ticketid? this.$props.ticketid: this.$props.ticketparam;
+      if(localStorage.getItem(ticketid))
       {
-         this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
+         this.shoppingcart = JSON.parse(localStorage.getItem(ticketid));
          this.shoppingcart.userid = currentuser.uid;
          this.shoppingcart.email = currentuser.email;
          this.$bindAsArray(
@@ -105,14 +109,17 @@ export default {
                   db.ref('pricebreaks'),
                   null,
                   () => {
-                    // venues Ready Callback
                     // console.log(`all calls done`)
                     if(this.shoppingcart.zapperPaymentMethod)
                     {
-                      this.getZapperPaymentDetails();
+                      this.$nextTick(() => {
+                        this.getZapperPaymentDetails();
+                      });
+                     
                     }
                     else
                     {
+                      alert("non zapper");
                       this.shoppingcart.totalPaid =   String(this.totalTicketValue - this.shoppingcart.promotionvalue);
                       this.setTicket();
                     }
@@ -154,6 +161,7 @@ methods: {
         promocode: this.shoppingcart.promocode ,
         promotionvalue: this.shoppingcart.promotionvalue ,
         zapperRef: String(this.shoppingcart.zapperReference),
+        zapperPaymentId: String(this.shoppingcart.zapperPaymentId),
         payFastRef: this.payFastRef,
         totalPaid: this.shoppingcart.totalPaid,
         total: String(this.totalTicketValue),
@@ -164,41 +172,45 @@ methods: {
 
     getZapperPaymentDetails()
     {
-      const signature = this.createSecuritySignature(zapperConfig.posToken, zapperConfig.poskey);
-      const url = 'https://zapapi.zapzap.mobi/ecommerce/api/v2/merchants/' + zapperConfig.merchantId 
-      + '/sites/'+ config.zapperConfig.siteId  + '/payments/' + this.shoppingcart.zapperPaymentId;
-        axios.get(
+      let self = this;
+      const url = 'https://zapapi.zapzap.mobi/ecommerce/api/v2/merchants/' + this.zapperDetails.merchantId + '/sites/' + this.zapperDetails.siteId + '/payments/' + this.shoppingcart.zapperPaymentId;
+         this.axios.get(
           url,
           {headers: {
            // "status": 'HTTP/1.0 200 OK',
-            "siteid": "1",
-            "poskey": this.poskey,
-            "posid": this.posToken,
-            "postype": "Paati Passports",
+            "siteid": String(this.zapperDetails.siteId),
+            "poskey": this.zapperDetails.posKey,
+            "posid": this.zapperDetails.posToken,
+            "postype": "paatipassports",
             "posversion": "1.0",
-            "signature": signature
+            "signature": this.zapperDetails.signature
             }
           }
           )
           .then((response) => {
-              if(response.ReceiptStatus == 2)
+              if(response.data.statusId == 1)
               {
-                this.shoppingcart.zapperPaymentId = response.ZapperId;
-                this.shoppingcart.totalPaid = response.PaidAmount;
-                this.setTicket();
+                var data = response.data.data[0];
+                if(!data)return;
+                self.shoppingcart.zapperReference = data.ZapperId;
+                self.shoppingcart.totalPaid = data.PaidAmount;
+                self.setTicket();
               }
             },
-            (error) => { }
+            (error) => { 
+
+            }
           );
     },
 
     createSecuritySignature: function (posToken,posKey)
     {
-      var plainValue =  posToken.concat("&").concat(posKey).toUpperCase();
+     var plainValue =  posToken.concat("&").concat(posKey).toUpperCase();
       var hash =  sha256(plainValue);
-      hash = hash.Replace("-", "");
+      hash = hash.replace("-", "");
       return hash;
     },
+
 
     setTicket ()
     {
@@ -250,14 +262,14 @@ methods: {
         {
           this.message1 += ' You used your promotion code (' + this.shoppingcart.promocode + ') to the value of R' + this.shoppingcart.promotionvalue;
         }
-        this.message2 = 'The total deducted from your account is R ' + total + '.00';
+        this.message2 = 'The total deducted from your account is R ' + this.shoppingcart.totalPaid + '.00';
         if(this.totalTickets > 1)
         {
           this.message3 = 'You have been emailed all the tickets with their QR codes which must be presented at the door by the ticket holder. ' ;
         }
         else
         {
-          this.message3 = 'You will receive an email with this QR code that needs to be presented at the door of the venue';
+          this.message3 = 'You will receive an email with a QR code that needs to be presented at the door of the venue';
         }
         this.isReady = true;
     },
