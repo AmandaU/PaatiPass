@@ -48,14 +48,6 @@ export default {
       }
     },
 
- props: {
-      ticketid: {
-        type: String,
-        //required: true,
-      },
-      ticketparam: ""
-  },
-
  firebase() {
       return {
            invoicesRef: db.ref('invoices'),
@@ -90,12 +82,11 @@ export default {
 
   created(){
       let currentuser = firebase.auth().currentUser;
-      alert(String(this.$props.ticketid));
-       alert(String(this.$props.ticketparam));
-      var ticketid = this.$props.ticketid? this.$props.ticketid: this.$props.ticketparam;
-      if(localStorage.getItem(ticketid))
+      var ticketref =  window.location.hash.substring(10,window.location.hash.length) ;
+      if(localStorage.getItem(ticketref))
       {
-         this.shoppingcart = JSON.parse(localStorage.getItem(ticketid));
+         this.shoppingcart = JSON.parse(localStorage.getItem(ticketref));
+         localStorage.removeItem(ticketref);
          this.shoppingcart.userid = currentuser.uid;
          this.shoppingcart.email = currentuser.email;
          this.$bindAsArray(
@@ -119,7 +110,6 @@ export default {
                     }
                     else
                     {
-                      alert("non zapper");
                       this.shoppingcart.totalPaid =   String(this.totalTicketValue - this.shoppingcart.promotionvalue);
                       this.setTicket();
                     }
@@ -168,6 +158,7 @@ methods: {
         totalTickets: this.totalTickets
       }
         this.$firebaseRefs.invoicesRef.push(invoice);
+       
     },
 
     getZapperPaymentDetails()

@@ -78,14 +78,15 @@ const router = new Router({
       props: true,
     },  
     {
-      path: '/success',
+      path: '/success/:ticketref',
       name: 'Success',
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
       //test
-      props: (route) => ({
-        ticketid: route.query.ticketid,
-      })
+      // props: (route) => ({
+      //   ticketid: route.query.ticketid,
+      //   ticketparam: ""
+      // })
     },     
     {
       path: '/Cancel',

@@ -40,11 +40,11 @@
     
           <a v-show="isready" @click="saveTicket()"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
             <br>
-          <a  v-show="showZapperAppIcon" @click="saveTicket()"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
-        
+          <!-- <a  v-show="showZapperAppIcon" @click="saveTicket()"  v-bind:href="zapperUrl"><img src="../assets/ZapperLogo.png" width="200" height="113" alt="Pay" title="Zapper" /></a>
+         -->
           <br>
-          <div id="Zapper" v-show="showZapperQRCode" ></div>
-           <!-- <div id="Zapper"  class="zapper"></div> -->
+          <!-- <div id="Zapper" v-show="showZapperQRCode" ></div> -->
+           <div id="Zapper" ></div>
        </div>
    </div>
  
@@ -206,17 +206,7 @@ watch: {
           navigator.userAgent.match(/BlackBerry/i) ||
           navigator.userAgent.match(/Windows Phone/i) ;
     },
-     
-    showZapperQRCode: function ()
-    {
-      return this.isready && !this.isMobile;
-    },
-
-    showZapperAppIcon: function ()
-    {
-      return this.isready && this.isMobile;
-    },
-
+    
     total: function()
     {
       var theTotal = 0;
@@ -236,15 +226,15 @@ watch: {
         return url;
     },
 
-     zapperUrl: function () {
-      const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
-        '|10,60|1:10[38|Paati+Passports,39|ZAR';
-        const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
-        '&appName=Paati+Passports' +
-        '&successCallbackURL=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        '&failureCallbackURL=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        return url;
-    },
+    //  zapperUrl: function () {
+    //   const qrcode = 'http://2.zap.pe?t=6&i=' + zapperConfig.merchantId + ':' + zapperConfig.siteId +':7[34|' + this.purchasevalue + '|11,66|' + this.shoppingcart.reference +
+    //     '|10,60|1:10[38|Paati+Passports,39|ZAR';
+    //     const url = 'https://www.zapper.com/payWithZapper?qr=' + qrcode + 
+    //     '&appName=Paati+Passports' +
+    //     '&successCallbackURL=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+    //     '&failureCallbackURL=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+    //     return url;
+    // },
   },
 
   methods: {
@@ -297,14 +287,13 @@ watch: {
       .then(() => {
          zapper("#Zapper", self.merchantId, self.siteId, self.purchasevalue,self.shoppingcart.reference, function (paymentResult) {
           self.shoppingcart.zapperPaymentMethod = true;
-          
           if(paymentResult.status == 1)
           {
             self.shoppingcart.zapperPaymentId = paymentResult.payment.paymentId;
             self.shoppingcart.totalPaid = paymentResult.payment.amountPaid;
             self.shoppingcart.zapperReference = paymentResult.payment.zapperId;
-            self.saveTicket(self);
-             self.$router.replace({ name: 'Success', params: {ticketparam: self.shoppingcart.reference}});
+            self.saveTicket(self); 
+             self.$router.replace({ name: 'Success', params: {ticketref: self.shoppingcart.reference}});
           }
           else
           {
@@ -343,18 +332,14 @@ watch: {
     },
    
     saveTicket(instance) {
-      if(!instance)
-      {
-         instance = this;
-      }
-
+      if(!instance) instance = this;
+     
      // instance.shoppingcart.zapperPaymentMethod = isZapper;
       // let key = instance.shoppingcart.pricebreak['.key'];
       // let totalreserved  = Number(instance.shoppingcart.pricebreak.reserved) + Number(instance.shoppingcart.pricebreak.tickets);
       // instance.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
       
       localStorage.setItem(instance.shoppingcart.reference, JSON.stringify(instance.shoppingcart));
-  
     },
 
     saveTicketLocal(instance) {
@@ -367,14 +352,6 @@ watch: {
       this.$router.replace({ name: 'Success', params: {ticketid: String(this.$props.shoppingcart.reference)}});
     },
 
-    // buyTicket() {
-       
-    //    this.busy = true;
-    //    var key = this.shoppingcart.pricebreak['.key'];
-    //    let totalreserved  = this.shoppingcart.pricebreak.reserved + this.shoppingcart.tickets;
-    //    this.$firebaseRefs.pricebreaks.child(key).child('reserved').set(totalreserved);
-    //    this.ProcessPayment();
-    //  },
   }
 }
 
