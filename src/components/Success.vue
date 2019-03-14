@@ -30,6 +30,10 @@ export default {
     QrcodeVue
   },
 
+   props: {
+       ticketref: '',
+   },
+
   data() {
       return {
         zapperDetails: zapperConfig,
@@ -82,7 +86,13 @@ export default {
 
   created(){
       let currentuser = firebase.auth().currentUser;
-      var ticketref =  window.location.hash.substring(10,window.location.hash.length) ;
+      var ticketref = "";
+      var index = window.location.hash.indexOf("=");
+      if(index >= 0)
+      {
+         ticketref =  window.location.hash.substring(index+1,window.location.hash.length) ;
+      }
+      
       if(localStorage.getItem(ticketref))
       {
          this.shoppingcart = JSON.parse(localStorage.getItem(ticketref));

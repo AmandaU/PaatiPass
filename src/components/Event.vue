@@ -87,7 +87,6 @@
 
       </div> 
   
-
       <br> <br>
       <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>
       <br>
@@ -122,8 +121,6 @@ export default {
        busy: false,
       events: [],
       pricebreaks: [],
-       
-     // pricebreaks2: [],
       shoppingcart: {},
       addressCoordinate: {
         latitude: '',
@@ -234,14 +231,14 @@ export default {
           });
         this.shoppingcart.pricebreaks = filteredData;
         const currentUser = firebase.auth().currentUser;
-        
+        localStorage.setItem(this.shoppingcart.reference, JSON.stringify(this.shoppingcart));
         if (!currentUser)
         {
-          this.$router.replace({ name: 'Login', params: {shoppingcart: this.shoppingcart}});
+          this.$router.replace({ name: 'Login', params: {ticketref: this.shoppingcart.reference}});
         } 
         else
         {
-          this.$router.replace({ name: 'Checkout', params: {shoppingcart: this.shoppingcart}});
+           this.$router.replace({ name: 'Checkout', query: {ticketref: this.shoppingcart.reference}});
         }
       },
 

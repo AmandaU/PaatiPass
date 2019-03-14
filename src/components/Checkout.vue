@@ -69,12 +69,10 @@ export default {
       CubeSpin,
       Media
     },
+
    props: {
-       shoppingcart: {
-        type: Object,
-        required: true,// User can accept a userData object on params, or not. It's totally optional.
-      }
-  },
+       ticketref: '',
+   },
 
   data() {
       return {
@@ -95,12 +93,49 @@ export default {
         merchantKey: 'ztdbyg14s7nyd',//'49qsjtvgayqaw',//
         greaterThan800: window.innerWidth > 800,
         zapperKey: 0,
+         shoppingcart: {
+          email: "",
+          name: "",
+          userid:  "",
+          event: {
+            name: ""
+          },
+          reference: "",
+          promocode: "",
+          promotionvalue: 0,
+          totalPaid: 0,
+          number: "0",
+          pricebreaks: [{
+            pricebreak:{
+              name: "",
+              tickets: 0,
+              price: 0,
+              ticketHolders: [
+              {
+                name: "",
+                email: ""
+              }]
+              }}],
+          zapperPaymentMethod: false,
+          zapperPaymentId: 0,
+          zapperReference: ""
+         }
       }
     },
 
  firebase () {
-      let userid = this.$props.shoppingcart.userid;
-      let eventid = this.$props.shoppingcart.event.id; 
+     var ticketref = "";
+      var index = window.location.hash.indexOf("=");
+      if(index >= 0)
+      {
+         ticketref =  window.location.hash.substring(index+1,window.location.hash.length) ;
+      }
+     if(localStorage.getItem(ticketref))
+     {
+        this.shoppingcart = JSON.parse(localStorage.getItem(ticketref));
+      }
+      let userid =  this.shoppingcart.userid;
+      let eventid =  this.shoppingcart.event.id; 
     return {
        pricebreaks: db.ref('pricebreaks'),
        promotions: db.ref('promotions').orderByChild("eventid").equalTo(eventid),
@@ -122,7 +157,7 @@ export default {
 },
 
 created() {
-     this.shoppingcart = this.$props.shoppingcart;
+     
      this.purchasevalue = this.total;  
      this.loadZapperScript();
     // this.loadZapperV2();
@@ -217,11 +252,10 @@ watch: {
     },
     // a computed getter
     payFastUrl: function () {
-     
         const url =  'https://sandbox.payfast.co.za/eng/process?cmd=_paynow&receiver=10011455&item_name=' + this.shoppingcart.event.name 
         + '&item_description=tickets&amount=' + this.purchasevalue + '.00' 
-        + '&return_url=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FSuccess%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
-        + '&cancel_url=http%3A%2F%2F192.168.8.103%3A8080%2F%23%2FCancel%2F%3Fticketid%3D' + this.shoppingcart.reference ; 
+        + '&return_url=http%3A%2F%2F192.168.8.100%3A8080%2F%23%2FSuccess%2F%3Fticketref%3D' + this.shoppingcart.reference ; 
+        + '&cancel_url=http%3A%2F%2F192.168.8.100%3A8080%2F%23%2FCheckout%2F%3Fticketref%3D' + this.shoppingcart.reference ; 
         //console.log(url);
         return url;
     },
@@ -293,14 +327,14 @@ watch: {
             self.shoppingcart.totalPaid = paymentResult.payment.amountPaid;
             self.shoppingcart.zapperReference = paymentResult.payment.zapperId;
             self.saveTicket(self); 
-             self.$router.replace({ name: 'Success', params: {ticketref: self.shoppingcart.reference}});
+             self.$router.replace({ name: 'Success', query: {ticketref: self.shoppingcart.reference}});
           }
-          else
-          {
-            self.shoppingcart.zapperPaymentId = paymentResult.paymentId;
-            localStorage.setItem(self.shoppingcart.reference, JSON.stringify(self.shoppingcart));
-            self.$router.replace({ name: 'Cancel', params: {ticketid: self.shoppingcart.reference}});
-          }
+          // else
+          // {
+          //   self.shoppingcart.zapperPaymentId = paymentResult.paymentId;
+          //   localStorage.setItem(self.shoppingcart.reference, JSON.stringify(self.shoppingcart));
+          //   self.$router.replace({ name: 'Cancel', params: {ticketref: self.shoppingcart.reference}});
+          // }
           });
       })
       .catch(() => {

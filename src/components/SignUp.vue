@@ -35,11 +35,8 @@
       CubeSpin
     },
      props: {
-       shoppingcart: {
-        type: Object,
-        required: true // User can accept a userData object on params, or not. It's totally optional.
-      }
-  },
+       ticketref: '',
+       },
     data() {
       return {
         busy: false,
@@ -61,6 +58,10 @@
         }
       },
 created() {
+  if(localStorage.getItem(this.$props.ticketref))
+     {
+        this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketref));
+      }
   let img = this.shoppingcart? this.shoppingcart.event.imageurl:'';
    this.$eventHub.$emit('eventimageurl', img);
     },
@@ -69,7 +70,7 @@ created() {
       
       goBackToLogin ()
       {
-       this.$router.replace({ name: 'Login', params: {shoppingcart: this.$props.shoppingcart}});
+       this.$router.replace({ name: 'Login', params: {ticketref: this.$props.shoppingcart.reference}});
       },
 
        logout: function() {
@@ -112,6 +113,7 @@ created() {
             if(self.$props.shoppingcart)
             {
               self.$props.shoppingcart.userid = uid;
+              localStorage.setItem(self.shoppingcart.reference, JSON.stringify(self.shoppingcart));
               self.$router.replace({ name: 'Checkout', params: {shoppingcart: self.$props.shoppingcart}});
               self.busy = false;
             }

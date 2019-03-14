@@ -69,6 +69,7 @@ const router = new Router({
     component: Event, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
     }, 
     {
+     // path: '/checkout/:ticketref',
       path: '/checkout',
       name: 'Checkout',
       component: Checkout,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
@@ -76,23 +77,27 @@ const router = new Router({
         requiresAuth: true,
       },
       props: true,
+      props: (route) => ({
+       ticketref: route.query.ticketref,
+      })
     },  
     {
-      path: '/success/:ticketref',
+      path: '/success',
       name: 'Success',
       component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
-      //test
-      // props: (route) => ({
-      //   ticketid: route.query.ticketid,
-      //   ticketparam: ""
-      // })
+      props: (route) => ({
+        ticketref: route.query.ticketref,
+      })
     },     
     {
       path: '/Cancel',
       name: 'Cancel',
       component: Cancel,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
       props: true,
+      props: (route) => ({
+        ticketref: route.query.ticketref,
+      })
     },     
     {
       path: '/scanqr',
@@ -108,7 +113,6 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
   if (requiresAuth && !currentUser)
     next('login');
   else{

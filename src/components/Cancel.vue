@@ -15,9 +15,9 @@ export default {
 
    mounted() {
    
-    if(localStorage.getItem(this.$props.ticketid))
+    if(localStorage.getItem(this.$props.ticketref))
       {
-         this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketid));
+         this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketref));
        }
    },
 
@@ -32,7 +32,7 @@ export default {
     },
 
       props: {
-       ticketid: {
+       ticketref: {
         type: String,
         required: true,
       }
