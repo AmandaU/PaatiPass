@@ -58,39 +58,39 @@
         }
       },
 created() {
-  if(localStorage.getItem(this.$props.ticketref))
-     {
+    if(localStorage.getItem(this.$props.ticketref))
+    {
         this.shoppingcart = JSON.parse(localStorage.getItem(this.$props.ticketref));
-      }
-  let img = this.shoppingcart? this.shoppingcart.event.imageurl:'';
-   this.$eventHub.$emit('eventimageurl', img);
+    }
+    let img = this.shoppingcart? this.shoppingcart.event.imageurl:'';
+    this.$eventHub.$emit('eventimageurl', img);
     },
 
-    methods: {
+methods: {
       
-      goBackToLogin ()
-      {
-       this.$router.replace({ name: 'Login', params: {ticketref: this.$props.shoppingcart.reference}});
-      },
+  goBackToLogin ()
+  {
+    this.$router.replace({ name: 'Login', params: {ticketref: this.$props.shoppingcart.reference}});
+  },
 
-       logout: function() {
-       firebase.auth().signOut().then(() => {
-        this.$router.replace('login')
-      })
-    },
+  logout: function() {
+    firebase.auth().signOut().then(() => {
+    this.$router.replace('login')
+  })
+  },
 
-    insert(uid){
-     
-      this.newUser.uid = uid;
-          myUsersRef.push(this.newUser);
-          this.newUser.firstname = '',
-          this.newUser.surname = '',
-          this.newUser.email = '',
-          this.newUser.cellphone = '',
-          this.newUser.uid = '',
-          this.newUser.isAdmin = false,
-          this.busy = false;
-      alert("Succeessfully added")
+  insert(uid){
+    
+    this.newUser.uid = uid;
+        myUsersRef.push(this.newUser);
+        this.newUser.firstname = '',
+        this.newUser.surname = '',
+        this.newUser.email = '',
+        this.newUser.cellphone = '',
+        this.newUser.uid = '',
+        this.newUser.isAdmin = false,
+        this.busy = false;
+    alert("Succeessfully added")
   },
 
   remove(userUID){
@@ -110,6 +110,7 @@ created() {
       (user) => {
           alert('Your account has been created')
            this.$eventHub.$emit('loggedin', '');
+            self.$eventHub.$emit('isAdmin', false);
             if(self.$props.shoppingcart)
             {
               self.$props.shoppingcart.userid = uid;

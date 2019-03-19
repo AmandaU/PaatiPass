@@ -55,6 +55,10 @@ $theme-font:  verdana, sans-serif;
     flex-direction:column; /* column | row  */
 }
 
+input, input:active, input:focus, input:focus-within, input:hover, input:visited {
+  font-size: 16px!important;
+}
+
 .tel {
   margin:0 auto;
   width: 100%;
@@ -66,12 +70,6 @@ $theme-font:  verdana, sans-serif;
 .signup {
   margin-top: 40px;
 }
-
-// input {
-//   margin: 10px 0;
-//   width: 20%;
-//   padding: 7px; 
-// }
 
 button {
   margin-top: 10px;
@@ -126,9 +124,8 @@ button {
   height:30vh;
   width:100vw;
   text-align: right;
-    position: relative;
+  position: relative;
 }
-
 
 .backimage{
   z-index: 1;
@@ -165,7 +162,6 @@ button {
   flex-direction: row;
   margin: 0, auto;
   width: 90%;
-  //max-width: 90%;
  }
 
 .pricebreakblock{
@@ -188,12 +184,12 @@ button {
   display: flex;
   flex-direction: column;
   margin: 0, auto;
- justify-content: right;
+  justify-content: right;
   align-items: right;
   text-align: center;
-   vertical-align: top;
-   margin-left: 30px;
-   margin-top:30px;
+  vertical-align: top;
+  margin-left: 30px;
+  margin-top:30px;
 }
 
 .checkoutblock{
@@ -202,12 +198,12 @@ button {
   background-color:white;
   display: flex;
   flex-direction: column;
-   vertical-align: top; 
-   align-items: right;
-   justify-content: right;
+  vertical-align: top; 
+  align-items: right;
+  justify-content: right;
   border: 1px solid rgb(225, 225, 226);
   border-radius: 5px;
-   margin: 0, auto; 
+  margin: 0, auto; 
   
 }
 
@@ -247,7 +243,6 @@ button {
   vertical-align: middle;
 }
 
-
 .centreblock {
   max-width: 100%;
   width: 100%;
@@ -265,6 +260,7 @@ button {
 .infoblockitem {
   margin-top: 10px;
   width: 100%;
+  max-width:100%;
   cursor: pointer;
   height:30px;
   padding-left: 5px;
@@ -285,7 +281,6 @@ button {
    padding-left: 1px;
    float: left;
    margin-top:10px;
-  
 }
 
 .eventrow{
@@ -351,14 +346,17 @@ button {
   }
 
 .eventbuttonbox{
-  // background-color: rgba(235, 129, 129, 0.966);
    display: flex;
    flex-direction: row;
    flex: 0.1;
    cursor: pointer;
+   padding-top: 0px;
    padding-right: 0px;
-
-   img{
+   align-items: center;
+   justify-content: center;
+   align-items: center;
+   vertical-align: middle;
+ img{
     max-width: 100%;
     max-height: 100%;
     height: auto;
@@ -387,11 +385,7 @@ button {
   text-align: left; 
   justify-content: left;
   vertical-align: middle;
-  // border: 1px solid rgb(225, 225, 226);
-  // border-radius: 5px;
-  // padding-left: 5px;
   width: 400px;
-
 }
 
 .ticketHolderItem{
@@ -446,7 +440,7 @@ button {
 
 .pricebreakcolumn2{
   background-color:white;
-  //width: 100%;
+  width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -460,21 +454,22 @@ button {
 
 .pricebreakimage{
   
-  width:25px;
-  height:25px;
+  widows: 25px;
+  height: 25px;
   margin-right: 10px;
   border: 1px solid rgb(225, 225, 226);
   border-radius: 5px;
-  padding: 2px;
+  padding: 5px;
   
 }
 
 .pricebreakbuttonbox{
-  background-color:white;
+  //background-color:white;
   display: flex;
   flex-direction: row;
   cursor: pointer;
-  flex: 0.6;
+  width:100%;
+  flex: 0.5;
   height: 100%;
   flex-direction: flex;
   align-items: center;
@@ -484,12 +479,12 @@ button {
 }
 
 .ticketselection{
-  flex: 0.4;
+  flex: 0.5;
   display: flex;
   flex-direction: row;
   cursor: pointer;
-  //width: 100%;
   height: 100%;
+  width:100%;
   flex-direction: flex;
   align-items: center;
   text-align: center; 
@@ -498,12 +493,11 @@ button {
 }
 
 .pricebreakdetailitem{
- // background-color: rgba(94, 163, 134, 0.966);
+  //background-color: rgba(94, 163, 134, 0.966);
  display: grid;
  place-items: center;
  height: 100%;
  padding:5px;
- 
 }
 
 .buybutton{
@@ -519,15 +513,16 @@ button {
   }
 
 .pricebreaknumberrow{
-  background-color:white;
+  //background-color:rgb(196, 66, 66);
+  flex:1;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
+   min-width: 100%;
   width: 100%;
   height: 100%;
-  align-items: right;
-  text-align: right; 
-  justify-content: right;
+  align-items: center;
+  text-align: center; 
+  justify-content: center;
   vertical-align: middle;
 }
 
@@ -535,19 +530,6 @@ button {
   display: grid;
   width: 100px;
 }
-
-// #nav {
-//   padding: 5px;
-// }
-
-// #nav a {
-//   font-weight: bold;
-//   color: #2c3e50;
-// }
-
-// #nav a.router-link-exact-active {
-//   color: #42b983;
-// }
 
 .image{
   min-width: 100%;
@@ -565,23 +547,18 @@ button {
     width: 20%;
   }
   
-    // input {
-    //   width: 50%;
-    //   margin: 20px;
-    // }
+  .imagebox {
+    width: 50vw;
+    margin: 20px;
+    }
 
-    .imagebox {
-      width: 50vw;
-      margin: 20px;
-     }
- 
-    .infoblock {
-      width: 400px;
-     }
-     
-     .ticketHolderBlock{
-      width: 400px;
-     }
+  .infoblock {
+    width: 400px;
+    }
+    
+    .ticketHolderBlock{
+    width: 400px;
+    }
      //Events
     .eventrow{
       flex-direction: row;
@@ -605,8 +582,6 @@ button {
       justify-content: center;
      }
 
-    
-    
      .eventinfobox {
       flex: 0.4;
       padding-top: 0px;
@@ -614,13 +589,6 @@ button {
     
     .eventbuttonbox{
       flex: 0.1;
-      img{
-        max-width: 100%;
-        max-height: 100%;
-        height: auto;
-        width: 80%;
-        height: 80%;
-      }
    }
 
   //pricebreaks
@@ -656,24 +624,22 @@ button {
   }
   
   .pricebreakcolumn2{
-   
+    flex-direction: column;
     flex: 0.5;
+    width: 100%;
     align-items: right;
     text-align: right; 
     justify-content: right;
     vertical-align: middle;
     padding: 0px;
     }
-
-   
+ 
     .pricebreakblock{
       flex: 0.7;
-      //margin: 0, auto;
-    }
+      }
     
     .shoppingcartblock{
       flex: 0.3;
-       //margin-left: 30px;
     }
 
     .checkoutblock{
@@ -691,21 +657,17 @@ button {
     width: 0%;
   }
   
-  // input {
-  //     width: 70%;
-  //   }
-
   .imagebox {
     width: 70vw;
     margin: 2px;
     }
 
-    .infoblock {
-      width: 100%;
-     }
-     .ticketHolderBlock{
-      width: 100%;
-     }
+  .infoblock {
+    width: 100%;
+    }
+    .ticketHolderBlock{
+    width: 100%;
+    }
 
     //Events
     .eventrow{
@@ -739,14 +701,7 @@ button {
     
     .eventbuttonbox{
       flex: 0.2;
-      padding-bottom: 0px;
-      img{
-        max-width: 100%;
-        max-height: 100%;
-        height: auto;
-        width: 80%;
-        height: 80%;
-      }
+      padding-top: 10px;
      }
 
      .eventblock{
@@ -758,41 +713,38 @@ button {
       //width: 450px;
       height:150px;
       margin-bottom: 5px;
-      margin-top: 5px;
+      margin-top: 0px;
       padding-bottom: 5px;
-      padding-top: 5px;
+      padding-top: 0px;
       flex-direction: column;
      flex-wrap: nowrap;
     }
 
     .pricebreakcolumn1{
-   
-       flex: 1;
+      flex: 1;
       align-items: center;
       text-align: center; 
       justify-content: center;
       vertical-align: middle;
-     
     }
     
     .pricebreakcolumn2{
       flex-direction: row;
-      flex: 1;
+      flex: 0.5;
+      width: 80%;
       align-items: center;
       text-align: center; 
       justify-content: center;
       vertical-align: middle;
-      
     }
 
     .pricebreakblock{
       flex: 1;
-      //margin: 0, auto;
     }
     
     .shoppingcartblock{
       flex: 1;
-       margin-left: 0px;
+      margin-left: 0px;
     }
 
     .checkoutblock{

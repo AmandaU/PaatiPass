@@ -69,10 +69,9 @@
                  db.ref('users').orderByChild("uid").equalTo(uid).limitToFirst(1),
                   null,
                   () => {
-                    if(self.users[0].isAdmin)
-                    {
-                      self.$eventHub.$emit('isAdmin', '');
-                    }
+                    
+                    self.$eventHub.$emit('isAdmin', self.users[0].isAdmin);
+                    
                     if(self.shoppingcart)
                     {
                       self.shoppingcart.userid = uid;

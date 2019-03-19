@@ -43,8 +43,8 @@ firebase () {
       self.isLoggedin = true;
     });
 
-    this.$eventHub.$on('isAdmin', ()=> {
-      self.isAdmin = true;
+    this.$eventHub.$on('isAdmin', (isadmin)=> {
+      self.isAdmin = isadmin;
     });
 
    var user = firebase.auth().currentUser;
@@ -73,6 +73,7 @@ methods: {
            alert('You have successfully logged out');
             //this.$router.push({path: '/Home',})
             self.isLoggedin = false;
+             self.$eventHub.$emit('isAdmin', false);
             self.$router.replace({ name: 'Home'});
            }, 
            function(error) {
