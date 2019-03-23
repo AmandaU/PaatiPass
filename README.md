@@ -1,4 +1,4 @@
-# jayla-tickets
+# PaatiPass
 
 ## Project setup
 ```
