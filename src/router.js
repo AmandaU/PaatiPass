@@ -1,9 +1,15 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable prefer-destructuring */
+/* eslint-disable no-dupe-keys */
 import firebase from 'firebase';
 import Vue from 'vue';
 import Router from 'vue-router';
+import VueTelInput from 'vue-tel-input';
+import VueFire from 'vuefire';
+import LoadScript from 'vue-plugin-load-script';
 import Home from './components/Home.vue';
 import Login from './components/Login.vue';
-import Signup from './components/Signup.vue';
+import Signup from './components/SignUp.vue';
 import About from './components/About.vue';
 import Event from './components/Event.vue';
 import Contact from './components/Contact.vue';
@@ -11,13 +17,10 @@ import Checkout from './components/Checkout.vue';
 import Success from './components/Success.vue';
 import Cancel from './components/Cancel.vue';
 import ScanQR from './components/ScanQR.vue';
-import VueTelInput from 'vue-tel-input'
-import VueFire from 'vuefire'
-import LoadScript from 'vue-plugin-load-script';
 
-Vue.use(VueFire)
+Vue.use(VueFire);
 
-Vue.use(VueTelInput)
+Vue.use(VueTelInput);
 
 Vue.use(LoadScript);
 
@@ -36,7 +39,7 @@ const router = new Router({
       name: 'Home',
       component: Home,
       props: true,
-      
+
     },
     {
       path: '/login',
@@ -53,7 +56,7 @@ const router = new Router({
     {
       path: '/about',
       name: 'About',
-      component: About,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: About, // () => import(/* webpackChunkName: "about" */ './views/About.vue'),
       // meta: {
       //   requiresAuth: true,
       // },
@@ -61,64 +64,61 @@ const router = new Router({
     {
       path: '/contact',
       name: 'Contact',
-      component: Contact, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: Contact,
     },
     {
-    path: '/event/:eventid', 
-    name: 'Event',
-    component: Event, //() => import(/* webpackChunkName: "about" */ './views/About.vue'),
-    }, 
+      path: '/event/:eventid',
+      name: 'Event',
+      component: Event,
+    },
     {
-     // path: '/checkout/:ticketref',
+      // path: '/checkout/:ticketref',
       path: '/checkout',
       name: 'Checkout',
-      component: Checkout,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: Checkout,
       meta: {
         requiresAuth: true,
       },
       props: true,
-      props: (route) => ({
-       ticketref: route.query.ticketref,
-      })
-    },  
+      props: route => ({
+        ticketref: route.query.ticketref,
+      }),
+    },
     {
       path: '/success',
       name: 'Success',
-      component: Success,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: Success,
       props: true,
-      props: (route) => ({
+      props: route => ({
         ticketref: route.query.ticketref,
-      })
-    },     
+      }),
+    },
     {
       path: '/Cancel',
       name: 'Cancel',
-      component: Cancel,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: Cancel,
       props: true,
-      props: (route) => ({
+      props: route => ({
         ticketref: route.query.ticketref,
-      })
-    },     
+      }),
+    },
     {
       path: '/scanqr',
       name: 'ScanQR',
-      component: ScanQR,//() => import(/* webpackChunkName: "about" */ './views/About.vue'),
+      component: ScanQR,
       meta: {
-        requiresAuth: true, requiresAdmin:true
+        requiresAuth: true, requiresAdmin: true,
       },
-    },        
+    },
   ],
 });
 
 router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  if (requiresAuth && !currentUser)
-    next('login');
-  else{
+  if (requiresAuth && !currentUser) { next('login'); } else {
     next();
   }
-   
 });
 
 export default router;
