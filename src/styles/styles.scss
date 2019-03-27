@@ -1,6 +1,10 @@
 $theme-font:  verdana, sans-serif;
 
 @font-face {
+
+  font-family: Prime;
+  src: url("~@/assets/fonts/Prime-Regular.otf") ;
+
   font-family: Bariol;
   src: url("~@/assets/fonts/Bariol.otf") ;
 
@@ -14,7 +18,7 @@ $theme-font:  verdana, sans-serif;
   margin:0;     /* This is used to reset any browser-default margins */
   height:100vh; /* This is needed to overcome a Chrome bug. */
   width:100vw; 
-  font-family: 'Bariol', 'BariolBold';//,'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Prime';//'Bariol', 'BariolBold';//,'Helvetica Neue', Arial, sans-serif;
   color: rgb(76, 74, 80);
   background-color:rgb(255, 255, 255);
   -webkit-font-smoothing: antialiased;
