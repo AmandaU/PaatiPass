@@ -212,9 +212,18 @@ button {
   margin: 0, auto; 
    
 }
+.payfastRow{
+  display: flex;
+  flex-direction: row;
+   align-items: center;
+  justify-content: center;
+  //width: 100%;
+  margin: 0, auto;
+  padding: 5px;
+}
 
 .checkoutrow{
-  background-color:white;
+  //background-color:white;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -652,6 +661,11 @@ button {
     .checkoutblock{
       width: 100%;
     }
+
+    .payfastRow{
+      flex-direction: row;
+      padding: 0px;
+    }
 }
 
 @media all and (max-width: 600px) {
@@ -757,6 +771,11 @@ button {
 
     .checkoutblock{
       width: 100%;
+    }
+
+    .payfastRow{
+      flex-direction: column;
+      padding: 0px;
     }
   }
 }
