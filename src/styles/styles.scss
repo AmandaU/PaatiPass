@@ -1,6 +1,10 @@
 $theme-font:  verdana, sans-serif;
 
 @font-face {
+
+  font-family: Prime;
+  src: url("~@/assets/fonts/Prime-Regular.otf") ;
+
   font-family: Bariol;
   src: url("~@/assets/fonts/Bariol.otf") ;
 
@@ -14,7 +18,7 @@ $theme-font:  verdana, sans-serif;
   margin:0;     /* This is used to reset any browser-default margins */
   height:100vh; /* This is needed to overcome a Chrome bug. */
   width:100vw; 
-  font-family: 'Bariol', 'BariolBold';//,'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Prime';//'Bariol', 'BariolBold';//,'Helvetica Neue', Arial, sans-serif;
   color: rgb(76, 74, 80);
   background-color:rgb(255, 255, 255);
   -webkit-font-smoothing: antialiased;
@@ -161,11 +165,11 @@ button {
   display: flex;
   flex-direction: row;
   margin: 0, auto;
-  width: 90%;
+  width: 80%;
  }
 
 .pricebreakblock{
-  flex: 0.6;
+  flex: 0.7;
   background-color:white;
   display: flex;
   flex-direction: column;
@@ -179,7 +183,7 @@ button {
 }
 
 .shoppingcartblock{
-  flex: 0.4;
+  flex: 0.3;
   background-color:white;
   display: flex;
   flex-direction: column;
@@ -188,14 +192,16 @@ button {
   align-items: right;
   text-align: center;
   vertical-align: top;
-  margin-left: 30px;
   margin-top:30px;
+  margin-right: 0px;
+  margin-left: 50px;
 }
 
 .checkoutblock{
+  max-width: 300px;
   width: 80%;
   height: auto;
-  background-color:white;
+  //background-color:rgb(199, 35, 35);
   display: flex;
   flex-direction: column;
   vertical-align: top; 
@@ -204,11 +210,20 @@ button {
   border: 1px solid rgb(225, 225, 226);
   border-radius: 5px;
   margin: 0, auto; 
-  
+   
+}
+.payfastRow{
+  display: flex;
+  flex-direction: row;
+   align-items: center;
+  justify-content: center;
+  //width: 100%;
+  margin: 0, auto;
+  padding: 5px;
 }
 
 .checkoutrow{
-  background-color:white;
+  //background-color:white;
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -454,7 +469,7 @@ button {
 
 .pricebreakimage{
   
-  widows: 25px;
+  width: 25px;
   height: 25px;
   margin-right: 10px;
   border: 1px solid rgb(225, 225, 226);
@@ -464,7 +479,7 @@ button {
 }
 
 .pricebreakbuttonbox{
-  //background-color:white;
+  //background-color:rgb(240, 3, 3);
   display: flex;
   flex-direction: row;
   cursor: pointer;
@@ -513,7 +528,7 @@ button {
   }
 
 .pricebreaknumberrow{
-  //background-color:rgb(196, 66, 66);
+ //background-color:rgb(88, 196, 66);
   flex:1;
   display: flex;
   flex-direction: row;
@@ -640,10 +655,16 @@ button {
     
     .shoppingcartblock{
       flex: 0.3;
+      margin-left: 10px;
     }
 
     .checkoutblock{
       width: 100%;
+    }
+
+    .payfastRow{
+      flex-direction: row;
+      padding: 0px;
     }
 }
 
@@ -745,10 +766,16 @@ button {
     .shoppingcartblock{
       flex: 1;
       margin-left: 0px;
+      margin-right: 0px;
     }
 
     .checkoutblock{
       width: 100%;
+    }
+
+    .payfastRow{
+      flex-direction: column;
+      padding: 0px;
     }
   }
 }
