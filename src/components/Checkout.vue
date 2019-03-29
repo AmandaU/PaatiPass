@@ -30,15 +30,21 @@
              </div>
               <br>
           </div>
-       <button v-show="isready" @click="saveTicketLocal()" >Buy</button><br>
-        <br>
-       <div class="payfastRow">
-        <img src="../assets/PaymentMethods.png"  alt="Payment Methods"  />
-          <br> <br>
-          <a v-show="isready" @click="saveTicket()"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png" width="174" height="59" alt="Pay" title="Pay Now with PayFast" /></a>
-            
+
+        <!-- <creditcard  @eventname="updateparent"></creditcard> -->
+        <!-- <button v-show="isready" @click="saveTicketLocal()" >Buy</button><br>
+        <br> -->
+     <div class="payColumn">
+      <div class="payfastRow">
+          <img src="../assets/PaymentMethods.png"  alt="Payment Methods"   style="margin: 10px;"/>  
+
+            <br> <br>
+            <a v-show="isready" @click="saveTicket()"  v-bind:href="payFastUrl"><img src="https://www.payfast.co.za/images/buttons/dark-large-paynow.png"  style="margin: 10px; width: 174 ; height: 59" alt="Pay" title="Pay Now with PayFast" /></a>
+              
+      </div>
     </div>
-           <div id="Zapper" ></div>
+           <br>
+          <div id="Zapper" ></div>
        </div>
    </div>
  
