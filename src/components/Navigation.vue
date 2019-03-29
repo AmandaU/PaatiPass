@@ -115,20 +115,6 @@ methods: {
     height:5vh;
 }
 
-/* .home {
-  font-weight: 200;
-  font-size: 20px;
-  position: relative;
-  text-align: left;
-  left:20px;
-  display: flex;
-  float: left;
-  padding-left: 10px;
-  justify-content:center;
-  align-content:center;
- 
-} */
-
  .menu {
   position: relative;
   height:30px;

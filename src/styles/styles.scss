@@ -272,6 +272,29 @@ button {
   padding-right: 50px;
 }
 
+.qrblock {
+  background-color:white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: centre;
+  text-align: center;
+  margin: 0, auto;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+.qrinfo {
+  background-color:white;
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+  align-items: left;
+  text-align: left;
+  margin: 0, auto;
+  padding-left: 50px;
+  padding-right: 50px;
+}
+
 .infoblockitem {
   margin-top: 10px;
   width: 100%;
@@ -548,8 +571,8 @@ button {
 
 .image{
   min-width: 100%;
-    height: auto;
-    overflow-y: hidden;
+  height: auto;
+  overflow-y: hidden;
 }
 
 @media all and (max-width: 800px) {
@@ -666,6 +689,15 @@ button {
       flex-direction: row;
       padding: 0px;
     }
+
+    .qrblock {
+      padding-left: 50px;
+      padding-right: 50px;
+    }
+    .qrinfo {
+      padding-left: 50px;
+      padding-right: 50px;
+    }
 }
 
 @media all and (max-width: 600px) {
@@ -776,6 +808,15 @@ button {
     .payfastRow{
       flex-direction: column;
       padding: 0px;
+    }
+
+    .qrblock {
+      padding-left: 10px;
+      padding-right: 10px;
+    }
+    .qrinfo {
+      padding-left: 10px;
+      padding-right: 10px;
     }
   }
 }
