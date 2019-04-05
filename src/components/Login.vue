@@ -36,6 +36,7 @@
      props: {
        eventid: '',
        ticketref: '',
+       isPromoter: false
    },
 
  created() {
@@ -52,7 +53,8 @@
 
       goToSignup ()
       {
-       this.$router.replace({ name: 'Signup', params: {ticketref: this.shoppingcart.reference}});
+        
+       this.$router.replace({ name: 'Signup', params: {ticketref: this.shoppingcart.reference, isPromoter: this.$props.isPromoter}});
       },
     
     login: function() {
@@ -71,7 +73,11 @@
                   () => {
                     
                     self.$eventHub.$emit('isAdmin', self.users[0].isAdmin);
-                    
+                    if(self.users[0].isPromoter)
+                    {
+                      self.$router.replace({ name: 'Promoter'});
+                    }
+                    else
                     if(self.shoppingcart)
                     {
                       self.shoppingcart.userid = uid;
@@ -92,7 +98,7 @@
            
         },
         (err) => {
-          alert('Oops. ' + err.message);
+           alert('Oops. ' + err.message);
           self.busy = false;
         }
       );

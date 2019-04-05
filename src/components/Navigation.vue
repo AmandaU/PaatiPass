@@ -8,6 +8,7 @@
       <div class="hoveritem" v-show="isAdmin" v-on:click="navigate('ScanQR')" >Scan QR</div>
     </div>
     <div class="menu menuright">
+      <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Promoter')" >Promoters</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Login')" >Login</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Signup')" >Register</div>
        <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
@@ -80,22 +81,31 @@ methods: {
               console.error('Sign Out Error', error); 
               });
        }
-       if(window.location.hash.length > 8 && window.location.hash.substring(2,7) == "event")
+
+       if(navPath == 'Promoter')
+           {
+            this.$router.replace({ name: 'Login', params: {isPromoter: true}});
+           }
+        else if(window.location.hash.length > 8 && window.location.hash.substring(2,7) == "event")
        {
          if(navPath == "Login" || navPath == "Signup")
          {
             this.$router.replace({ name: navPath, params: {eventid: window.location.hash.substring(9,9)}});
+           
          }
          else{
            this.$router.replace({ name: navPath});
          }
        }
        else
+       if(navPath == "Logout")
+       {
+         this.$router.replace({ name: 'Login'});
+       }
+       else
        {
          this.$router.replace({ name: navPath});
-        //  let gotopath = '/' + navPath;
-        //  this.$router.push({path: gotopath,})
-       }
+         }
        
     }
 },
