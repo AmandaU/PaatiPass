@@ -71,7 +71,7 @@
                  db.ref('users').orderByChild("uid").equalTo(uid).limitToFirst(1),
                   null,
                   () => {
-                    
+                    debugger;
                     self.$eventHub.$emit('isAdmin', self.users[0].isAdmin);
                     if(self.users[0].isPromoter)
                     {

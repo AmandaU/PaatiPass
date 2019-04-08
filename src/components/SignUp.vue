@@ -84,15 +84,15 @@ methods: {
     
     this.newUser.uid = uid;
     this.newUser.isPromoter = this.$props.isPromoter;
-        myUsersRef.push(this.newUser);
-        this.newUser.firstname = '',
-        this.newUser.surname = '',
-        this.newUser.email = '',
-        this.newUser.cellphone = '',
-        this.newUser.uid = '',
-        this.newUser.isAdmin = false,
-        this.newUser.isPromoter = false;
-        this.busy = false;
+    myUsersRef.push(this.newUser);
+    this.newUser.firstname = '',
+    this.newUser.surname = '',
+    this.newUser.email = '',
+    this.newUser.cellphone = '',
+    this.newUser.uid = '',
+    this.newUser.isAdmin = false,
+    this.newUser.isPromoter = false;
+    this.busy = false;
     alert("Succeessfully added")
   },
 

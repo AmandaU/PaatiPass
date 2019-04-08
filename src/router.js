@@ -16,6 +16,8 @@ import Contact from './components/Contact.vue';
 import Checkout from './components/Checkout.vue';
 import Success from './components/Success.vue';
 import Cancel from './components/Cancel.vue';
+import Promoter from './components/Promoter.vue';
+import ManageEvent from './components/ManageEvent.vue';
 import ScanQR from './components/ScanQR.vue';
 
 Vue.use(VueFire);
@@ -100,6 +102,21 @@ const router = new Router({
       props: true,
       props: route => ({
         ticketref: route.query.ticketref,
+      }),
+    },
+    {
+      path: '/Promoter',
+      name: 'Promoter',
+      component: Promoter,
+      
+    },
+    {
+      path: '/ManageEvent',
+      name: 'ManageEvent',
+      component: ManageEvent,
+      props: true,
+      props: route => ({
+        event: route.query.event,
       }),
     },
     {
