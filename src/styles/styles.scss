@@ -161,45 +161,14 @@ button {
 }
 
 .promoterblock{
-  //background-color:rgb(246, 247, 245);
+  //background-color:rgb(182, 204, 58);
   display: flex;
   flex-direction: column;
   margin: 0, auto;
-  width: auto;
-  align-items: left;
-  justify-content: left;
-  border: 1px solid rgb(195, 195, 196);
+  width: 80%;
+  border: 1px solid rgb(225, 225, 226);
   border-radius: 5px;
  }
-
- .promoteritem{
-  //background-color:rgb(246, 247, 245);
-  display: flex;
-  flex-direction: row;
-  margin: 5px;
-  width: auto;
-  padding: 5px;
- }
-
- .promotioneditbutton{
-   width: 80%;
-  display: grid;
-  place-items: center;
-  margin: 20px;
-  cursor: pointer;
-  height: 40px;
-  color:rgb(57, 105, 138);
-  border: 1px solid rgb(57, 105, 138);
-  border-radius: 5px;
-}
-
-.promotionnewbutton{
-  width: 100px;
-  height: 40px;
-  color:rgb(57, 105, 138);
-  border: 1px solid rgb(57, 105, 138);
-  border-radius: 5px;
-}
 
 .eventblock{
   //background-color:rgb(182, 204, 58);
@@ -275,6 +244,7 @@ button {
   display: flex;
   flex-direction: row;
   width: 100%;
+ 
   margin: 0, auto;
   padding: 5px;
 }
@@ -284,7 +254,7 @@ button {
   display: flex;
   flex-direction: column;
   cursor: pointer;
-  height: 100%;
+   height: 100%;
   flex-direction: flex;
   align-items: left;
   text-align: left; 
@@ -585,7 +555,8 @@ button {
  padding:5px;
 }
 
-.eventbutton{
+.buybutton{
+  
   display: grid;
   place-items: center;
   margin: 20px;
@@ -594,7 +565,7 @@ button {
   color:rgb(57, 105, 138);
   border: 1px solid rgb(57, 105, 138);
   border-radius: 5px;
-}
+  }
 
 .pricebreaknumberrow{
  //background-color:rgb(88, 196, 66);

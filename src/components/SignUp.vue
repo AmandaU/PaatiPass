@@ -36,6 +36,7 @@
     },
      props: {
        ticketref: '',
+       isPromoter: false
        },
     data() {
       return {
@@ -47,7 +48,7 @@
           email: '',
           password: '',
           cellphone: '',
-          isAdmin: false
+          isAdmin: false,  
         }
       }
     },
@@ -82,14 +83,16 @@ methods: {
   insert(uid){
     
     this.newUser.uid = uid;
-        myUsersRef.push(this.newUser);
-        this.newUser.firstname = '',
-        this.newUser.surname = '',
-        this.newUser.email = '',
-        this.newUser.cellphone = '',
-        this.newUser.uid = '',
-        this.newUser.isAdmin = false,
-        this.busy = false;
+    this.newUser.isPromoter = this.$props.isPromoter;
+    myUsersRef.push(this.newUser);
+    this.newUser.firstname = '',
+    this.newUser.surname = '',
+    this.newUser.email = '',
+    this.newUser.cellphone = '',
+    this.newUser.uid = '',
+    this.newUser.isAdmin = false,
+    this.newUser.isPromoter = false;
+    this.busy = false;
     alert("Succeessfully added")
   },
 
@@ -111,7 +114,11 @@ methods: {
           alert('Your account has been created')
            this.$eventHub.$emit('loggedin', '');
             self.$eventHub.$emit('isAdmin', false);
-            if(self.$props.shoppingcart)
+            if(self.$props.isPromoter)
+            {
+              self.$router.replace({ name: 'Promoter'});
+            }
+            else if(self.$props.shoppingcart)
             {
               self.$props.shoppingcart.userid = uid;
               localStorage.setItem(self.shoppingcart.reference, JSON.stringify(self.shoppingcart));

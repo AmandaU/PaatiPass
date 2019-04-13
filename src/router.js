@@ -115,9 +115,9 @@ const router = new Router({
       name: 'ManageEvent',
       component: ManageEvent,
       props: true,
-      // props: route => ({
-      //   event: route.query.event,
-      // }),
+      props: route => ({
+        event: route.query.event,
+      }),
     },
     {
       path: '/scanqr',
