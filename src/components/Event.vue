@@ -75,17 +75,16 @@
 
                   <div  class="checkouttickettotal "> 
                     <small>{{totalTicketValue}}</small>
-                    </div>
+                  </div>
                 </div> 
               
                 <br> 
                 
-                <div v-show="totalTickets > 0" @click="BuyTickets()" class="buybutton">Buy</div>
+                <div v-show="totalTickets > 0" @click="BuyTickets()" class="eventbutton">Buy</div>
               
             </div>  
           </div> 
-
-      </div> 
+       </div> 
   
       <br> <br>
       <GoogleMap  name="example" :addressCoordinate="addressCoordinate" :venueaddress="event.venueaddress"></GoogleMap>

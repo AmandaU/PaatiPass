@@ -8,6 +8,7 @@
       <div class="hoveritem" v-show="isAdmin" v-on:click="navigate('ScanQR')" >Scan QR</div>
     </div>
     <div class="menu menuright">
+      <div class="hoveritem" v-on:click="navigate('Promoter')" >Promoters</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Login')" >Login</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Signup')" >Register</div>
        <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
@@ -28,6 +29,7 @@ data() {
     return {
     isLoggedin: false,
     isAdmin: false,
+    isPromoter: false,
     user: []
     }
   },
@@ -47,6 +49,11 @@ firebase () {
       self.isAdmin = isadmin;
     });
 
+     this.$eventHub.$on('isPromoter', (ispromoter)=> {
+      self.isPromoter = ispromoter;
+    });
+
+
    var user = firebase.auth().currentUser;
     if(user){
        this.isLoggedin = true;
@@ -58,6 +65,10 @@ firebase () {
                   if(this.users[0].isAdmin)
                   {
                     this.isAdmin = true;
+                  }
+                  if(this.users[0].isPromoter)
+                  {
+                    this.isPromoter = true;
                   }
                 });
     }
@@ -73,29 +84,44 @@ methods: {
            alert('You have successfully logged out');
             //this.$router.push({path: '/Home',})
             self.isLoggedin = false;
-             self.$eventHub.$emit('isAdmin', false);
+            self.$eventHub.$emit('isAdmin', false);
+            self.$eventHub.$emit('isPromoter', false);
             self.$router.replace({ name: 'Home'});
            }, 
            function(error) {
               console.error('Sign Out Error', error); 
               });
        }
-       if(window.location.hash.length > 8 && window.location.hash.substring(2,7) == "event")
+
+       if(navPath == 'Promoter')
+           {
+             if( this.isLoggedin)
+             {
+                this.$router.replace({ name: 'Promoter'});
+             }else{
+               this.$router.replace({ name: 'Login', params: {isPromoter: true}});
+             }
+           }
+        else if(window.location.hash.length > 8 && window.location.hash.substring(2,7) == "event")
        {
          if(navPath == "Login" || navPath == "Signup")
          {
             this.$router.replace({ name: navPath, params: {eventid: window.location.hash.substring(9,9)}});
+           
          }
          else{
            this.$router.replace({ name: navPath});
          }
        }
        else
+       if(navPath == "Logout")
+       {
+         this.$router.replace({ name: 'Login'});
+       }
+       else
        {
          this.$router.replace({ name: navPath});
-        //  let gotopath = '/' + navPath;
-        //  this.$router.push({path: gotopath,})
-       }
+         }
        
     }
 },
@@ -114,20 +140,6 @@ methods: {
     z-index: 10;
     height:5vh;
 }
-
-/* .home {
-  font-weight: 200;
-  font-size: 20px;
-  position: relative;
-  text-align: left;
-  left:20px;
-  display: flex;
-  float: left;
-  padding-left: 10px;
-  justify-content:center;
-  align-content:center;
- 
-} */
 
  .menu {
   position: relative;
