@@ -1,8 +1,7 @@
 <template>
   <div class="centralcontainer">
     <br> <br>
-      <div class="centreblock">
-        <cube-spin v-if="busy"></cube-spin>
+         <cube-spin v-if="busy"></cube-spin>
        
             <div class="promoterblock">
                 
@@ -10,19 +9,19 @@
                 <input id="eventname" v-model="event.name" placeholder="Name of event">
                 <label for="from">Event from:</label>
                 <input id="from" type="date" v-model="event.from" placeholder="from">
-                 <label for="to">Event to:</label>
+                <label for="to">Event to:</label>
                 <input id="to" type="date" v-model="event.to" placeholder="to">
-                 <label for="image">Event image url:</label>
-                 <input id="image" v-model="event.imageurl" placeholder="image url" :disabled="true">
-                  <button @click="LoadImage()" >Upload image</button>
+                <label for="image">Event image url:</label>
+                <input id="image" v-model="event.imageurl" placeholder="image url" :disabled="true">
+                <button @click="LoadImage()" >Upload image</button>
                 <h3>Venues:</h3>
-                 <label for="venuename">Venu name:</label>
+                <label for="venuename">Venu name:</label>
                 <input id="venuename" v-model="event.venuename" placeholder="venue name" :disabled="true">
-                  <label for="venueaddress">Venu address:</label>
-                 <input id="venueaddress" v-model="event.venueaddress" placeholder="venue address" :disabled="true">
-                  <label for="venuealatlong">Venu location:</label>
-                 <input id="venuealatlong" v-model="event.venuelatlong" placeholder="venue location" :disabled="true">
-                  <button @click="ChangeVenue()" >Change venue</button>
+                <label for="venueaddress">Venu address:</label>
+                <input id="venueaddress" v-model="event.venueaddress" placeholder="venue address" :disabled="true">
+                <label for="venuealatlong">Venu location:</label>
+                <input id="venuealatlong" v-model="event.venuelatlong" placeholder="venue location" :disabled="true">
+                <button @click="ChangeVenue()" >Change venue</button>
                   <br>
                   <h3>Pricebreaks:</h3>
                    <div  v-for="pricebreak in pricebreaks" :key="pricebreak['.key']">
@@ -51,7 +50,7 @@
        
          <button @click="Save()" >Save</button>
     </div>
-  </div>
+ 
 </template>
 
 <script>
@@ -87,6 +86,7 @@ export default {
     },
 
 firebase () {
+  debugger;
      this.event =  this.$props.event;
     
     return {

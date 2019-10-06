@@ -19,6 +19,7 @@ import Cancel from './components/Cancel.vue';
 import Promoter from './components/Promoter.vue';
 import ManageEvent from './components/ManageEvent.vue';
 import ScanQR from './components/ScanQR.vue';
+import Merch from './components/Merch.vue';
 
 Vue.use(VueFire);
 
@@ -108,16 +109,15 @@ const router = new Router({
       path: '/Promoter',
       name: 'Promoter',
       component: Promoter,
-      
     },
     {
       path: '/ManageEvent',
       name: 'ManageEvent',
       component: ManageEvent,
       props: true,
-      props: route => ({
-        event: route.query.event,
-      }),
+      // props: route => ({
+      //   event: route.query.event,
+      // }),
     },
     {
       path: '/scanqr',
@@ -126,6 +126,11 @@ const router = new Router({
       meta: {
         requiresAuth: true, requiresAdmin: true,
       },
+    },
+    {
+      path: '/merch',
+      name: 'Merch',
+      component: Merch,
     },
   ],
 });

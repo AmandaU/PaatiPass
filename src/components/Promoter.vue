@@ -1,21 +1,21 @@
 <template>
   <div class="centralcontainer">
     <br> <br>
-      <div class="centreblock">
+     <div class="centreblock">
         <cube-spin v-if="busy"></cube-spin>
         <div  v-for="event in events" :key="event['.key']">
             <div class="promoterblock">
-                <small>{{ event.name }}</small>
-                <small>{{ event.name }}</small>
-                <small>{{ event.from }} - {{ event.to }}</small>
-                <small>{{ event.venuename }}</small>
-                <small>{{ event.venueaddress }}</small><br>
-                <button @click="EditEvent(event)" >edit</button>
+                <h2 >{{ event.name }}</h2>
+                <small class="promoteritem">{{ event.from }} - {{ event.to }}</small>
+                <small class="promoteritem">{{ event.venuename }}</small>
+                <small class="promoteritem">{{ event.venueaddress }}</small>
+                <small class="promoteritem">{{ event.venuelatlong }}</small><br>
+                <button class="promotioneditbutton" @click="EditEvent(event)" >edit</button>
             </div>
             <br>
        
         </div>
-         <button @click="NewEvent()" >New</button>
+         <button class="promotionnewbutton" @click="NewEvent()" >New</button>
     </div>
   </div>
 </template>
@@ -67,6 +67,7 @@ methods: {
 
 EditEvent(event)
 {
+  debugger;
     this.$router.replace({ name: 'ManageEvent', params: {event: event}});
 },
 

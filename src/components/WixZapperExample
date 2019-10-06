@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+  <script src="https://code.zapper.com/zapper.js></script>
+</head>
+<body onLoad="ready()">
+ <div id="Zapper" ></div>
+<script>
+
+let amount = 0;
+let reference = "";
+window.onmessage = (event) => {
+    if (event.data) {
+        if (event.data) {
+            reference = event.data.message1
+            amount = Number(event.data.message2)
+
+        }
+        ready()
+    }
+  };
+
+function ready(){
+    //var zapper = document.getElementById("zapper");
+     zapper("#zapper", 41724, 51097, amount, reference, function (paymentResult) {
+   
+});    
+  }
+
+</script>
+
+</body>
+</html>

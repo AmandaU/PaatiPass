@@ -5,10 +5,11 @@
 
     <div class="menu menuleft">
       <div class="hoveritem"  @click="navigate('Home')">Home</div>
+      <div class="hoveritem"  @click="navigate('Merch')">Merch</div>
       <div class="hoveritem" v-show="isAdmin" v-on:click="navigate('ScanQR')" >Scan QR</div>
     </div>
     <div class="menu menuright">
-      <div class="hoveritem" v-show="isPromoter" v-on:click="navigate('Promoter')" >Promoters</div>
+      <div class="hoveritem" v-on:click="navigate('Promoter')" >Promoters</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Login')" >Login</div>
       <div class="hoveritem" v-show="!isLoggedin" v-on:click="navigate('Signup')" >Register</div>
        <div class="hoveritem"  v-show="isLoggedin" v-on:click="navigate('Logout')" >Logout</div>
@@ -84,8 +85,8 @@ methods: {
            alert('You have successfully logged out');
             //this.$router.push({path: '/Home',})
             self.isLoggedin = false;
-             self.$eventHub.$emit('isAdmin', false);
-              self.$eventHub.$emit('isPromoter', false);
+            self.$eventHub.$emit('isAdmin', false);
+            self.$eventHub.$emit('isPromoter', false);
             self.$router.replace({ name: 'Home'});
            }, 
            function(error) {
